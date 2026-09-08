@@ -47,10 +47,10 @@ installed-app backups and signing material remain private.
 
 ## Hosted checks
 
-The release is published only after the GitHub-hosted Apple Silicon and Intel
-jobs pass. Each job runs the core suite, application-state checks, universal
-packaging and publication-history audit. The opt-in Trash rehearsal remains a
-local check. Current runs appear under
+The public release source passed the GitHub-hosted Apple Silicon and Intel jobs.
+Each job ran the core suite, application-state checks, universal packaging and
+publication-history audit. The opt-in Trash rehearsal remains a local check.
+Current runs appear under
 [Actions](https://github.com/mks-devx/MK-Studio-Upkeep/actions/workflows/ci.yml).
 
 ## GitHub and privacy review
@@ -62,9 +62,10 @@ third-party plugin binaries. Private development history and beta installers
 remain excluded. Automated pattern checks cannot prove that every form of
 private data is absent.
 
-CI uses GitHub-owned Actions with read-only repository permissions. GitHub
-private vulnerability reporting is the security-reporting route; see
-[Security](../SECURITY.md).
+CI uses GitHub-owned Actions with read-only repository permissions. Checkout is
+pinned to the official v7.0.1 commit, uses its Node.js 24 runtime and does not
+persist credentials. GitHub private vulnerability reporting is the
+security-reporting route; see [Security](../SECURITY.md).
 
 ## Remaining boundaries
 
