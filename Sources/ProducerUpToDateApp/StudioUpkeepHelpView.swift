@@ -271,7 +271,7 @@ private struct ManualArticle: View {
         case .privacy:
             return [
                 topic("Local inventory", "No analytics or automatic inventory uploads. Scanning is local. You choose whether to export or share information."),
-                topic("Report a bug", "Use Help → Report a bug. Diagnostics are optional and the preview shows what will be shared. Opening the form sends the preview to GitHub; you submit the issue there. A GitHub account with repository access is required."),
+                topic("Report a bug", "Use Help → Report a bug. Diagnostics are optional and the preview shows what will be shared. Opening the form sends the preview to GitHub; you submit the issue there. A GitHub account is required."),
                 topic("Developer links", "Developer links open only when chosen. The destination receives a normal browser request. Plugin paths and the rest of your inventory are not added."),
                 topic("App update check", "The optional MK Studio Upkeep update check contacts GitHub only when requested. Like any website visit, the site sees your IP address; your inventory stays on this Mac."),
                 topic("No commercial influence", "Partnerships or offers never affect update status, ordering or confidence.")

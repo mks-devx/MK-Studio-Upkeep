@@ -126,7 +126,7 @@ import SwiftUI
         add("Open MK Studio Upkeep", #selector(openWindow), to: menu)
         add(model.isScanning ? "Cancel Scan" : "Scan This Mac", #selector(scan), to: menu)
         add("Check for Updates…", #selector(checkForAppUpdates), to: menu)
-            .toolTip = "Open GitHub Releases for MK Studio Upkeep. Private releases require signing in with repository access."
+            .toolTip = "Open the public MK Studio Upkeep release page."
         add("Settings…", #selector(settings), to: menu)
         menu.addItem(.separator())
         let dock = add("Show Dock icon", #selector(toggleDock), to: menu)

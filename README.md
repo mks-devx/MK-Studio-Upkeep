@@ -15,7 +15,7 @@ installed versions, and find official websites where you can check for updates.
 Open supported software managers and review your audio devices and drivers from
 the same app.
 
-**Free to use, now and in future versions**, including in professional studios.
+**Free and open-source under MPL-2.0**, including for professional studio use.
 
 **Scanning stays on your Mac.** No account, telemetry or inventory upload is required.
 
