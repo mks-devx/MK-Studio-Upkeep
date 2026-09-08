@@ -7,7 +7,7 @@ check current plugin or DAW releases.
 
 ## Source and local checks
 
-- Release source commit: `e84cb608fb2d6b86aa5e1698f5efcbea22d36f52`.
+- Release source commit: `e346fe11d3e8ee8f1fce782e244a62aabc6e7a85`.
 - `STUDIO_UPKEEP_TRASH_REHEARSAL=1 APP_STATE_SCRATCH=../final-release-app-state ./scripts/check.sh`: **327 Swift tests and 14 Python tests, no failures**. One network opt-in test was skipped. The disposable Trash/restore rehearsal passed without using installed software.
 - Publication-pattern, licence-consistency, packaged-file and application-state audits reported zero findings.
 - The release build completed as a universal arm64/x86_64 app targeting macOS 13 and later.
@@ -38,7 +38,7 @@ notices.
 Release disk image SHA-256:
 
 ```text
-50a6426d955d99dc69ac0f4efe28c4335e0c456eb2bf6bfdfed126b3edb410ab
+daca132fbf448f841f3fbaaec992b2b0afba5906792c14b3985780bcfa70dba7
 ```
 
 Only the disk image and `SHA256SUMS.txt` are public release assets.
