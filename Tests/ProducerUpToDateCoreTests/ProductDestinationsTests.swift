@@ -17,15 +17,9 @@ final class ProductDestinationsTests: XCTestCase {
         XCTAssertNil(ProductDestinations.plugin(product("FabFilter Pro-Q 4", id: "com.other.fixture")))
         XCTAssertNil(ProductDestinations.plugin(product("Fixture", id: "com.fabfilter-spoof.fixture")))
     }
-    func testEditionRelationshipRequiresIdentityAndExpires() {
-        let now = EvidenceFreshness.date("2026-09-09")!
-        let p = product("ShaperBox 2", id: "de.cableguys.fixture")
-        XCTAssertEqual(ReviewedEditionUpgrade.matching(p, now: now)?.name, "ShaperBox 3")
-        XCTAssertNil(ReviewedEditionUpgrade.matching(product("ShaperBox 2", id: "com.other.fixture"), now: now))
-        XCTAssertNil(ReviewedEditionUpgrade.matching(product("ShaperBox 2", id: "de.cableguys.fixture", version: "3.01"), now: now))
-        XCTAssertNil(ReviewedEditionUpgrade.matching(p, now: now.addingTimeInterval(181 * 86400)))
-        XCTAssertEqual(ProductDestinations.plugin(p)?.url.host, "www.cableguys.com")
-        let newer = product("ShaperBox 3", id: "de.cableguys.fixture", version: "3.01")
-        XCTAssertNil(ReviewedEditionUpgrade.matching(p, installedProducts: [p, newer], now: now))
+    func testOfficialWebsiteRemainsAvailableForAnOlderInstalledEdition() {
+        let older = product("ShaperBox 2", id: "de.cableguys.fixture")
+        XCTAssertEqual(ProductDestinations.plugin(older)?.url.host, "www.cableguys.com")
+        XCTAssertNil(ProductDestinations.plugin(product("ShaperBox 2", id: "com.other.fixture")))
     }
 }

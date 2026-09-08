@@ -330,9 +330,6 @@ struct ReviewEmptyMessage: Equatable {
         case .relatedEditions:
             return .init(title: "No related editions identified",
                          detail: "Suggestions use installed names and major versions. Unidentified relationships remain unknown.")
-        case .newerEdition:
-            return .init(title: "No newer editions identified",
-                         detail: "No reviewed newer-edition link matched this inventory. Latest releases are not checked.")
         }
     }
 }

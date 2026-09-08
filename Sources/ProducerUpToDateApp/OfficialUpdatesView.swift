@@ -73,12 +73,6 @@ struct OfficialUpdatesView: View {
                 if let entry = target.entry {
                     Link("Official source", destination: entry.source)
                     Text(entry.source.absoluteString).font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
-                    if let successorID = entry.successor,
-                       let successor = session.directory?.entries.first(where: { $0.id == successorID }) {
-                        Text("Newer edition: \(successor.name). This is separate from updates to your edition and may cost extra.")
-                            .font(.caption).foregroundStyle(.secondary)
-                        Link("About the newer edition", destination: successor.provenance)
-                    }
                 }
                 // Local path disambiguates multiple copies; never enters a request.
                 DisclosureGroup("Installed location") {

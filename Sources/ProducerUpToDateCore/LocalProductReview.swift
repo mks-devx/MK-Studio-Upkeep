@@ -7,7 +7,6 @@ public enum LocalReviewFilter: String, CaseIterable, Identifiable, Sendable {
     case differentVersions = "Different installed versions"
     case repeatedCopies = "Multiple copies of one format"
     case relatedEditions = "Related editions installed"
-    case newerEdition = "Newer edition known"
     public var id: String { rawValue }
 }
 public enum LocalProductReview {

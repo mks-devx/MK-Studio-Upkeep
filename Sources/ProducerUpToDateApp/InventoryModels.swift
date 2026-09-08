@@ -110,7 +110,6 @@ extension LocalReviewFilter {
         case .differentVersions: "Different versions"
         case .repeatedCopies: "Multiple copies"
         case .relatedEditions: "Related editions"
-        case .newerEdition: "Newer editions"
         }
     }
     var navigationSymbol: String {
@@ -120,7 +119,6 @@ extension LocalReviewFilter {
         case .differentVersions: "arrow.triangle.branch"
         case .repeatedCopies: "doc.on.doc"
         case .relatedEditions: "square.stack"
-        case .newerEdition: "arrow.up.square"
         }
     }
 }

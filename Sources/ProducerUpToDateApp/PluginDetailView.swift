@@ -152,13 +152,6 @@ struct ProductDetailView: View {
         if LocalProductReview.hasRepeatedFormat(product) {
             finding("Multiple copies of one format", detail: "The same plugin format appears in more than one location. Review the files before removing anything.")
         }
-        if let edition = ReviewedEditionUpgrade.matching(product, installedProducts: model.normalizedProducts) {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Newer edition: " + edition.name).font(.headline)
-                Link("View newer edition", destination: edition.url)
-                Text("Separate from updates to your edition. It may cost extra.").font(.caption).foregroundStyle(.secondary)
-            }
-        }
         if let related = model.relatedEditions[product.id], !related.isEmpty {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Related editions installed").font(.headline)

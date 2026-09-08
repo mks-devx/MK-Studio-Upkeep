@@ -82,7 +82,6 @@ extension AppModel {
             case .differentVersions: return PluginGuidance.versionsDiffer(product)
             case .repeatedCopies: return LocalProductReview.hasRepeatedFormat(product)
             case .relatedEditions: return relatedEditions[product.id] != nil
-            case .newerEdition: return ReviewedEditionUpgrade.matching(product, installedProducts: normalizedProducts) != nil
             }
     }
 

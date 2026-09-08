@@ -9,7 +9,8 @@ Use short, concrete sentences that explain the finding and the available action.
 - **Cannot run on this Mac** requires a detected architecture mismatch, not age or missing metadata.
 - **Different installed versions** compares copies on this Mac.
 - **Related editions** is a labelled suggestion; preserve each edition and its files.
-- **Newer edition known** needs a dated official reference. Do not promise price or licence eligibility.
+- Do not suggest newer editions or claim knowledge of the latest vendor releases.
+  Related-edition findings describe copies already installed on this Mac.
 - **Unknown** must remain distinct from unavailable, disconnected, invalid and unsupported.
 
 Avoid claims such as up to date, obsolete, broken or compatible without evidence that directly supports them. Keep MK Studio Upkeep's own update action separate from audio software.

@@ -198,7 +198,7 @@ private struct ManualArticle: View {
         case .overview:
             return [
                 topic("What is scanned", "Audio Unit, VST3, VST2 and CLAP plugins in the system and user Library folders, any folders you add, and recognised DAW applications."),
-                topic("What you learn", "Installed versions, formats, processor architecture and local compatibility findings. Reviewed directory links lead to developer websites. Some products have a known newer-edition link; latest releases and native installers are not checked."),
+                topic("What you learn", "Installed versions, formats, processor architecture and local compatibility findings. Reviewed directory links lead to developer websites. Latest releases, newer editions and native installers are not checked."),
                 topic("Hardware and drivers", "Hardware lists audio interfaces, outputs and MIDI devices. Drivers lists installed audio and MIDI driver software. Each driver entry says what it is, who makes it and where its updates come from. Each device names the vendor app or page that delivers firmware. MK Studio Upkeep never reads firmware versions itself."),
                 topic("What is never assumed", "Missing information is never treated as proof that a product is current or compatible. Unknown websites remain unidentified.")
             ]

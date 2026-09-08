@@ -21,6 +21,9 @@ the same app.
 
 ## What it does
 
+This source includes [unreleased changes](CHANGELOG.md#unreleased). The public
+0.2.0 installer still includes the earlier newer-edition suggestions.
+
 - **Inventory plugins:** scan Audio Unit, VST3, VST2 and CLAP plugins in standard
   and additional folders. Group matching formats and inspect each installed file and version.
 - **Review local findings:** find Intel-only copies, files whose architecture cannot
@@ -85,9 +88,8 @@ websites. Matching happens locally; scanning does not run internet searches.
 Unknown destinations say **Official website not identified**. A website or manager
 button provides somewhere to check, not confirmation that an update exists.
 
-A small set of reviewed edition relationships can identify a known newer edition.
-These entries expire, and an edition may require a separate licence. They are
-kept separate from installed-version comparisons.
+Newer-edition recommendations are not provided. Related-edition findings describe
+software already installed on this Mac; they do not recommend an upgrade.
 
 MK Studio Upkeep's own release action is separate. Version 0.2.0 opens GitHub
 Releases in your browser; it does not download or install updates. No GitHub

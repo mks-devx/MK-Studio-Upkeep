@@ -4,6 +4,10 @@ MK Studio Upkeep inventories installed audio software and helps you review local
 findings. It points you to developer websites and software managers; it does not
 check or install current plugin or DAW releases.
 
+This manual includes changes for the next release. The public 0.2.0 installer
+still has the **Newer editions** category and its limited upgrade suggestions;
+they are removed from the current source.
+
 ## Start a scan
 
 Choose **Scan This Mac** on the welcome screen, or **Rescan** above the inventory.
@@ -53,7 +57,6 @@ Review findings live in the navigation, not in a separate filter dropdown.
 | Different versions | Installed copies report different version values. This is not an online update result. |
 | Multiple copies | The same format appears in more than one distinct installed location. Different formats are not duplicates. |
 | Related editions | Product names, developer identity and installed major versions suggest related editions. These remain separate products. |
-| Newer editions | A narrowly reviewed record identifies a newer edition. Records expire; no live release or price lookup occurs. |
 
 **Old does not mean broken.** File age alone does not establish compatibility,
 discontinued support or whether a plugin works in a session. No general list of

@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Removed newer-edition recommendations and their Review category. Comparisons
+  between installed copies, related installed editions, official developer links
+  and MK Studio Upkeep's own release action are unchanged.
+
 ## 0.2.0 — 8 September 2026
 
 The first stable release focuses on local audio-software inventory and clear official update destinations.

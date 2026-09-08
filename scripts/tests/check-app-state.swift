@@ -32,6 +32,9 @@ import Darwin
         let sequence = FixtureScanSequence(result: result)
         let model = AppModel(preferences: preferences, storageDirectory: folder, scanner: { _, _ in try await sequence.scan() })
 
+        check(LocalReviewFilter.navigationCases.allSatisfy {
+            [.cannotRun, .differentVersions, .repeatedCopies, .relatedEditions].contains($0)
+        }, "Review navigation must offer only installed-file findings, never external edition suggestions")
         check(Set(LocalReviewFilter.navigationCases) == Set(LocalReviewFilter.allCases).subtracting([.all]), "Every finding must be available in both navigation layouts")
         check(ReviewEmptyMessage.make(for: .all, hasUserFilters: false) == nil, "The ordinary inventory must retain its own empty state")
         for destination in LocalReviewFilter.navigationCases {

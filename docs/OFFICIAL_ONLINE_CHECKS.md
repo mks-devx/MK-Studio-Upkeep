@@ -27,10 +27,9 @@ name is not proof that it owns an installation or belongs to a specific publishe
 - **Related editions installed:** names and matching installed major versions suggest
   a common family within one developer identity. These are labelled suggestions;
   the inventory never merges or deletes them. Existing projects may need both.
-- **Newer edition known:** two narrowly reviewed relationships, ShaperBox 2 to 3 and
-  Pro-Q 3 to 4. Offers are hidden when the newer edition is already installed.
-  Records expire after 180 days. This is not a current-release service,
-  a price claim or a licence-eligibility assessment.
+
+The app does not recommend newer editions. Official developer websites provide
+somewhere to check release information and licence options yourself.
 
 File age alone never means obsolete or broken. Discontinued/vendor-unsupported status
 needs product-specific official evidence; no speculative discontinued list is shipped.
@@ -48,9 +47,6 @@ was not established by that request. No access restriction was bypassed.
 Manager destinations retain their references in [Manager sources](MANAGER_SOURCES.md).
 DAW destinations retain the existing reviewed mapping. They are pointers, not ongoing
 availability monitoring. This is limited directory coverage, not universal discovery.
-
-Edition references: [ShaperBox 3](https://www.cableguys.com/shaperbox),
-[Pro-Q edition upgrades](https://www.fabfilter.com/help/pro-q/support/upgrading).
 
 The earlier official-release integration and declared-feed diagnostics remain in
 separate targets for future evaluation. The app no longer depends on them, includes
