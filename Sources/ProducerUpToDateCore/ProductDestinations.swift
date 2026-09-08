@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 import Foundation
 
 /// Version-free, reviewed developer destinations. A vendor route never establishes

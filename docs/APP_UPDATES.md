@@ -3,13 +3,9 @@
 The app's own release action is in **Settings → About** and its optional menu-bar icon's menu.
 It is separate from plugin/DAW information and never uploads inventory.
 
-In version 0.2.0, **Check GitHub Releases** opens the public release page in your
-browser. No GitHub account is needed to download the installer. This build still
-contains wording that refers to a private repository; that wording predates
-public publication and does not restrict access. No GitHub credentials are
-stored in MK Studio Upkeep.
-
-The unreleased source corrects the old private-access wording. It still opens the public release page without automatically comparing versions.
+In version 0.3.0, **Check GitHub Releases** opens the public release page in your
+browser without automatically comparing versions. No GitHub account is needed
+to download the installer, and no GitHub credentials are stored in MK Studio Upkeep.
 
 A public build may configure `StudioUpkeepReleaseRepository` for a manual GitHub
 API check. It accepts only releases with a nonempty, version-matched macOS disk

@@ -1,5 +1,5 @@
 #!/bin/zsh
-# SPDX-License-Identifier: BUSL-1.1
+# SPDX-License-Identifier: MPL-2.0
 set -euo pipefail
 cd "${0:A:h:h}"
 export CLANG_MODULE_CACHE_PATH="$PWD/.build/clang-module-cache"

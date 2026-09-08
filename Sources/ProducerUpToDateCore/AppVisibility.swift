@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 import Foundation
 
 /// There must always be a visible way to reopen the application.

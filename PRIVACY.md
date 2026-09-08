@@ -20,13 +20,15 @@ Choosing a website opens your browser. Choosing an installed software manager op
 
 ## MK Studio Upkeep updates
 
-The manual **Check for Updates** action in Settings → About concerns this app only. Private builds open GitHub Releases in the browser. A build configured for a public release repository can contact `api.github.com` to read release metadata. It sends no plugin inventory, file paths, credentials or machine profile and does not run automatically. GitHub receives normal connection information, including the connection's public IP address.
+The manual **Check for Updates** action in Settings → About concerns this app only. Version 0.2.0 opens the public GitHub Releases page in your browser. Builds with a configured release-metadata source can instead contact `api.github.com` to read release metadata. This action sends no plugin inventory, file paths, credentials or machine profile and does not run automatically. GitHub receives normal connection information, including the connection's public IP address.
 
 ## Reports and screenshots
 
 **Report a bug** prepares a preview locally. Optional diagnostics are off by default and include app/macOS/processor information and aggregate scan counts. Raw logs, paths and product lists are not attached. Your own description is included as written.
 
-Opening the GitHub report form places the preview in its URL, which may remain in browser history. You submit the issue yourself. Copying a report uses the system clipboard; clipboard managers and system clipboard sharing may retain it. Nothing is submitted automatically.
+Opening the GitHub report form sends the preview to GitHub in the browser URL, before you submit an issue. That URL may remain in browser history. Submitting the form publishes the issue, your GitHub username and any attachments in the public repository, where others may copy them. An issue is not created automatically. GitHub's handling of account and connection data is described in its [privacy statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement).
+
+Copying a report uses the system clipboard; clipboard managers and system clipboard sharing may retain it. Use the private vulnerability-reporting route in [SECURITY.md](https://github.com/mks-devx/MK-Studio-Upkeep/blob/main/SECURITY.md) for security reports, rather than a public issue.
 
 Inventory exports can contain installed product names, versions and paths. Device names may also contain personal text. Review all reports and screenshots before sharing. The app does not generate or upload a support archive. macOS may retain its own diagnostics under your system settings.
 

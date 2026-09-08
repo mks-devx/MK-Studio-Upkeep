@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 import Foundation
 
 /// Manual release discovery only. Never downloads or executes an installer.

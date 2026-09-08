@@ -1,7 +1,7 @@
 # Contributing
 
-MK Studio Upkeep is a free, source-available macOS scanner and maintenance utility
-under the [Business Source License 1.1](LICENSE).
+MK Studio Upkeep is a free, open-source macOS scanner and maintenance utility
+under the [Mozilla Public License 2.0](LICENSE).
 Contributions must preserve local processing, read-only scanning, explicit unknown states and preview-first cleanup.
 
 1. Describe the problem and expected behaviour, using synthetic or redacted evidence.
@@ -11,19 +11,19 @@ Contributions must preserve local processing, read-only scanning, explicit unkno
 5. Run `./scripts/check.sh` and inspect the actual app for interface changes. Include the macOS version, architecture and checks performed in the review.
 6. Keep generated builds, keys, personal paths, vendor binaries, presets and licences out of the repository.
 
-Before a contribution is merged, explicitly accept the
-[Contributor Agreement 1.0](CONTRIBUTOR_AGREEMENT.md) for that contribution.
-You retain copyright and grant rights that permit commercial and proprietary
-sublicensing, including integration into the maintainer's other software. A pull request alone is not consent.
-Maintainers must record acceptance and review rights before merging. Preserve
-copyright and licence notices, disclose copied/adapted material and material AI
-assistance, and obtain any required employer permission. Do not include material
-whose terms conflict with the required grants.
+Contributions to MPL-covered files are submitted under [MPL-2.0](LICENSE).
+You retain your copyright. No separate contributor agreement, copyright assignment
+or special proprietary-relicensing grant is required for new contributions.
+Confirm in your pull request that you have the right to contribute the material
+under MPL-2.0. Preserve existing notices, disclose third-party material and its
+terms, disclose material AI assistance, and obtain any necessary employer or
+other rights-holder permission. Do not submit confidential or incompatible material.
+Existing agreements, if any, are not revoked by this policy for new contributions.
 
 Developer-destination contributions must use official sources, conservative bundle-identity matching and synthetic fixtures. Record the review date and explain whether the destination is a product page, developer downloads page or software manager. Do not add a list of supposedly current plugin versions. Catalogue and release-engine targets remain experiments; changing them does not enable an app service.
 
 The scanner library must stay independent of SwiftUI, account systems and product
-pricing. Commercial incorporation requires the necessary rights or separate
-written permission. See [reuse boundaries](docs/ARCHITECTURE.md).
+pricing. Commercial incorporation is permitted subject to MPL-2.0 and any applicable
+third-party terms. See [reuse boundaries](docs/ARCHITECTURE.md).
 
 Publication and hosted service changes require maintainer approval. CI validates local work; it does not publish releases.

@@ -1,13 +1,18 @@
 # Changelog
 
-## Unreleased
+## 0.3.0 — 9 September 2026
+
+- License the source under MPL-2.0, replacing the delayed
+  licence conversion and paid commercial-code licensing offer. New contributions
+  use MPL-2.0 without a separate proprietary-relicensing agreement. Previously
+  distributed releases retain their supplied notices.
 
 - Keep the selected product, current view and filters after rescanning; prevent hidden rows from appearing in the inspector.
 - Simplify inventory headers and fit filters to the available space. Show formats beside product details and keep installed-copy versions visible while paths remain expandable.
 - Correct public download and bug-report wording, and let the Settings manual open independently of the main window.
 - Report driver search depth limits, validate offline utility inputs, quote CSV carriage returns and preserve product identity when formats change. Older scan snapshots establish a new baseline.
 
-- Removed newer-edition recommendations and their Review category. Comparisons
+- Remove newer-edition recommendations and their Review category. Comparisons
   between installed copies, related installed editions, official developer links
   and MK Studio Upkeep's own release action are unchanged.
 

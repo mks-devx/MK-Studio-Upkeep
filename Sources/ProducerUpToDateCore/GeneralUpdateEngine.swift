@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 import Foundation
 
 /// Registry entries are maintainer-reviewed configuration, never URLs taken directly

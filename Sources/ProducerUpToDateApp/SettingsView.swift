@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 import ProducerUpToDateCore
 import SwiftUI
 
@@ -504,13 +504,16 @@ struct SettingsView: View {
                 Text(TestedPlatform.requirements).font(.callout).fixedSize(horizontal: false, vertical: true)
                 if !TestedPlatform.isTestedConfiguration { Text(TestedPlatform.removalCaution).font(.caption).foregroundStyle(.secondary) }
                 rowDivider
-                readOnlyRow("Licence", value: "Business Source License 1.1")
-                Text("Free, source-available software for personal and professional studio use. Commercial reuse of the code requires separate permission. Each version converts to the Mozilla Public License 2.0 four years after publication.")
+                readOnlyRow("Licence", value: "Mozilla Public License 2.0")
+                Text("Free, open-source software for personal and professional use. Use, modification and redistribution, including commercial use, are permitted under MPL-2.0. See the licence and source information for distribution requirements.")
                     .font(.caption).foregroundStyle(.secondary)
                 Text("Product and company names identify software found on your Mac and belong to their owners. MK Studio Upkeep is not affiliated with or endorsed by any of them.")
                     .font(.caption).foregroundStyle(.secondary)
                 if let licenceURL = Bundle.main.url(forResource: "LICENSE", withExtension: nil) {
                     Button("Read licence") { NSWorkspace.shared.open(licenceURL) }.help("Open the licence document.")
+                }
+                if let sourceURL = Bundle.main.url(forResource: "LICENSING", withExtension: "md") {
+                    Button("Licence and source information") { NSWorkspace.shared.open(sourceURL) }
                 }
             }
 

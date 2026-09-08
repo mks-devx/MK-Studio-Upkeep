@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 import Foundation
 
 /// Inspection only. No file contents, cleanup plans or deletion APIs are involved.

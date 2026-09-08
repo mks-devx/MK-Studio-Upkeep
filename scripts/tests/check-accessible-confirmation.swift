@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 // Native modal confirmation smoke test; callbacks never touch files.
 import AppKit
 import SwiftUI

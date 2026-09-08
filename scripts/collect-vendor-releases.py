@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: BUSL-1.1
+# SPDX-License-Identifier: MPL-2.0
 """Collect known official releases into an unsigned, reviewable candidate. Never publish/sign."""
 import argparse
 import copy

@@ -24,4 +24,7 @@ The standalone catalogue packaging command requires an explicit signed input and
 
 The scanner can be used independently from presentation and network experiments. There are no third-party Swift package dependencies. Apple frameworks retain their own terms.
 
-Module separation does not grant permission to relicense code. See the [source-available licence](../LICENSE), [contributing guide](../CONTRIBUTING.md) and [contributor agreement](../CONTRIBUTOR_AGREEMENT.md) before incorporating or contributing code.
+MPL-2.0 permits commercial use and combination with separately licensed code.
+Distributed MPL-covered files, including modifications, remain subject to MPL-2.0.
+See the [licence](../LICENSE), [licensing guide](../LICENSING.md) and
+[contributing guide](../CONTRIBUTING.md).

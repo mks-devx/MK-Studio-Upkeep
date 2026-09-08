@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: BUSL-1.1
+# SPDX-License-Identifier: MPL-2.0
 """Check packaged files for embedded developer paths without printing values."""
 import pathlib
 import re

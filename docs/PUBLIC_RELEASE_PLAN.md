@@ -1,7 +1,7 @@
 # Release process
 
-Version 0.2.0 is the first public stable release. The public repository starts
-from a reviewed source snapshot; development history and beta releases are
+Version 0.3.0 is the first open-source release. The public repository began from
+a reviewed source snapshot; private development history and beta releases remain
 excluded. A stable release label does not establish compatibility with every
 studio setup.
 
@@ -20,8 +20,9 @@ See [release verification](RELEASE_VERIFICATION.md) for the completed evidence a
 ## Publication checks
 
 Verify private vulnerability reporting, support access, source and asset scope,
-and public documentation before each release. Source availability under BUSL-1.1
-is not OSI open-source licensing or legal clearance.
+and public documentation before each release. The current source uses MPL-2.0;
+open-source licensing does not establish legal clearance or replace applicable
+publisher and privacy notices.
 
 ## Distribution boundary
 

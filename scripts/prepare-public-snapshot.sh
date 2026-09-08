@@ -1,5 +1,5 @@
 #!/bin/zsh
-# SPDX-License-Identifier: BUSL-1.1
+# SPDX-License-Identifier: MPL-2.0
 # Build the public source snapshot: the committed tree as one fresh commit, without the
 # private development history, ignored folders, untracked files, or anything marked
 # export-ignore in .gitattributes. Runs the publication audits on the result and removes
@@ -34,7 +34,8 @@ cd "$DEST"
 export GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_NOSYSTEM=1
 git init -q
 git add -A
-git -c user.name="$NAME" -c user.email="$EMAIL" commit -q -m "MK Studio Upkeep 0.2.0 — first public source release"
+VERSION="$(plutil -extract CFBundleShortVersionString raw -o - Resources/Info.plist)"
+git -c user.name="$NAME" -c user.email="$EMAIL" commit -q -m "Release MK Studio Upkeep ${VERSION}"
 [[ "$(git log --format='%ae%n%ce' | sort -u)" == "$EMAIL" ]] || fail "An identity other than PUBLIC_GIT_EMAIL reached the snapshot."
 python3 scripts/audit-public.py --history
 python3 scripts/audit-licensing.py

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 import Foundation
 
 /// A linear pre-check before untrusted bytes reach `JSONDecoder`: pathologically nested arrays

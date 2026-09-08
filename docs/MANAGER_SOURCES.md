@@ -52,7 +52,7 @@ Historical source versions keep the notices applicable to their original content
 
 ## Verification and delivery boundary
 
-The directory is included in v0.2.0. See [release verification](RELEASE_VERIFICATION.md)
+The directory is included in the app. See [release verification](RELEASE_VERIFICATION.md)
 for the released app's tests, packaging, signing and runtime checks.
 
 The lookup uses documented names, the local application registry and standard

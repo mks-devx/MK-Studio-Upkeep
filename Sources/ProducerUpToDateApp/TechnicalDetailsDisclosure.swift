@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 import SwiftUI
 
 /// Each disclosure remains manually adjustable; changing the preference updates open views.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: BUSL-1.1
+# SPDX-License-Identifier: MPL-2.0
 """Conservative local publication audit. Reports categories/locations, never values.
 
 Scans the files that would ship in the public snapshot: tracked and

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 import ProducerUpToDateCore
 import SwiftUI
 
@@ -92,6 +92,7 @@ struct SidebarView: View {
 
             }
             .listStyle(.sidebar)
+            .scrollContentBackground(.hidden)
             .sheet(isPresented: $showsScanDetails) { ScanScopeView(report: report).environmentObject(model) }
             .padding(.top, StudioUpkeepDesign.Space.small)
 

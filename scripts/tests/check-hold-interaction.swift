@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 // Native sheet interaction regression. Actions only increment a counter; no files are removed.
 import AppKit
 import SwiftUI

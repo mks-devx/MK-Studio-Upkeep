@@ -1,6 +1,6 @@
 # Interface screenshots
 
-Captured from the v0.2.0 build 8 interface on 8 September 2026 using an isolated
+Captured from the v0.3.0 build 9 interface source on 9 September 2026 using an isolated
 presentation host. Its application-view source matches the release snapshot.
 Only the entry point and scan input are replaced for presentation. The host
 does not scan installed software or fetch online release information.
@@ -11,8 +11,8 @@ does not scan installed software or fetch online release information.
 - `audio-preparation.png`: the bundled Tips view.
 - `app-icon.png`: the existing application icon.
 
-These are native window captures, not generated mockups. Text, EXIF and capture
-metadata were removed without changing the compressed pixel data. No real inventory,
+These are native window captures, not generated mockups. Capture metadata and the
+display-specific colour profile were removed; the files use standard sRGB. No real inventory,
 process list, device names, licence data or personal file locations are shown.
 The macOS capture indicator is system UI, not an application feature.
 Example Audio and the displayed plugins are fictional. Versions, architectures,

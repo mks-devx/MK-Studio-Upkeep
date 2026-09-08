@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 // Headless app-state regressions. Only synthetic records and temporary preferences are used.
 import Foundation
 import Darwin

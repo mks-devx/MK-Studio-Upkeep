@@ -2,7 +2,7 @@
   <img src="docs/images/app-icon.png" width="96" alt="MK Studio Upkeep icon">
   <h1>MK Studio Upkeep</h1>
   <p><strong>Your studio software, in one place.</strong></p>
-  <p>A free macOS app for music producers and studio engineers.</p>
+  <p>A free, open-source macOS app for music producers and studio engineers.</p>
   <p>
     <a href="https://github.com/mks-devx/MK-Studio-Upkeep/releases">Download</a> ·
     <a href="docs/USER_MANUAL.md">User manual</a> ·
@@ -21,8 +21,8 @@ the same app.
 
 ## What it does
 
-This source includes [unreleased changes](CHANGELOG.md#unreleased). The public
-0.2.0 installer still includes the earlier newer-edition suggestions.
+Version 0.3.0 focuses Review on locally detected facts and removes the earlier
+newer-edition suggestions. See the [changelog](CHANGELOG.md#030--9-september-2026).
 
 - **Inventory plugins:** scan Audio Unit, VST3, VST2 and CLAP plugins in standard
   and additional folders. Group matching formats and inspect each installed file and version.
@@ -42,7 +42,7 @@ release, and an older edition may still be needed by existing sessions.
 
 ## Screenshots
 
-The v0.2.0 interface with fictional example plugins. Names, versions, counts and
+The v0.3.0 interface with fictional example plugins. Names, versions, counts and
 file locations are demonstration data; they do not represent a real studio or
 confirmed updates.
 
@@ -91,7 +91,7 @@ button provides somewhere to check, not confirmation that an update exists.
 Newer-edition recommendations are not provided. Related-edition findings describe
 software already installed on this Mac; they do not recommend an upgrade.
 
-MK Studio Upkeep's own release action is separate. Version 0.2.0 opens GitHub
+MK Studio Upkeep's own release action is separate. Version 0.3.0 opens GitHub
 Releases in your browser; it does not download or install updates. No GitHub
 credentials are stored in the app. See [Update destinations](docs/OFFICIAL_ONLINE_CHECKS.md).
 
@@ -128,10 +128,11 @@ licence keys or third-party plugin binaries. For security vulnerabilities, follo
 
 ## Licence and development
 
-Free for personal and professional studio use under the included
-[Business Source License 1.1](LICENSE) and additional use grant. The source converts
-to MPL-2.0 four years after each version's publication. This is source-available
-software; [commercial code reuse](COMMERCIAL_LICENSE.md) has separate conditions.
+This source is licensed under the [Mozilla Public License 2.0](LICENSE),
+including personal and commercial use, modification and redistribution.
+Distributed changes to MPL-covered files must remain available under MPL-2.0.
+See [licensing and source availability](LICENSING.md). Earlier installers retain
+the licence supplied with them.
 
 Build with Xcode 26 or newer:
 

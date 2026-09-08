@@ -1,5 +1,5 @@
 #!/usr/bin/env swift
-// SPDX-License-Identifier: BUSL-1.1
+// SPDX-License-Identifier: MPL-2.0
 import CryptoKit
 import Foundation
 

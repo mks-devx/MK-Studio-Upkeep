@@ -1,5 +1,5 @@
 #!/bin/zsh
-# SPDX-License-Identifier: BUSL-1.1
+# SPDX-License-Identifier: MPL-2.0
 # Package an already verified app. Credentials are supplied externally, never stored here.
 set -euo pipefail
 cd "${0:A:h:h}"

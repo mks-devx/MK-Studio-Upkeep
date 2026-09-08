@@ -1,5 +1,5 @@
 #!/bin/zsh
-# SPDX-License-Identifier: BUSL-1.1
+# SPDX-License-Identifier: MPL-2.0
 # Launch smoke test: the packaged app must start, stay alive and register a window.
 # Opt-in (STUDIO_UPKEEP_SMOKE=1): launches the normal app with existing preferences.
 # Saved settings can trigger a local scan; normal app startup can update its own

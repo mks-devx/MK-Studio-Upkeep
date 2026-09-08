@@ -4,9 +4,9 @@ MK Studio Upkeep inventories installed audio software and helps you review local
 findings. It points you to developer websites and software managers; it does not
 check or install current plugin or DAW releases.
 
-This manual includes changes for the next release. The public 0.2.0 installer
-still has the **Newer editions** category and its limited upgrade suggestions;
-they are removed from the current source.
+Version 0.3.0 removes the earlier **Newer editions** category. Review now reports
+local findings only; official websites remain destinations where you can check
+release information yourself.
 
 ## Start a scan
 
@@ -185,6 +185,6 @@ See [Removal boundaries](UNINSTALL_REVIEW.md) for the detailed safeguards.
 [Installation](INSTALLATION.md) · [Platform support](PLATFORM_SUPPORT.md) ·
 [Privacy](../PRIVACY.md) · [Support](../SUPPORT.md) · [Security](../SECURITY.md)
 
-## Unreleased interface improvements
+## Version 0.3.0 interface improvements
 
-Rescans retain the current view, filters and selected visible product. The first-scan destination is configurable in Settings. Installed files show each copy’s version and processor type; expand **Location and size** for paths. **Options** contains export, scan details and category visibility. Settings can open the manual even when the inventory window is closed. These changes are not part of the original 0.2.0 installer.
+Rescans retain the current view, filters and selected visible product. The first-scan destination is configurable in Settings. Installed files show each copy’s version and processor type; expand **Location and size** for paths. **Options** contains export, scan details and category visibility. Settings can open the manual even when the inventory window is closed.
