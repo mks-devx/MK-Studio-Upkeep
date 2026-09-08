@@ -1,0 +1,30 @@
+.build/
+build/
+.DS_Store
+*.xcuserstate
+.local-private/
+*.pem
+*.p12
+*.p8
+.env
+.env.*
+
+__pycache__/
+*.py[cod]
+
+# Signing and provisioning material
+*.key
+*.cer
+*.mobileprovision
+*.keychain*
+
+# Xcode and SwiftPM per-user state (xcuserdata folders carry the macOS account name)
+DerivedData/
+xcuserdata/
+.swiftpm/
+
+# Local assistant/tooling state
+.clau[d]e/
+
+.co[d]ex/
+.agents/

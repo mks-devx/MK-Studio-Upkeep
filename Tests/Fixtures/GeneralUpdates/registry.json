@@ -1,0 +1,42 @@
+{
+  "products": [
+    {
+      "id": "synth",
+      "bundleIDs": [
+        "example.synth"
+      ],
+      "edition": "standard",
+      "format": "VST3",
+      "major": 1,
+      "sourceID": "demo"
+    },
+    {
+      "id": "delay",
+      "bundleIDs": [
+        "example.delay"
+      ],
+      "edition": "standard",
+      "format": "VST3",
+      "major": 1,
+      "sourceID": "demo"
+    },
+    {
+      "id": "eq",
+      "bundleIDs": [
+        "example.eq"
+      ],
+      "edition": "standard",
+      "format": "VST3",
+      "major": 1,
+      "sourceID": "demo"
+    }
+  ],
+  "sources": [
+    {
+      "id": "demo",
+      "endpoint": "https://vendor.example/releases",
+      "reader": "json",
+      "accessBasis": "Synthetic offline fixture only; not a real vendor permission"
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+{
+  "https://vendor.example/releases": "[{\"productID\": \"synth\", \"edition\": \"standard\", \"format\": \"VST3\", \"platform\": \"macOS\", \"version\": \"1.2\"}, {\"productID\": \"delay\", \"edition\": \"standard\", \"format\": \"VST3\", \"platform\": \"macOS\", \"version\": \"1.2\"}, {\"productID\": \"eq\", \"edition\": \"standard\", \"format\": \"VST3\", \"platform\": \"macOS\", \"version\": \"1.2\"}]"
+}

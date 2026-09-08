@@ -1,0 +1,62 @@
+# Kept in the private repository, left out of the public source snapshot (git archive).
+docs/GITHUB_BETA_DRAFT.md export-ignore
+docs/RELEASE_CHECKLIST.md export-ignore
+docs/UPDATE_SOURCE_DECISION_20260905.md export-ignore
+docs/MILESTONE_01_LOCAL_SCANNER.md export-ignore
+docs/MILESTONE_02_PRODUCT_NORMALIZATION.md export-ignore
+docs/MILESTONE_03_DAWS_AND_CLEANUP.md export-ignore
+docs/MILESTONE_04_STUDIO_UPKEEP_POLISH.md export-ignore
+docs/MILESTONE_05_PLUGIN_UPDATES.md export-ignore
+docs/MILESTONE_06_APPLE_SILICON_CHECK.md export-ignore
+docs/MILESTONE_07_BRAND_SETTINGS_UI.md export-ignore
+docs/branding-concepts-2026-09-05 export-ignore
+docs/branding-concepts-2026-09-05/** export-ignore
+docs/licensing/LEGAL_REVIEW_BRIEF.md export-ignore
+docs/licensing/TERMS_DRAFT.md export-ignore
+.impeccable.md export-ignore
+marketing export-ignore
+marketing/** export-ignore
+docs/INTERFACE_SIMPLIFICATION.md export-ignore
+
+# Local contributor instructions are not distribution material.
+AGENTS.md export-ignore
+
+# Historical design and prototype notes stay local; current guidance is in docs/README.md.
+docs/AUDIO_DASHBOARD_REVIEW_20260908.md export-ignore
+docs/AUDIT_REVIEW.md export-ignore
+docs/CATALOGUE.md export-ignore
+docs/CATALOGUE_DELIVERY.md export-ignore
+docs/COVERAGE_EXPANSION.md export-ignore
+docs/DAW_COVERAGE.md export-ignore
+docs/DETAIL_GUIDANCE.md export-ignore
+docs/DIRECT_VENDOR_CHECKS.md export-ignore
+docs/EDITIONS_AND_UPGRADES.md export-ignore
+docs/FEED_DISCOVERY_TRIAL_20260905.md export-ignore
+docs/FEED_PIPELINE.md export-ignore
+docs/FIRST_BETA_CANDIDATE.md export-ignore
+docs/FULL_AUDIT_20260908_BETA5.md export-ignore
+docs/FUNCTION_VERIFICATION.md export-ignore
+docs/GENERAL_UPDATE_ENGINE.md export-ignore
+docs/HOSTED_CATALOGUE.md export-ignore
+docs/INVENTORY_COVERAGE.md export-ignore
+docs/LEGAL_CHECKLIST_20260906.md export-ignore
+docs/LICENSING_DIRECTION.md export-ignore
+docs/MVP_DESIGN_BRIEF.md export-ignore
+docs/OFFICIAL_UPDATE_INTEGRATION.md export-ignore
+docs/PLUGIN_CATEGORIES.md export-ignore
+docs/PUBLICATION_MATERIAL_REVIEW.md export-ignore
+docs/RELEASE_AUDIT_20260908.md export-ignore
+docs/SCAN_REVIEW_20260908.md export-ignore
+docs/UI_AUDIT_20260908.md export-ignore
+docs/UI_REVIEW.md export-ignore
+docs/UPDATE_ENGINE_PROTOTYPE.md export-ignore
+docs/UPDATE_OPTIONS_REVIEW_20260908.md export-ignore
+docs/UPDATE_SOURCE_TIERS.md export-ignore
+docs/VENDOR_COLLECTION.md export-ignore
+docs/VENDOR_PERMISSION_REQUESTS.md export-ignore
+docs/VERSION_INTELLIGENCE.md export-ignore
+.github/workflows/catalogue-collection.yml export-ignore
+
+# Licensing preparation records are retained locally; published terms are at the root.
+docs/licensing/RELEASE_TRANSITION.md export-ignore
+docs/licensing/COMMERCIAL_AGREEMENT_BRIEF.md export-ignore

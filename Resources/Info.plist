@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>MK Studio Upkeep</string>
+	<key>CFBundleExecutable</key>
+	<string>ProducerUpToDate</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
+	<key>CFBundleIconName</key>
+	<string>AppIcon</string>
+	<key>CFBundleIdentifier</key>
+	<string>net.konstantinidis.studioupkeep</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>MK Studio Upkeep</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.2.0</string>
+	<key>StudioUpkeepReleaseVersion</key>
+	<string>0.2.0</string>
+	<key>CFBundleVersion</key>
+	<string>8</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.music</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>13.0</string>
+	<key>NSDesktopFolderUsageDescription</key>
+	<string>Only if you add a plug-in folder that lives on the Desktop. MK Studio Upkeep reads plug-in bundle metadata there and changes nothing.</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>Only if you add a plug-in folder that lives in Documents. MK Studio Upkeep reads plug-in bundle metadata there and changes nothing.</string>
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>Only if you add a plug-in folder that lives in Downloads. MK Studio Upkeep reads plug-in bundle metadata there and changes nothing.</string>
+	<key>NSRemovableVolumesUsageDescription</key>
+	<string>Only if you add a plug-in folder on an external drive. MK Studio Upkeep reads plug-in bundle metadata there and changes nothing.</string>
+	<key>NSNetworkVolumesUsageDescription</key>
+	<string>Only if you add a plug-in folder on a network volume. MK Studio Upkeep reads plug-in bundle metadata there and changes nothing.</string>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>When you confirm removal of eligible software from a protected application or plugin folder, MK Studio Upkeep asks Finder to move the selected bundle to Trash. macOS may request administrator permission. Nothing else is sent to Finder.</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2026 Mike Konstantinidis. Business Source License 1.1; converts to MPL-2.0 four years after publication.</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+</dict>
+</plist>

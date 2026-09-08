@@ -1,0 +1,12 @@
+[
+  {
+    "bundleID": "example.synth",
+    "format": "VST3",
+    "version": "1.0"
+  },
+  {
+    "bundleID": "example.delay",
+    "format": "VST3",
+    "version": "1.0"
+  }
+]

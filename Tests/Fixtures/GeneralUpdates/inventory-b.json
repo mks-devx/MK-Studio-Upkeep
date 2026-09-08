@@ -1,0 +1,12 @@
+[
+  {
+    "bundleID": "example.eq",
+    "format": "VST3",
+    "version": "1.0"
+  },
+  {
+    "bundleID": "example.unknown",
+    "format": "VST3",
+    "version": "1.0"
+  }
+]
