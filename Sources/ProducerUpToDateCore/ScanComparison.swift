@@ -12,11 +12,15 @@ public struct ScanSnapshot: Codable, Equatable, Sendable {
     }
     public static let maximumEntries = 20_000
     public static let maximumBytes = 4_194_304
+    private static let currentIdentitySchemaVersion = 2
+    /// Nil in snapshots saved before product identity stopped depending on format count.
+    public let identitySchemaVersion: Int?
     public let scopeID: String?
     public let finishedAt: Date
     public let entries: [Entry]
 
     public init(finishedAt: Date, products: [NormalizedPluginProduct], scopeID: String? = nil) {
+        self.identitySchemaVersion = Self.currentIdentitySchemaVersion
         self.scopeID = scopeID
         self.finishedAt = finishedAt
         entries = products.prefix(Self.maximumEntries).map { product in
@@ -40,7 +44,9 @@ public struct ScanSnapshot: Codable, Equatable, Sendable {
     }
 
     public func canCompare(to other: ScanSnapshot) -> Bool {
-        guard let scopeID, entries.count < Self.maximumEntries, other.entries.count < Self.maximumEntries else { return false }
+        guard identitySchemaVersion == Self.currentIdentitySchemaVersion,
+              other.identitySchemaVersion == Self.currentIdentitySchemaVersion,
+              let scopeID, entries.count < Self.maximumEntries, other.entries.count < Self.maximumEntries else { return false }
         return scopeID == other.scopeID
     }
 

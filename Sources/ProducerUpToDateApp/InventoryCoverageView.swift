@@ -18,7 +18,8 @@ struct InventoryCoverageView: View {
         HStack(spacing: 12) {
             Text(countSummary(coverage))
                 .font(.subheadline.weight(.medium)).monospacedDigit()
-                .frame(minWidth: 150, alignment: .leading)
+                .lineLimit(1)
+            Spacer(minLength: 12)
             Button(model.isScanning ? "Scanning…" : "Rescan") { model.startScan() }
                 .disabled(model.isScanning)
                 .help("Refresh installed software on this Mac. This does not check online.")
@@ -29,7 +30,7 @@ struct InventoryCoverageView: View {
                 Divider()
                 Toggle("Show plugin categories", isOn: $showCategories)
             } label: {
-                Label("More", systemImage: "ellipsis.circle")
+                Label("Options", systemImage: "ellipsis.circle")
             }
             .fixedSize()
             .help("Export, scan details and display options.")
@@ -50,7 +51,7 @@ struct InventoryCoverageView: View {
         }
         .controlSize(.small)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 12).padding(.top, 10).padding(.bottom, 8)
+        .padding(.horizontal, 16).padding(.vertical, 12)
     }
 
     private func countSummary(_ coverage: PluginUpdateCoverage) -> String {

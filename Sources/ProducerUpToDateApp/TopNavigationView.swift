@@ -12,7 +12,7 @@ struct TopNavigationView: View {
                 Text("MK Studio Upkeep").font(.headline)
                 Spacer()
                 Text("Developed by Mike Konstantinidis").font(.caption).foregroundStyle(.secondary)
-                Link("GitHub support", destination: URL(string: "https://github.com/mks-devx/MK-Studio-Upkeep")!).font(.caption)
+                Link("Project on GitHub", destination: URL(string: "https://github.com/mks-devx/MK-Studio-Upkeep")!).font(.caption)
                 navigationButton(.tips)
                 Button { model.showsHelp = true } label: { Label("User Manual", systemImage: "book.closed") }.help("Open the built-in guide to scanning, updates and removal.")
             }

@@ -54,6 +54,7 @@ struct SettingsView: View {
     @EnvironmentObject private var model: AppModel
     @State private var selection: SettingsSection = .general
     @State private var showsWelcomeSetup = false
+    @State private var showsManual = false
     @State private var restoredDefaults = false
     @StateObject private var appUpdates = AppUpdateModel()
     @AppStorage("includeAppBetaReleases") private var includeAppBetas = false
@@ -108,6 +109,7 @@ struct SettingsView: View {
         }
         .studioCanvasBackground()
         .tint(selectedAccent.color)
+        .sheet(isPresented: $showsManual) { StudioUpkeepHelpView().environmentObject(model) }
         .sheet(isPresented: $showsWelcomeSetup) {
             OnboardingView(title: "Welcome setup")
                 .environmentObject(model)
@@ -182,11 +184,6 @@ struct SettingsView: View {
 
     private var pageHeader: some View {
         VStack(alignment: .leading, spacing: StudioUpkeepDesign.Space.small) {
-            Text("SETTINGS")
-                .font(.system(size: 10, weight: .semibold))
-                .tracking(1.2)
-                .foregroundStyle(.tertiary)
-
             Text(selection.title)
                 .font(.system(size: 27, weight: .semibold))
                 .tracking(-0.35)
@@ -215,7 +212,7 @@ struct SettingsView: View {
 
     private var general: some View {
         VStack(alignment: .leading, spacing: StudioUpkeepDesign.Space.xLarge) {
-            Text("No tracking or automatic crash uploads. Report problems on GitHub after removing personal information.")
+            Text("No tracking or automatic crash uploads. Use Help → Report a bug to preview a report before opening it on GitHub.")
                 .font(.callout).foregroundStyle(.secondary)
 
             settingsGroup("App visibility") {
@@ -249,7 +246,7 @@ struct SettingsView: View {
                         .font(.caption).foregroundStyle(.secondary)
                 }
             }
-            settingsGroup("Behavior") {
+            settingsGroup("Behaviour") {
                 settingsRow(
                     "Scan on launch",
                     detail: "Start a read-only inventory when the app opens."
@@ -261,10 +258,10 @@ struct SettingsView: View {
                 rowDivider
 
                 settingsRow(
-                    "After each scan",
-                    detail: "Open the result that matters most, or a fixed view."
+                    "After the first scan",
+                    detail: "Choose the initial results view. Rescans keep your current view and filters."
                 ) {
-                    Picker("After each scan", selection: $postScanDestination) {
+                    Picker("After the first scan", selection: $postScanDestination) {
                         ForEach(PostScanDestination.allCases.filter { $0 != .updates }) { destination in
                             Text(destination.title)
                                 .tag(destination.rawValue)
@@ -461,7 +458,7 @@ struct SettingsView: View {
             }
 
             Button {
-                model.showsHelp = true
+                showsManual = true
             } label: {
                 HStack {
                     Label("Open the user manual", systemImage: "book.closed")
@@ -517,20 +514,20 @@ struct SettingsView: View {
                 }
             }
 
-            Text("No tracking or automatic crash uploads. Report problems on GitHub after removing personal information.")
+            Text("No tracking or automatic crash uploads. Use Help → Report a bug to preview a report before opening it on GitHub.")
                 .font(.callout).foregroundStyle(.secondary)
 
             applicationUpdates
 
             VStack(alignment: .leading, spacing: StudioUpkeepDesign.Space.large) {
                 VStack(alignment: .leading, spacing: StudioUpkeepDesign.Space.small) {
-                    Text("Project and support")
+                    Text("Project")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
 
                     Link(destination: URL(string: "https://github.com/mks-devx/MK-Studio-Upkeep")!) {
                         HStack(spacing: StudioUpkeepDesign.Space.small) {
-                            Text("GitHub support and releases")
+                            Text("Source and releases on GitHub")
                                 .font(.title3.weight(.semibold))
                             Image(systemName: "arrow.up.right")
                                 .font(.caption.weight(.medium))
@@ -544,7 +541,7 @@ struct SettingsView: View {
                 Divider()
 
                 Button {
-                    model.showsHelp = true
+                    showsManual = true
                 } label: {
                     HStack(spacing: StudioUpkeepDesign.Space.small) {
                         Label("User manual", systemImage: "book.closed")
@@ -569,7 +566,7 @@ struct SettingsView: View {
                 if appUpdates.source == nil {
                     Link("Check GitHub Releases", destination: AppReleaseCheck.projectSource.releasesURL)
                         .buttonStyle(.bordered)
-                        .help("Open the private release page in your browser. Sign in to GitHub to see available downloads.")
+                        .help("Open public downloads in your browser. No GitHub account is required.")
                 } else {
                     Button(appUpdates.busy ? "Checking…" : "Check for Updates") {
                         appUpdates.check(includeBetas: includeAppBetas)
@@ -607,10 +604,8 @@ struct SettingsView: View {
         @ViewBuilder content: () -> Content
     ) -> some View {
         VStack(alignment: .leading, spacing: StudioUpkeepDesign.Space.small) {
-            Text(title.uppercased())
-                .font(.system(size: 10, weight: .semibold))
-                .tracking(1)
-                .foregroundStyle(.tertiary)
+            Text(title)
+                .font(.headline)
 
             VStack(alignment: .leading, spacing: 10) {
                 content()
@@ -630,6 +625,7 @@ struct SettingsView: View {
                 Text(detail)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             Spacer(minLength: StudioUpkeepDesign.Space.regular)

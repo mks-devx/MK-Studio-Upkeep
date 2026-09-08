@@ -8,6 +8,8 @@ import SwiftUI
     @Published var audioDate: Date?
     @Published var audioBusy = false
     private var audioTask: Task<Void, Never>?
+    private let audioReader: @Sendable () async -> AudioOutputSnapshot?
+    private var audioGeneration = UUID()
     @Published var memory: MemorySnapshot?
     @Published var memoryDate: Date?
     @Published var available: Int64?
@@ -26,6 +28,13 @@ import SwiftUI
     @Published var activityFailure: String?
     private var activityTask: Task<Void, Never>?
     private var task: Task<Void, Never>?
+
+    init(audioReader: @escaping @Sendable () async -> AudioOutputSnapshot? = {
+        let worker = Task.detached(priority: .utility) { AudioOutputSnapshot.read() }
+        return await withTaskCancellationHandler { await worker.value } onCancel: { worker.cancel() }
+    }) {
+        self.audioReader = audioReader
+    }
 
     func refresh() {
         refreshAudio()
@@ -47,13 +56,16 @@ import SwiftUI
     }
     func refreshAudio() {
         guard !audioBusy else { return }
+        let generation = UUID()
+        audioGeneration = generation
         audioBusy = true
         audioOutput = nil
         audioTask = Task {
-            defer { audioBusy = false; audioTask = nil }
-            let worker = Task.detached(priority: .utility) { AudioOutputSnapshot.read() }
-            let result = await withTaskCancellationHandler { await worker.value } onCancel: { worker.cancel() }
-            guard !Task.isCancelled else { return }
+            defer {
+                if audioGeneration == generation { audioBusy = false; audioTask = nil }
+            }
+            let result = await audioReader()
+            guard !Task.isCancelled, audioGeneration == generation else { return }
             audioOutput = result
             audioDate = Date()
         }
@@ -90,7 +102,13 @@ import SwiftUI
             catch { activityFailure = "Process activity could not be read. Try Activity Monitor." }
         }
     }
-    func cancel() { task?.cancel(); activityTask?.cancel(); audioTask?.cancel() }
+    func cancel() {
+        task?.cancel(); activityTask?.cancel()
+        // A refresh can start immediately. The retired read may finish later, but
+        // neither its result nor its deferred cleanup owns the replacement's state.
+        audioGeneration = UUID()
+        audioTask?.cancel(); audioTask = nil; audioBusy = false
+    }
     func reset() { cancel(); plugins = nil; daws = nil }
 }
 

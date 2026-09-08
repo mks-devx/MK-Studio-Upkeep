@@ -9,19 +9,22 @@ struct ProductDetailView: View {
     var update: PluginUpdateResult? = nil
     @AppStorage("showPluginCategories") private var showCategories = true
     @State private var showsIntelHelp = false
+    @State private var showsInstalledFiles = true
     @State private var guidanceHost: GuidanceHost = .unspecified
     private let mac = MacArchitecture.current
 
     var body: some View {
         if let product {
             ScrollView {
-                VStack(alignment: .leading, spacing: 28) {
-                    header(product)
-
-                    productSummary(product)
-                    PluginUpdateOptionsView(product: product).id(product.id)
+                VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        header(product)
+                        productSummary(product)
+                        PluginUpdateOptionsView(product: product).id(product.id)
+                    }
+                    Divider()
                     localFindings(product)
-                    DisclosureGroup("Installed files · \(PluginBundleRecord.distinctInstalledCopies(product.bundles).count)") {
+                    DisclosureGroup("Installed files · \(PluginBundleRecord.distinctInstalledCopies(product.bundles).count)", isExpanded: $showsInstalledFiles) {
                         installedCopies(product).padding(.top, 10)
                     }
 
@@ -126,7 +129,7 @@ struct ProductDetailView: View {
                     .accessibilityHidden(true)
                 Text("Select a product")
                     .font(.title3.weight(.semibold))
-                Text("Choose a product to see its formats, installed versions and update options.")
+                Text("Choose a product to review its installed files and developer website.")
                     .foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -147,7 +150,7 @@ struct ProductDetailView: View {
             finding("Some files cannot run on this Mac", detail: "A file is 32-bit only or uses a different processor. Check the developer for a replacement.")
         }
         if PluginGuidance.versionsDiffer(product) {
-            finding("Different versions installed", detail: "Your installed copies report different versions. Expand Installed files to compare them.")
+            finding("Different versions installed", detail: "Your installed copies report different versions. Compare each copy under Installed files.")
         }
         if LocalProductReview.hasRepeatedFormat(product) {
             finding("Multiple copies of one format", detail: "The same plugin format appears in more than one location. Review the files before removing anything.")
@@ -173,7 +176,7 @@ struct ProductDetailView: View {
 
     private func finding(_ title: String, detail: String) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(title).font(.title3.weight(.semibold))
+            Text(title).font(.headline)
             Text(detail).font(.subheadline).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -199,13 +202,16 @@ struct ProductDetailView: View {
                                     .monospacedDigit().textSelection(.enabled)
                             }
                             Text(bundle.architectureSummary).font(.subheadline).foregroundStyle(.secondary)
-                            Text((bundle.path.path as NSString).abbreviatingWithTildeInPath)
-                                .font(.caption).textSelection(.enabled)
-                                .fixedSize(horizontal: false, vertical: true)
-                            HStack {
-                                BundleSizeLine(url: bundle.path).id(bundle.path)
-                                Spacer()
-                                Button("Show file") { NSWorkspace.shared.activateFileViewerSelecting([bundle.path]) }
+                            HStack(alignment: .top) {
+                                DisclosureGroup("Location and size") {
+                                    Text((bundle.path.path as NSString).abbreviatingWithTildeInPath)
+                                        .font(.caption).textSelection(.enabled)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                    BundleSizeLine(url: bundle.path).id(bundle.path)
+                                }.font(.caption)
+                                Spacer(minLength: 8)
+                                Button("Show in Finder") { NSWorkspace.shared.activateFileViewerSelecting([bundle.path]) }
+                                    .controlSize(.small)
                                     .accessibilityLabel("Show \(bundle.format.rawValue) file for \(InstalledPluginCopies.locationLabel(for: bundle.path)) in Finder")
                                     .help(bundle.path.path)
                             }

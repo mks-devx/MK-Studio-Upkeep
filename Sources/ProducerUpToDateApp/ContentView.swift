@@ -196,11 +196,11 @@ private struct InventoryShell: View {
                 } else if model.selectedSection == .allDAWs {
                     DAWDetailView(
                         daw: model.daw(withID: model.selectedDAWID)
-                    )
+                    ).id(model.selectedDAWID)
                 } else {
                     ProductDetailView(
                         product: model.product(withID: model.selectedProductID)
-                    )
+                    ).id(model.selectedProductID)
                 }
             }
             }

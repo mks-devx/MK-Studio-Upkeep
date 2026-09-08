@@ -18,7 +18,7 @@ struct SidebarView: View {
                 VStack(alignment: .leading, spacing: 1) {
                     Text("MK Studio Upkeep")
                         .font(.headline)
-                    Text("Studio software health")
+                    Text("Local software inventory")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -98,9 +98,11 @@ struct SidebarView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Last scan").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
                     VStack(alignment: .leading, spacing: 6) {
-                        Text(model.scanFailureMessage == nil ? "Scan finished" : "Previous results · rescan failed")
-                            .font(.caption.weight(.medium))
-                            .fixedSize(horizontal: false, vertical: true)
+                        if model.scanFailureMessage != nil {
+                            Text("Previous results · rescan failed")
+                                .font(.caption.weight(.medium))
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
                         Text(report.finishedAt.formatted(date: .abbreviated, time: .shortened))
                             .font(.caption).foregroundStyle(.secondary)
                         if report.inaccessibleLocationCount > 0 {
@@ -129,14 +131,14 @@ struct SidebarView: View {
                 .accessibilityElement(children: .combine)
                 Link(destination: URL(string: "https://github.com/mks-devx/MK-Studio-Upkeep")!) {
                     HStack(spacing: 6) {
-                        Text("GitHub support").font(.subheadline.weight(.semibold))
+                        Text("Project on GitHub").font(.subheadline.weight(.semibold))
                         Image(systemName: "arrow.up.right").font(.caption2)
                             .accessibilityHidden(true)
                     }
                 }
                 .tint(.primary)
-                .help("Open project support on GitHub")
-                .accessibilityLabel("GitHub support and releases")
+                .help("Open the project source and releases. Use Report a bug for bug reports.")
+                .accessibilityLabel("Project on GitHub")
                 if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
                     Text("MK Studio Upkeep · \(version)").font(.caption2).foregroundStyle(.secondary)
                 }

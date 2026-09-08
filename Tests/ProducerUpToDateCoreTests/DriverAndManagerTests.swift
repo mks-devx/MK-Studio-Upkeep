@@ -51,4 +51,27 @@ final class DriverAndManagerTests: XCTestCase {
         XCTAssertNil(report.records.first?.version)
         XCTAssertEqual(report.warnings.count, 0)
     }
+    func testDriverSearchReportsSkippedDeepFolders() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let nested = root.appendingPathComponent("one/two/three/four/five/six/seven/eight")
+        try FileManager.default.createDirectory(at: nested, withIntermediateDirectories: true)
+        let report = try HardwareScanner.scanDrivers(roots: [root])
+        XCTAssertTrue(report.records.isEmpty)
+        XCTAssertTrue(report.warnings.contains { $0.contains("incomplete") && $0.contains("depth") })
+    }
+
+    func testDriverSearchInspectsBundleAlreadyFoundAtDepthBoundary() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let bundle = root.appendingPathComponent("one/two/three/four/five/six/Fixture.kext")
+        try FileManager.default.createDirectory(at: bundle.appendingPathComponent("Contents"), withIntermediateDirectories: true)
+        let plist: [String: Any] = ["CFBundleName": "Fixture", "OSBundleLibraries": ["com.apple.iokit.IOAudioFamily": "1.0"]]
+        try PropertyListSerialization.data(fromPropertyList: plist, format: .xml, options: 0)
+            .write(to: bundle.appendingPathComponent("Contents/Info.plist"))
+        let report = try HardwareScanner.scanDrivers(roots: [root])
+        XCTAssertEqual(report.records.map(\.name), ["Fixture"])
+        XCTAssertTrue(report.warnings.isEmpty)
+    }
+
 }

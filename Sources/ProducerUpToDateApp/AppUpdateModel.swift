@@ -14,7 +14,7 @@ final class AppUpdateModel: ObservableObject {
 
     init() {
         if source == nil {
-            message = "Private repository: check Releases in your browser while signed in to GitHub. The app does not access your GitHub account."
+            message = "Open the public release page to check for a newer version. Downloads do not require a GitHub account."
         }
     }
 
@@ -24,7 +24,7 @@ final class AppUpdateModel: ObservableObject {
         checkedAt = nil
         guard let source else {
             releasePage = AppReleaseCheck.projectSource.releasesURL
-            message = "Check the project’s private GitHub Releases page while signed in; automatic access to private releases is not configured."
+            message = "Review available downloads on the public release page. Opening the page does not confirm that an update is available."
             return
         }
         busy = true

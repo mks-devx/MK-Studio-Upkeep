@@ -9,6 +9,8 @@ contains wording that refers to a private repository; that wording predates
 public publication and does not restrict access. No GitHub credentials are
 stored in MK Studio Upkeep.
 
+The unreleased source corrects the old private-access wording. It still opens the public release page without automatically comparing versions.
+
 A public build may configure `StudioUpkeepReleaseRepository` for a manual GitHub
 API check. It accepts only releases with a nonempty, version-matched macOS disk
 image and `SHA256SUMS.txt` hosted on that same release. Drafts are excluded; beta

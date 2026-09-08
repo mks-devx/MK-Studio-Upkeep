@@ -33,7 +33,7 @@ struct BugReportView: View {
             Text("Report preview").font(.headline)
             ScrollView { Text(preview).font(.caption).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading) }
                 .frame(minHeight: 100, maxHeight: 170).padding(8).border(.quaternary)
-            Text("Opening the form sends this preview to GitHub in your browser. Nothing is submitted automatically. You need a GitHub account with access to this repository.")
+            Text("Opening the form sends this preview to GitHub in your browser. Nothing is submitted automatically. You need a GitHub account to submit a report.")
                 .font(.caption).foregroundStyle(.secondary)
             Link("Report a security vulnerability privately", destination: URL(string: "https://github.com/mks-devx/MK-Studio-Upkeep/security/policy")!)
                 .font(.caption)

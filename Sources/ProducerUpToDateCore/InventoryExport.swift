@@ -61,7 +61,7 @@ public enum InventoryExport {
             // Spreadsheet applications interpret formula prefixes even inside CSV quotes.
             let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
             let value = trimmed.first.map { "=+-@".contains($0) } == true ? "'" + value : value
-            let needsQuotes = value.contains(",") || value.contains("\"") || value.contains("\n")
+            let needsQuotes = value.contains(",") || value.contains("\"") || value.contains("\n") || value.contains("\r")
             return needsQuotes ? "\"" + value.replacingOccurrences(of: "\"", with: "\"\"") + "\"" : value
         }
         let lines = rows.map { row in

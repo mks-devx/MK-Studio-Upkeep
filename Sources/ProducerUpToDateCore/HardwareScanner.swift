@@ -88,6 +88,7 @@ public enum HardwareScanner {
             try Task.checkCancellation()
             guard FileManager.default.fileExists(atPath: root.path) else { continue }
             var incomplete = false
+            var depthLimited = false
             guard let enumerator = FileManager.default.enumerator(at: root, includingPropertiesForKeys: [.isSymbolicLinkKey, .isDirectoryKey], options: [.skipsHiddenFiles], errorHandler: { _, _ in incomplete = true; return true }) else {
                 warnings.append("A driver location could not be read."); continue
             }
@@ -96,8 +97,16 @@ public enum HardwareScanner {
                 try Task.checkCancellation()
                 visited += 1
                 if visited > 100_000 { incomplete = true; break }
-                if enumerator.level > 6 { enumerator.skipDescendants(); continue }
-                guard ["driver", "plugin", "kext", "systemextension"].contains(candidate.pathExtension.lowercased()) else { continue }
+                let isDriverBundle = ["driver", "plugin", "kext", "systemextension"].contains(candidate.pathExtension.lowercased())
+                // Inspect a bundle already found at the boundary without entering it.
+                if enumerator.level > 6 && !isDriverBundle {
+                    if (try? candidate.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true {
+                        depthLimited = true
+                    }
+                    enumerator.skipDescendants()
+                    continue
+                }
+                guard isDriverBundle else { continue }
                 enumerator.skipDescendants()
                 let values = try? candidate.resourceValues(forKeys: [.isSymbolicLinkKey, .isDirectoryKey])
                 guard values?.isDirectory == true, values?.isSymbolicLink != true, seen.insert(candidate.standardizedFileURL.path).inserted else { continue }
@@ -115,6 +124,7 @@ public enum HardwareScanner {
                     kind: kind, provenance: BundleProvenance.read(at: candidate)))
             }
             if incomplete { warnings.append("Some driver folders could not be read; inventory is incomplete.") }
+            if depthLimited { warnings.append("Some driver folders exceeded the search depth and were not searched; inventory is incomplete.") }
         }
         return (records.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }, warnings)
     }

@@ -312,11 +312,10 @@ public struct ProductNormalizer: Sendable {
         }
 
         let stableSource: String
-        if let sharedValue = sharedIdentifierValue(records) {
-            // Some vendors reuse an identifier across distinct named products.
-            // Include the normalization group so separate rows cannot collide.
-            stableSource = "identifier:\(sharedValue):\(group.key)"
-        } else if let vendor {
+        // Identity follows the normalization group, not how many formats happen
+        // to share an identifier today. Adding or removing a copy must not turn
+        // the same product into a removed row plus an added row in scan history.
+        if let vendor {
             stableSource = "name:\(canonicalVendor(vendor)?.key ?? vendor):\(canonicalName(name))"
         } else {
             stableSource = "group:\(group.key)"

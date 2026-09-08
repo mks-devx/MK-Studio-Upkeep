@@ -11,7 +11,7 @@ no GitHub credentials and does not download or install its own updates.
 5. Use **Settings → Scanning** for extra plugin folders or different scan formats.
 
 The app targets macOS 13 or later and includes Apple Silicon and Intel code.
-See [Platform support](PLATFORM_SUPPORT.md) for the tested configurations.
+See [Platform support](https://github.com/mks-devx/MK-Studio-Upkeep/blob/main/docs/PLATFORM_SUPPORT.md) for the tested configurations.
 The release notes record signing and notarisation of the actual download.
 
 ## Verify the download
@@ -31,4 +31,4 @@ existing preferences and local scan history continue across upgrades.
 
 To remove MK Studio Upkeep, quit it and move this app to Trash. Your plugins,
 DAWs, drivers and managers are separate. Preferences and local scan history remain;
-see [Privacy](../PRIVACY.md) for local storage details.
+see [Privacy](https://github.com/mks-devx/MK-Studio-Upkeep/blob/main/PRIVACY.md) for local storage details.

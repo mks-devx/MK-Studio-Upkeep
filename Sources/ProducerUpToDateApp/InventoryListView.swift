@@ -48,49 +48,13 @@ struct InventoryListView: View {
                 InventoryCoverageView(report: report, visibleCount: products.count)
             }
             if model.selectedSection != .allDAWs && model.selectedSection != .updatesAvailable {
-                HStack(spacing: 12) {
-                    if showCategories {
-                        Picker("Category", selection: $categoryFilter) {
-                            Text("All categories").tag("All categories")
-                            ForEach(PluginCategory.allCases, id: \.rawValue) { category in
-                                Text("\(category.rawValue) · \(counts.categories[category, default: 0])")
-                                    .tag(category.rawValue)
-                            }
-                            Divider()
-                            ForEach(PluginRoleTags.all, id: \.self) { tag in
-                                let count = counts.roles[tag, default: 0]
-                                if count > 0 { Text("\(tag) · \(count)").tag(tag) }
-                            }
-                        }
-                        .labelsHidden().frame(width: 230, alignment: .leading)
-                        .help("Filter by category. Counts include this view, search and other filters.")
-                    }
-                    if model.selectedSection == .needsAttention || (model.selectedSection == .allPlugins && model.pluginStatusFilter == .notChecked) {
-                        let kinds = model.selectedSection == .needsAttention
-                            ? AttentionOrdering.issueKinds(in: visible)
-                            : NotCheckedReason.kinds(in: visible.compactMap { model.pluginResult($0.id) })
-                        Picker("Issue", selection: $issueFilter) {
-                            Text("All issues").tag("All issues")
-                            ForEach(kinds, id: \.title) { kind in
-                                Text("\(kind.title) · \(kind.count)").tag(kind.title)
-                            }
-                        }
-                        .labelsHidden().frame(width: 230, alignment: .leading)
-                        .help("Filter by finding. Results are ordered by severity.")
-                    } else if model.selectedSection == .allPlugins {
-                        Picker("Architecture", selection: $model.intelOnlyFilter) {
-                            Text("All architectures").tag(false)
-                            Text("Has Intel-only copies").tag(true)
-                        }
-                        .labelsHidden().frame(width: 230, alignment: .leading)
-                        .help(model.intelOnlyFilter
-                              ? "Includes products with at least one Intel-only copy. This does not determine DAW compatibility."
-                              : "Includes all detected architectures, including unknown ones. Choose Has Intel-only copies to narrow this view.")
-                    }
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 12) { filterControls(visible: visible, counts: counts) }
+                    VStack(alignment: .leading, spacing: 8) { filterControls(visible: visible, counts: counts) }
                 }
-                .controlSize(.small)
+                .controlSize(.regular)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 12).padding(.bottom, 10)
+                .padding(.horizontal, 16).padding(.bottom, 12)
             }
             if model.selectedSection == .intelOnly || (model.selectedSection == .allPlugins && model.intelOnlyFilter) || (model.selectedSection == .needsAttention && issueFilter == "Intel-only copy") {
                 Text("At least one installed copy is Intel-only; other copies may support Apple Silicon.")
@@ -152,8 +116,11 @@ struct InventoryListView: View {
                                     .fontWeight(.medium)
                                     .lineLimit(1)
                                 if showCategories {
-                                    Text(([product.category.rawValue] + product.roleTags).joined(separator: " · ")).font(.caption).foregroundStyle(.secondary)
+                                    Text(([formatSummary(product), product.category.rawValue] + product.roleTags).joined(separator: " · ")).font(.caption).foregroundStyle(.secondary)
                                         .help("Type declared by the plugin itself. Unclear ones stay Uncategorised.")
+                                }
+                                if !showCategories {
+                                    Text(formatSummary(product)).font(.caption).foregroundStyle(.secondary)
                                 }
                                 Text(product.vendor ?? "Unknown vendor")
                                     .font(.caption)
@@ -163,20 +130,26 @@ struct InventoryListView: View {
                         }
                         .padding(.vertical, rowPadding)
                     }
-                    .width(min: 160, ideal: 240)
+                    .width(min: 160, ideal: 180)
 
                     TableColumn("Installed") { product in
-                        Text(installedVersionSummary(product))
-                            .font(.body.monospacedDigit())
-                            .foregroundStyle(
-                                product.installedVersions.isEmpty
-                                    ? .secondary
-                                    : .primary
-                            )
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(installedVersionSummary(product))
+                                .font(.body.monospacedDigit())
+                                .foregroundStyle(product.installedVersions.isEmpty ? .secondary : .primary)
+                            Text(architectureSummary(product))
+                                .font(.caption).foregroundStyle(.secondary)
+                                .lineLimit(2).fixedSize(horizontal: false, vertical: true)
+                            if PluginGuidance.intelCopySummary(product) != nil,
+                               PluginGuidance.intelOnlyBundles(product).count < product.bundles.count {
+                                Text("Intel-only: " + PluginGuidance.intelCopyFormats(product))
+                                    .font(.caption).foregroundStyle(.secondary).lineLimit(2)
+                            }
+                        }
                     }
-                    .width(min: 80, ideal: 105)
+                    .width(140)
 
-                    TableColumn(model.selectedSection == .needsAttention ? "Needs attention" : (model.selectedSection == .allPlugins && model.pluginStatusFilter == .notChecked) ? "Why not checked" : "Update options") { product in
+                    TableColumn(model.selectedSection == .needsAttention ? "Needs attention" : (model.selectedSection == .allPlugins && model.pluginStatusFilter == .notChecked) ? "Why not checked" : "Developer website") { product in
                         if (model.selectedSection == .allPlugins && model.pluginStatusFilter == .notChecked), let reason = model.pluginResult(product.id)?.notCheckedReason {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(reason.rawValue).font(.subheadline)
@@ -202,27 +175,14 @@ struct InventoryListView: View {
                         } else {
                             Text(ProductDestinations.plugin(product)?.label ?? "Website not identified")
                                 .font(.subheadline).foregroundStyle(.secondary)
+                                .lineLimit(2).fixedSize(horizontal: false, vertical: true)
+                                .help(ProductDestinations.plugin(product)?.url.absoluteString ?? "No confident official website match. The installed files remain available for review.")
                         }
                     }
-                    .width(min: 112, ideal: model.selectedSection == .needsAttention || (model.selectedSection == .allPlugins && model.pluginStatusFilter == .notChecked) ? 260 : 150)
+                    .width(156)
 
-                    TableColumn("Formats") { product in
-                        FormatBadges(formats: product.formats)
-                    }
-                    .width(min: 64, ideal: 82)
-
-                    TableColumn("Architecture") { product in
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(architectureSummary(product)).lineLimit(2)
-                            if PluginGuidance.intelCopySummary(product) != nil,
-                               PluginGuidance.intelOnlyBundles(product).count < product.bundles.count {
-                                Text("Intel-only: " + PluginGuidance.intelCopyFormats(product))
-                                    .font(.caption).foregroundStyle(.secondary).lineLimit(2)
-                            }
-                        }
-                    }
-                    .width(min: 100, ideal: 155)
                 }
+                .tableStyle(.inset(alternatesRowBackgrounds: false))
                 .contextMenu(forSelectionType: String.self) { ids in
                     if ids.count == 1, let id = ids.first, let product = model.pluginResult(id)?.product {
                         PluginFinderMenu(bundles: product.bundles)
@@ -248,8 +208,52 @@ struct InventoryListView: View {
             reconcileSelection()
         }
         .onChange(of: products.map(\.id)) { _ in reconcileSelection() }
+        .onChange(of: model.selectedProductID) { _ in reconcileSelection() }
+        .onChange(of: model.selectedDAWID) { _ in reconcileSelection() }
         .onChange(of: model.visibleDAWs().map(\.id)) { _ in reconcileSelection() }
         .onChange(of: model.visibleUpdates().map(\.id)) { _ in reconcileSelection() }
+    }
+
+    @ViewBuilder
+    private func filterControls(visible: [NormalizedPluginProduct], counts: PluginCategoryCounts) -> some View {
+                    if showCategories {
+                        Picker("Category", selection: $categoryFilter) {
+                            Text("All categories").tag("All categories")
+                            ForEach(PluginCategory.allCases, id: \.rawValue) { category in
+                                Text("\(category.rawValue) · \(counts.categories[category, default: 0])")
+                                    .tag(category.rawValue)
+                            }
+                            Divider()
+                            ForEach(PluginRoleTags.all, id: \.self) { tag in
+                                let count = counts.roles[tag, default: 0]
+                                if count > 0 { Text("\(tag) · \(count)").tag(tag) }
+                            }
+                        }
+                        .labelsHidden().fixedSize()
+                        .help("Filter by category. Counts include this view, search and other filters.")
+                    }
+                    if model.selectedSection == .needsAttention || (model.selectedSection == .allPlugins && model.pluginStatusFilter == .notChecked) {
+                        let kinds = model.selectedSection == .needsAttention
+                            ? AttentionOrdering.issueKinds(in: visible)
+                            : NotCheckedReason.kinds(in: visible.compactMap { model.pluginResult($0.id) })
+                        Picker("Issue", selection: $issueFilter) {
+                            Text("All issues").tag("All issues")
+                            ForEach(kinds, id: \.title) { kind in
+                                Text("\(kind.title) · \(kind.count)").tag(kind.title)
+                            }
+                        }
+                        .labelsHidden().fixedSize()
+                        .help("Filter by finding. Results are ordered by severity.")
+                    } else if model.selectedSection == .allPlugins && model.localReviewFilter == .all {
+                        Picker("Architecture", selection: $model.intelOnlyFilter) {
+                            Text("All architectures").tag(false)
+                            Text("Has Intel-only copies").tag(true)
+                        }
+                        .labelsHidden().fixedSize()
+                        .help(model.intelOnlyFilter
+                              ? "Includes products with at least one Intel-only copy. This does not determine DAW compatibility."
+                              : "Includes all detected architectures, including unknown ones. Choose Has Intel-only copies to narrow this view.")
+                    }
     }
 
     private func reconcileSelection() {

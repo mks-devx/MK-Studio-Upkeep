@@ -43,10 +43,8 @@ final class AppModel: ObservableObject {
         panel.canChooseDirectories = true
         guard panel.runModal() == .OK, let url = panel.url else { return }
         let path = url.standardizedFileURL.path
-        // Whole volumes and system or account roots are never plug-in folders; scanning them
-        // would be slow, could prompt for folder access, and finds nothing the standard roots miss.
-        let refused = ["/", "/System", "/Library", "/Users", "/Volumes", "/private", "/Applications", FileManager.default.homeDirectoryForCurrentUser.path]
-        guard !refused.contains(path), !path.hasPrefix("/System/"), !path.hasPrefix("/private/") else {
+        let volumeRoot = try? url.resourceValues(forKeys: [.volumeURLKey]).volume
+        guard Self.isEligiblePluginFolder(url, home: FileManager.default.homeDirectoryForCurrentUser, volumeRoot: volumeRoot) else {
             let alert = NSAlert()
             alert.messageText = "Choose a specific plug-in folder"
             alert.informativeText = "Whole volumes, system folders and your home folder are not plug-in folders. Pick the folder that directly contains the bundles."
@@ -55,6 +53,15 @@ final class AppModel: ObservableObject {
         }
         if !customPluginFolders.contains(path) { customPluginFolders.append(path) }
         preferences.set(customPluginFolders, forKey: "customPluginFolders")
+    }
+
+    /// Path eligibility is separate from the picker so volume boundaries can be tested
+    /// with synthetic metadata, without enumerating a disk or opening an app panel.
+    static func isEligiblePluginFolder(_ url: URL, home: URL, volumeRoot: URL?) -> Bool {
+        let path = url.standardizedFileURL.path
+        if path == volumeRoot?.standardizedFileURL.path { return false }
+        let refused = ["/", "/System", "/Library", "/Users", "/Volumes", "/private", "/Applications", home.standardizedFileURL.path]
+        return !refused.contains(path) && !path.hasPrefix("/System/") && !path.hasPrefix("/private/")
     }
 
     func removePluginFolder(_ path: String) {
@@ -185,8 +192,19 @@ final class AppModel: ObservableObject {
         let generation = UUID()
         scanGeneration = generation
         let previousReport = currentReport
-        let resolvedConfiguration = configuration
-            ?? preferredScanConfiguration()
+        let resolvedConfiguration: ScanConfiguration
+        do {
+            resolvedConfiguration = try configuration ?? preferredScanConfiguration()
+        } catch {
+            scanTask = nil
+            if let previousReport {
+                scanState = .complete(previousReport)
+                scanFailureMessage = error.localizedDescription + " Results from the previous completed scan are still shown."
+            } else {
+                scanState = .failed(message: error.localizedDescription)
+            }
+            return
+        }
         let shouldScanDAWs = preferenceBool(
             StudioUpkeepPreference.scanDAWs,
             default: true
@@ -220,15 +238,23 @@ final class AppModel: ObservableObject {
                     try? snapshot.save(to: scanSnapshotURL)
                 }
                 scanState = .complete(result.report)
-                if selectedSection != .hardware && selectedSection != .drivers && selectedSection != .managers {
+                // Apply the launch destination only to the first result. A rescan is a
+                // refresh of the current view, including navigation changed while it ran.
+                if previousReport == nil && selectedSection != .hardware && selectedSection != .drivers && selectedSection != .managers {
                     selectedSection = preferredSection(for: result.report)
                 }
-                selectedProductID = products(
-                    in: selectedSection,
-                    report: result.report
-                ).first?.id
-                selectedDAWID = installedDAWs.first?.id
-                selectedUpdateID = visibleUpdates().first?.id
+                let pluginRows = visibleProducts()
+                if !pluginRows.contains(where: { $0.id == selectedProductID }) {
+                    selectedProductID = pluginRows.first?.id
+                }
+                let dawRows = visibleDAWs()
+                if !dawRows.contains(where: { $0.id == selectedDAWID }) {
+                    selectedDAWID = dawRows.first?.id
+                }
+                let updateRows = visibleUpdates()
+                if !updateRows.contains(where: { $0.id == selectedUpdateID }) {
+                    selectedUpdateID = updateRows.first?.id
+                }
             } catch is CancellationError {
                 guard scanGeneration == generation else { return }
                 scanState = previousReport.map(ScanState.complete) ?? .ready
@@ -283,7 +309,29 @@ final class AppModel: ObservableObject {
         return .allPlugins
     }
 
-    private func preferredScanConfiguration() -> ScanConfiguration {
+    private enum ScanConfigurationFailure: LocalizedError {
+        case invalidCustomFolder
+        var errorDescription: String? {
+            "An additional plugin folder is a whole volume, system folder or home folder. Open Settings → Scanning and remove that location, then choose a specific plugin folder. Saved locations have been kept for review."
+        }
+    }
+
+    private func preferredScanConfiguration() throws -> ScanConfiguration {
+        let home = FileManager.default.homeDirectoryForCurrentUser
+        let customFolders = try customPluginFolders.map { path in
+            let url = URL(fileURLWithPath: path, isDirectory: true)
+            // Recheck saved choices as well as new picker selections. Keep the saved
+            // preference intact; silently dropping it would change the reported scope.
+            guard Self.isEligiblePluginFolder(url, home: home, volumeRoot: nil) else {
+                throw ScanConfigurationFailure.invalidCustomFolder
+            }
+            let resolved = url.resolvingSymlinksInPath()
+            let volumeRoot = try? resolved.resourceValues(forKeys: [.volumeURLKey]).volume
+            guard Self.isEligiblePluginFolder(resolved, home: home.resolvingSymlinksInPath(), volumeRoot: volumeRoot) else {
+                throw ScanConfigurationFailure.invalidCustomFolder
+            }
+            return resolved
+        }
         let enabledFormats = Set(
             PluginFormat.allCases.filter { format in
                 preferenceBool(
@@ -293,7 +341,7 @@ final class AppModel: ObservableObject {
             }
         )
         return ScanConfiguration.includingCustomFolders(
-            customPluginFolders.map { URL(fileURLWithPath: $0, isDirectory: true) },
+            customFolders,
             enabledFormats: enabledFormats)
     }
 

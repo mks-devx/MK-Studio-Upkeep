@@ -54,4 +54,26 @@ final class InventoryExportTests: XCTestCase {
         try Data(String(repeating: "[", count: 40).utf8).write(to: url)
         XCTAssertNil(ScanSnapshot.load(from: url), "A hostile or broken snapshot is ignored, never trusted")
     }
+    func testCSVQuotesCarriageReturnsInOptionalPaths() {
+        let row = InventoryExport.Row(kind: "Plugin", name: "Fixture", vendor: "Example", installedVersion: "1.0",
+            formats: "VST3", architectures: "Intel", result: "Website not identified", latestReviewed: "", reason: "",
+            paths: ["/Library/Audio/Plug-Ins/VST3/Fixture\rCopy.vst3"])
+        let csv = InventoryExport.csv([row], includePaths: true, localOnly: true)
+        XCTAssertTrue(csv.contains("\"/Library/Audio/Plug-Ins/VST3/Fixture\rCopy.vst3\""))
+    }
+
+    func testLegacySnapshotCannotCreateFalseChangesAfterIdentityMigration() throws {
+        let snapshot = ScanSnapshot(finishedAt: Date(), products: [], scopeID: "fixture")
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let url = root.appendingPathComponent("snapshot.json")
+        var old = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(snapshot)) as? [String: Any])
+        old.removeValue(forKey: "identitySchemaVersion")
+        try JSONSerialization.data(withJSONObject: old).write(to: url)
+        let loaded = try XCTUnwrap(ScanSnapshot.load(from: url))
+        XCTAssertFalse(loaded.canCompare(to: snapshot))
+        XCTAssertTrue(snapshot.canCompare(to: snapshot))
+    }
+
 }

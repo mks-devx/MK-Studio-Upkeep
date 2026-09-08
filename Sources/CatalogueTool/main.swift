@@ -64,8 +64,8 @@ if args == [args[0], "--check-vendors"] {
 if args.count == 5 && args[1] == "--prototype-updates" {
     do {
         func bounded(_ path: String) throws -> Data {
-            let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
-            guard data.count <= GeneralUpdateEngine.maximumBytes else { throw GeneralUpdateEngine.Failure.invalidFeed }
+            guard let data = SafeFileAccess.data(at: URL(fileURLWithPath: path), maximumBytes: GeneralUpdateEngine.maximumBytes),
+                  JSONDepth.isWithinLimit(data) else { throw GeneralUpdateEngine.Failure.invalidFeed }
             return data
         }
         let registry = try JSONDecoder().decode(GeneralUpdateEngine.Registry.self, from: bounded(args[2]))

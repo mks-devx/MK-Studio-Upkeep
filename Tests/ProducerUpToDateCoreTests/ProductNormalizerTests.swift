@@ -18,6 +18,39 @@ final class ProductNormalizerTests: XCTestCase {
         XCTAssertEqual(products.map(\.id), ProductNormalizer().normalize(records: records.reversed()).products.map(\.id))
     }
 
+    func testAddingAFormatPreservesProductIdentityAndScanHistory() {
+        let identifier = "com.example.fixture"
+        let first = record(id: "au", name: "Fixture", vendor: "Example", format: .audioUnit, version: "1.0",
+            bundleIdentifier: identifier, identifiers: [.init(kind: .bundleIdentifier, value: identifier)])
+        let second = record(id: "vst", name: "Fixture", vendor: "Example", format: .vst3, version: "1.0",
+            bundleIdentifier: identifier, identifiers: [.init(kind: .bundleIdentifier, value: identifier)])
+        let before = ProductNormalizer().normalize(records: [first]).products
+        let after = ProductNormalizer().normalize(records: [first, second]).products
+        XCTAssertEqual(before.first?.id, after.first?.id)
+        let comparison = ScanComparison(previous: .init(finishedAt: Date(), products: before, scopeID: "fixture"),
+            current: .init(finishedAt: Date(), products: after, scopeID: "fixture"))
+        XCTAssertTrue(comparison.added.isEmpty)
+        XCTAssertTrue(comparison.removed.isEmpty)
+    }
+
+    func testDifferentInstalledEditionsStaySeparateWhenFormatsChange() {
+        let identifier = "com.example.fixture"
+        func edition(_ major: Int, _ format: PluginFormat) -> PluginBundleRecord {
+            record(id: "fixture-\(major)-\(format.rawValue)", name: "Fixture \(major)", vendor: "Example", format: format,
+                version: "\(major).0", bundleIdentifier: identifier,
+                identifiers: [.init(kind: .bundleIdentifier, value: identifier)])
+        }
+        let before = ProductNormalizer().normalize(records: [edition(1, .audioUnit), edition(2, .audioUnit)]).products
+        let after = ProductNormalizer().normalize(records: [edition(1, .audioUnit), edition(2, .audioUnit), edition(2, .vst3)]).products
+        XCTAssertEqual(before.count, 2)
+        XCTAssertEqual(after.count, 2)
+        XCTAssertEqual(Set(after.map(\.id)).count, 2)
+        XCTAssertEqual(Dictionary(uniqueKeysWithValues: before.map { ($0.name, $0.id) }),
+            Dictionary(uniqueKeysWithValues: after.map { ($0.name, $0.id) }))
+        XCTAssertEqual(after.first { $0.name == "Fixture 1" }?.bundles.count, 1)
+        XCTAssertEqual(after.first { $0.name == "Fixture 2" }?.bundles.count, 2)
+    }
+
     func testTokyoDawnVendorSpellingsGroupFormatsOnce() {
         let products = ProductNormalizer().normalize(records: [
             record(id: "au", name: "TDR Nova", vendor: "TokyoDawnLabs", format: .audioUnit, version: "2.2.1"),
