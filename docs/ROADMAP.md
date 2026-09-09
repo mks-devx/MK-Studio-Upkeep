@@ -7,6 +7,5 @@ The current focus is a reliable local inventory and clear routes to official dev
 - Extend accessibility, clean-account, physical Intel and macOS-version validation.
 - Keep experimental removal conservative and separate from read-only scanning.
 
-MK Studio Upkeep 0.3.0 is free and open-source under MPL-2.0, including for
-professional studio use.
+The current release is licensed under MPL-2.0; see [Licensing](../LICENSING.md).
 Automatic plugin release detection is outside the current product scope. Any future network service needs explicit consent, reliable source rights and measured coverage before it changes the interface. Windows and monitoring are future decisions rather than release commitments.
