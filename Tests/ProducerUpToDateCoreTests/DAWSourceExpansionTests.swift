@@ -30,7 +30,12 @@ final class DAWSourceExpansionTests: XCTestCase {
     }
     func testEveryKnownDAWHasOfficialFallbackButUnknownHasNone() {
         XCTAssertEqual(Set(DAWDefinition.known.map(\.id)).count, DAWDefinition.known.count)
-        for daw in DAWDefinition.known { XCTAssertEqual(DAWUpdateSource.destination(for: daw.id)?.scheme, "https", daw.id) }
+        for daw in DAWDefinition.known {
+            let destination = DAWUpdateSource.reviewedDestination(for: daw.id)
+            XCTAssertEqual(destination?.url.scheme, "https", daw.id)
+            XCTAssertEqual(destination?.referenceURL.scheme, "https", daw.id)
+            XCTAssertTrue(destination.map { OfficialLinkReview.isValid(date: $0.reviewedOn) } ?? false, daw.id)
+        }
         XCTAssertNil(DAWUpdateSource.destination(for: "untrusted"))
     }
     func testInferredIdentitiesDoNotEnableChecks() {

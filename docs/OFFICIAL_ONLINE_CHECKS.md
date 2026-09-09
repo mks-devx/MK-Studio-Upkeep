@@ -11,6 +11,14 @@ bundle identifiers; names alone do not create official links. Unknown destinatio
 say **Official website not identified**. A link can be a developer-wide downloads,
 products or manager page; it does not claim to be an exact product update endpoint.
 
+## Directory maintenance rule
+
+Every plugin-developer, DAW and software-manager destination carries an official
+reference URL and an ISO-formatted last-review date. Automated tests reject missing
+or malformed dates, non-HTTPS references and references containing credentials.
+Adding a link therefore requires recording where it was verified and when. Review
+dates document maintainer research; they do not prove that a page remains available.
+
 The product view shows version, architectures, relevant findings and website/manager
 actions first. Installed files, technical details and uninstall options are collapsed.
 Manager buttons use the existing verified-signature opening flow. Finding an app by

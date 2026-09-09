@@ -6,6 +6,9 @@ installer, logo, release list or third-party application identifier is copied.
 The retired package-index bundle-ID table has been replaced, including copies
 in hardware and vendor routing. No reference page is fetched by the app.
 
+Each manager record stores its official reference and last-review date. The build
+tests require a valid HTTPS reference and ISO date before the record is accepted.
+
 Product bundle prefixes remain local routing heuristics based on vendor namespaces;
 they are not assertions that a manager owns every product or that the publisher
 of an installed app is verified. Name matches undergo signature verification

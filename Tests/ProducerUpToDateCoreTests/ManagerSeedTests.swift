@@ -16,6 +16,8 @@ final class ManagerSeedTests: XCTestCase {
         let ids = ManagerDefinition.known.map(\.id)
         XCTAssertEqual(Set(ids).count, ids.count, "Manager identities are unique")
         XCTAssertTrue(ManagerDefinition.known.allSatisfy { $0.url?.scheme == "https" })
+        XCTAssertTrue(ManagerDefinition.known.allSatisfy { $0.referenceURL.scheme == "https" })
+        XCTAssertTrue(ManagerDefinition.known.allSatisfy { OfficialLinkReview.isValid(date: $0.reviewedOn) })
         XCTAssertGreaterThanOrEqual(ManagerDefinition.known.count, 25)
     }
 

@@ -3,6 +3,11 @@ import Foundation
 
 /// Navigation aids are separate from release evidence. These never use URLs from app metadata.
 public enum DAWUpdateSource {
+    public struct ReviewedDestination: Equatable, Sendable {
+        public let url: URL
+        public let referenceURL: URL
+        public let reviewedOn: String
+    }
     /// Mac App Store handoff for bundles carrying a receipt. The Updates page is generic;
     /// a product page is offered only for a recognised bundle identity with a known store ID.
     public struct AppStoreDestination: Equatable, Sendable {
@@ -18,33 +23,45 @@ public enum DAWUpdateSource {
         return AppStoreDestination(updates: updates, product: product)
     }
 
-    public static func destination(for definitionID: String) -> URL? {
-        let destinations = [
-            "ableton-live": "https://www.ableton.com/en/release-notes/",
-            "logic-pro": "https://support.apple.com/en-us/109503",
-            "garageband": "https://support.apple.com/en-us/109515",
-            "fl-studio": "https://www.image-line.com/fl-studio-download/",
-            "cubase": "https://www.steinberg.net/cubase/release-notes/",
-            "nuendo": "https://www.steinberg.net/nuendo/",
-            "pro-tools": "https://www.avid.com/pro-tools",
-            "studio-one": "https://www.presonus.com/",
-            "reaper": "https://www.reaper.fm/download.php",
-            "bitwig-studio": "https://www.bitwig.com/download/",
-            "reason": "https://www.reasonstudios.com/reason/updates/release-notes",
-            "digital-performer": "https://motu.com/en-us/products/software/dp/",
-            "maschine": "https://support.native-instruments.com/support/solutions/articles/69000881126-what-s-new-in-maschine-3-6",
-            "waveform": "https://www.tracktion.com/",
-            "luna": "https://www.uaudio.com/",
-            "ardour": "https://ardour.org/",
-            "renoise": "https://www.renoise.com/download/",
-            "mixbus": "https://support.harrisonaudio.com/hc/en-gb/articles/14837072052125-Mixbus-Downloads",
-            "mulab": "https://www.mutools.com/",
-            "n-track": "https://ntrack.com/download.php",
-            "lmms": "https://lmms.io/",
-            "zrythm": "https://www.zrythm.org/",
-            "mpc": "https://www.akaipro.com/mpc-release-notes",
-            "fender-studio-pro": "https://support.fender.com/hc/en-us/articles/46787705756443-FENDER-STUDIO-PRO"
+    private static func reviewed(_ url: String, reviewedOn: String) -> ReviewedDestination {
+        let referenceURL = URL(string: url)!
+        return .init(url: referenceURL, referenceURL: referenceURL, reviewedOn: reviewedOn)
+    }
+
+    public static func reviewedDestination(for definitionID: String) -> ReviewedDestination? {
+        let destinations: [String: ReviewedDestination] = [
+            "ableton-live": reviewed("https://www.ableton.com/en/release-notes/", reviewedOn: "2026-09-08"),
+            "logic-pro": reviewed("https://support.apple.com/en-us/109503", reviewedOn: "2026-09-08"),
+            "garageband": reviewed("https://support.apple.com/en-us/109515", reviewedOn: "2026-09-08"),
+            "fl-studio": reviewed("https://www.image-line.com/fl-studio-download/", reviewedOn: "2026-09-08"),
+            "cubase": reviewed("https://www.steinberg.net/cubase/release-notes/", reviewedOn: "2026-09-08"),
+            "nuendo": reviewed("https://www.steinberg.net/nuendo/", reviewedOn: "2026-09-08"),
+            "pro-tools": reviewed("https://www.avid.com/pro-tools", reviewedOn: "2026-09-08"),
+            "studio-one": reviewed("https://www.presonus.com/", reviewedOn: "2026-09-08"),
+            "reaper": reviewed("https://www.reaper.fm/download.php", reviewedOn: "2026-09-08"),
+            "bitwig-studio": reviewed("https://www.bitwig.com/download/", reviewedOn: "2026-09-08"),
+            "reason": reviewed("https://www.reasonstudios.com/reason/updates/release-notes", reviewedOn: "2026-09-08"),
+            "digital-performer": reviewed("https://motu.com/en-us/products/software/dp/", reviewedOn: "2026-09-08"),
+            "maschine": reviewed("https://support.native-instruments.com/support/solutions/articles/69000881126-what-s-new-in-maschine-3-6", reviewedOn: "2026-09-08"),
+            "waveform": reviewed("https://www.tracktion.com/", reviewedOn: "2026-09-08"),
+            "luna": reviewed("https://www.uaudio.com/", reviewedOn: "2026-09-08"),
+            "ardour": reviewed("https://ardour.org/", reviewedOn: "2026-09-08"),
+            "renoise": reviewed("https://www.renoise.com/download/", reviewedOn: "2026-09-08"),
+            "mixbus": reviewed("https://support.harrisonaudio.com/hc/en-gb/articles/14837072052125-Mixbus-Downloads", reviewedOn: "2026-09-08"),
+            "mulab": reviewed("https://www.mutools.com/", reviewedOn: "2026-09-08"),
+            "n-track": reviewed("https://ntrack.com/download.php", reviewedOn: "2026-09-08"),
+            "lmms": reviewed("https://lmms.io/", reviewedOn: "2026-09-08"),
+            "zrythm": reviewed("https://www.zrythm.org/", reviewedOn: "2026-09-08"),
+            "mpc": reviewed("https://www.akaipro.com/mpc-release-notes", reviewedOn: "2026-09-08"),
+            "fender-studio-pro": reviewed("https://support.fender.com/hc/en-us/articles/46787705756443-FENDER-STUDIO-PRO", reviewedOn: "2026-09-08")
         ]
-        return destinations[definitionID].flatMap(URL.init(string:))
+        return destinations[definitionID].flatMap { destination in
+            OfficialLinkReview.isComplete(referenceURL: destination.referenceURL, reviewedOn: destination.reviewedOn)
+                ? destination : nil
+        }
+    }
+
+    public static func destination(for definitionID: String) -> URL? {
+        reviewedDestination(for: definitionID)?.url
     }
 }

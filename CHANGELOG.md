@@ -13,6 +13,8 @@
   uninstallers may still be required.
 - License source beginning with version 0.4.0 under AGPL-3.0. Version 0.3.0 and
   earlier source snapshots and installers retain their supplied licences.
+- Require every bundled developer, DAW and software-manager link to retain its
+  official reference and last-review date, enforced by validation tests.
 
 ## 0.3.0 — 9 September 2026
 
