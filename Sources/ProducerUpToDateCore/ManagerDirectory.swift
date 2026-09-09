@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import Foundation
 
 /// Known identities, not a claim of universal discovery or installation ownership.

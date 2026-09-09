@@ -16,7 +16,7 @@ entries; the UI displays the first 200 names. Inaccessible or over-limit bundle
 contents prevent removal. Paths, types, inode, size, modification times and link
 destinations form a manifest rechecked before movement. This detects metadata
 changes; it does not eliminate filesystem races. Custom content inside a selected
-bundle moves with that bundle and must be backed up first.
+bundle moves with that bundle.
 
 ## Settings and related data stay in place
 
@@ -29,12 +29,22 @@ The completion message distinguishes moved software from retained related files.
 
 ## Confirmation and recovery
 
+Backup creation is enabled by default. Every selected bundle is copied into the
+app's local recovery store and verified before removal begins. A failed copy or
+verification causes zero moves. The operation record tracks exact moved items so
+a later failure remains recoverable and visible.
+
 Nothing is preselected. Users acknowledge closed hosts and reviewed files, then
 hold for five seconds and release. Early release or Escape cancels the hold.
 Changes to selection or consent reset it. Trash remains recoverable until emptied.
 The whole plan is validated before movement; later failures stop remaining moves
 and report partial results. Eligible system-root moves can use Finder and its
 administrator prompt. Home-folder moves never use that escalation route.
+
+Restore revalidates the stored payload and original destination. It never overwrites
+an existing item. Backups remain after a successful restore until automatic or
+manual retention cleanup removes the recovery copy. Automatic cleanup defaults to
+30 days and can be disabled or changed in Settings.
 
 Driver removal retains its own protections: kernel/system extensions, Apple
 components and protected device dependencies use instructions, not a generic

@@ -30,5 +30,7 @@ Quit the previous app before replacing it. The bundle identity is retained, so
 existing preferences and local scan history continue across upgrades.
 
 To remove MK Studio Upkeep, quit it and move this app to Trash. Your plugins,
-DAWs, drivers and managers are separate. Preferences and local scan history remain;
-see [Privacy](https://github.com/mks-devx/MK-Studio-Upkeep/blob/main/PRIVACY.md) for local storage details.
+DAWs, drivers and managers are separate. Preferences, local scan history and any
+removal backups remain. Delete recovery data from Settings → Backups before removing
+the app if you no longer need it; see [Privacy](https://github.com/mks-devx/MK-Studio-Upkeep/blob/main/PRIVACY.md)
+for local storage details.

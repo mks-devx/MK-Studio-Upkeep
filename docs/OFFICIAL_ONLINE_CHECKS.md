@@ -24,12 +24,9 @@ name is not proof that it owns an installation or belongs to a specific publishe
 - **Different installed versions:** compares local copy metadata, not remote releases.
 - **Multiple copies of one format:** distinct files of the same format; AU and VST3
   are not duplicates. No removal is suggested automatically.
-- **Related editions installed:** names and matching installed major versions suggest
-  a common family within one developer identity. These are labelled suggestions;
-  the inventory never merges or deletes them. Existing projects may need both.
-
-The app does not recommend newer editions. Official developer websites provide
-somewhere to check release information and licence options yourself.
+The app does not infer product families or recommend newer editions. Official
+developer websites provide somewhere to check release information and licence
+options yourself.
 
 File age alone never means obsolete or broken. Discontinued/vendor-unsupported status
 needs product-specific official evidence; no speculative discontinued list is shipped.

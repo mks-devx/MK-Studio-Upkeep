@@ -38,6 +38,13 @@ Removal review searches configured software locations and common Library locatio
 
 Only explicitly selected and confirmed eligible software bundles move to macOS Trash. Content stored inside a selected bundle moves with it. External creative content, preferences, support folders and licences are not selected. Driver-file removal is disabled.
 
+Removal backups are stored locally in MK Studio Upkeep's Application Support folder.
+They contain copies of selected software bundles plus an operation record with the
+original local paths, sizes, fingerprints and timestamps. They are not uploaded.
+Backup creation and automatic deletion are independently configurable in Settings;
+automatic deletion defaults to 30 days. Manual cleanup can permanently delete
+expired backups or all recovery history.
+
 ## Removing local app data
 
-Restoring defaults in Settings changes presentation and scan options; it is not a data-erasure action. To remove all local app data, quit the app, inspect its preferences and its Studio Upkeep Application Support folder, then remove only the app's own data using macOS file/preference management. Audio software, projects and vendor-manager data do not need to be removed.
+Restoring presentation and scan defaults does not change backup preferences or delete recovery data. Use Settings → Backups to remove backup data. To remove all local app data, quit the app, inspect its preferences and its Studio Upkeep Application Support folder, then remove only the app's own data using macOS file/preference management. Audio software, projects and vendor-manager data do not need to be removed.

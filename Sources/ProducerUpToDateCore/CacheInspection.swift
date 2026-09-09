@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import Foundation
 
 /// Inspection only. No file contents, cleanup plans or deletion APIs are involved.

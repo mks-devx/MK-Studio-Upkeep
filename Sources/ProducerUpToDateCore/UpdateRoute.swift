@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import Foundation
 
 /// Where a product's update information legitimately comes from. A route is the honest

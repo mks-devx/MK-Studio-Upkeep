@@ -11,7 +11,7 @@
 
 ## Development and releases
 
-- [Licensing and source availability](../LICENSING.md) explains MPL-2.0 and distribution.
+- [Licensing and source availability](../LICENSING.md) explains AGPL-3.0 and distribution.
 
 - [Architecture](ARCHITECTURE.md) and [Build and distribution](PUBLIC_BUILD.md).
 - [Release verification](RELEASE_VERIFICATION.md) records checks for the released app.

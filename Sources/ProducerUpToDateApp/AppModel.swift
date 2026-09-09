@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import AppKit
 import Combine
 import CryptoKit
@@ -10,7 +10,6 @@ final class AppModel: ObservableObject {
     @Published var localReviewFilter: LocalReviewFilter = .all
     @Published private(set) var filterResetID = UUID()
     @Published private(set) var scanFailureMessage: String?
-    private(set) var relatedEditions: [String: [NormalizedPluginProduct]] = [:]
     private let preferences: UserDefaults
     private let scanner: @Sendable (ScanConfiguration, Bool) async throws -> StudioScanResult
 
@@ -108,6 +107,14 @@ final class AppModel: ObservableObject {
     let scanSnapshotURL: URL
     @Published private(set) var lastScanChanges: ScanComparison?
     @Published var identityConfirmations = IdentityConfirmations()
+    let removalBackupStore: RemovalBackupStore
+    @Published var removalBackups: [RemovalBackupManifest] = []
+    @Published var removalBackupFailure: String?
+    @Published var selectedBackupID: UUID?
+
+    var removalBackupPreferences: RemovalBackupPreferences {
+        RemovalBackupPreferences(defaults: preferences)
+    }
 
     init(preferences: UserDefaults = .standard, storageDirectory: URL? = nil,
          scanner: @escaping @Sendable (ScanConfiguration, Bool) async throws -> StudioScanResult = {
@@ -121,6 +128,7 @@ final class AppModel: ObservableObject {
         legacyPageCacheURL = directory.appendingPathComponent("direct-vendor-pages.json")
         identityConfirmationsURL = directory.appendingPathComponent("identity-confirmations.json")
         scanSnapshotURL = directory.appendingPathComponent("last-scan.json")
+        removalBackupStore = RemovalBackupStore(root: directory.appendingPathComponent(RemovalBackupStore.folderName, isDirectory: true))
         if preferences.string(forKey: StudioUpkeepPreference.postScanDestination) == PostScanDestination.updates.rawValue {
             preferences.set(PostScanDestination.smart.rawValue, forKey: StudioUpkeepPreference.postScanDestination)
         }
@@ -132,6 +140,7 @@ final class AppModel: ObservableObject {
         }
         // Previous live-check caches are not loaded or applied.
         identityConfirmations = IdentityConfirmations.load(from: identityConfirmationsURL)
+        Task { [weak self] in await self?.reloadRemovalBackups(applyRetention: true) }
     }
 
     // Historical catalogue files and preferences are deliberately not read. Local scans
@@ -225,7 +234,6 @@ final class AppModel: ObservableObject {
                     )
                 }
                 normalizedProducts = result.products
-                relatedEditions = LocalProductReview.relatedEditions(result.products)
                 pluginUpdateResults = normalizedProducts.map { evaluate($0) }
                 lastScanChanges = nil
                 let scope = resolvedConfiguration.locations.map { $0.url.standardizedFileURL.path + "|" + $0.format.rawValue }.sorted().joined(separator: "\n")

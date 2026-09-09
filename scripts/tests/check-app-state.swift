@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 // Headless app-state regressions. Only synthetic records and temporary preferences are used.
 import Foundation
 import Darwin
@@ -67,9 +67,40 @@ import Darwin
               "Rejecting a saved root must preserve it for review in Settings")
         let sequence = FixtureScanSequence(result: result)
         let model = AppModel(preferences: preferences, storageDirectory: folder, scanner: { _, _ in try await sequence.scan() })
+        let backupPreferences = RemovalBackupPreferences(defaults: preferences)
+        check(backupPreferences.isEnabled && backupPreferences.automaticallyDeletesExpired && backupPreferences.retentionDays == 30,
+              "Removal backups must default to enabled with 30-day automatic retention")
+        check(InventorySection.backups.rawValue == "Backups" && InventorySection.backups.symbolName == "externaldrive.badge.timemachine",
+              "Backup history must have a stable Maintenance navigation destination")
+        check(TopNavigationView.maintenanceSections.contains(.backups),
+              "Top navigation must expose the same backup destination as the sidebar")
+        model.navigate(to: .backups)
+        check(model.selectedSection == .backups && model.inventoryTitle == "Backups",
+              "Backup navigation must open the recovery timeline")
+        let backupRoot = folder.appendingPathComponent("restore-backups")
+        let stagedRestore = backupRoot.appendingPathComponent("operation/Fixture.component")
+        let restoreParent = folder.appendingPathComponent("restore-installed")
+        let restoreDestination = restoreParent.appendingPathComponent("Fixture.component")
+        try FileManager.default.createDirectory(at: stagedRestore, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: restoreParent, withIntermediateDirectories: true)
+        try TrashMover.restoreFromBackup(stagedRestore, to: restoreDestination, backupRoot: backupRoot)
+        check(FileManager.default.fileExists(atPath: restoreDestination.path) && !FileManager.default.fileExists(atPath: stagedRestore.path),
+              "The app restore bridge must install the verified staged copy at its original name")
+        let outside = folder.appendingPathComponent("outside/Fixture.component")
+        try FileManager.default.createDirectory(at: outside, withIntermediateDirectories: true)
+        do {
+            try TrashMover.restoreFromBackup(outside, to: restoreParent.appendingPathComponent("Other.component"), backupRoot: backupRoot)
+            check(false, "The app restore bridge must reject sources outside the backup root")
+        } catch { }
+        let nestedManager = folder.appendingPathComponent("Applications/Vendor/Fixture Manager.app/Contents")
+        try FileManager.default.createDirectory(at: nestedManager, withIntermediateDirectories: true)
+        try Data("fixture".utf8).write(to: nestedManager.appendingPathComponent("Info.plist"))
+        let locatedManagers = VendorAppLocator.applicationsByName(in: [folder.appendingPathComponent("Applications")])
+        check(locatedManagers["fixture manager"]?.lastPathComponent == "Fixture Manager.app",
+              "Manager discovery must find named apps in vendor subfolders without deprecated APIs")
 
         check(LocalReviewFilter.navigationCases.allSatisfy {
-            [.cannotRun, .differentVersions, .repeatedCopies, .relatedEditions].contains($0)
+            [.cannotRun, .differentVersions, .repeatedCopies].contains($0)
         }, "Review navigation must offer only installed-file findings, never external edition suggestions")
         check(Set(LocalReviewFilter.navigationCases) == Set(LocalReviewFilter.allCases).subtracting([.all]), "Every finding must be available in both navigation layouts")
         check(ReviewEmptyMessage.make(for: .all, hasUserFilters: false) == nil, "The ordinary inventory must retain its own empty state")
@@ -88,12 +119,6 @@ import Darwin
         model.dawStatusFilter = "Not verified"
         model.showDAW("fixture-daw-2")
         check(model.selectedSection == .allDAWs && model.selectedDAWID == "fixture-daw-2" && model.searchText.isEmpty && model.dawStatusFilter == "All DAWs", "Following another DAW installation must reveal its row")
-        model.searchText = "previous product"
-        model.navigate(to: LocalReviewFilter.relatedEditions)
-        let beforeProductLink = model.filterResetID
-        model.showProduct("fixture-product-2")
-        check(model.localReviewFilter == .all && model.selectedProductID == "fixture-product-2" && model.filterResetID != beforeProductLink, "Product links must reset category and review filters even in the same section")
-
         model.startScan(configuration: .init(locations: []))
         try await finishScan(model)
         check(model.currentReport == report && model.scanFailureMessage == nil, "Initial synthetic scan must finish")
@@ -137,10 +162,10 @@ import Darwin
         filteredModel.startScan(configuration: .init(locations: []))
         try await finishScan(filteredModel)
         check(filteredModel.selectedProductID == beta.id, "A rescan must preserve a valid selection even when other rows are visible")
-        filteredModel.navigate(to: LocalReviewFilter.relatedEditions)
+        filteredModel.navigate(to: LocalReviewFilter.differentVersions)
         filteredModel.startScan(configuration: .init(locations: []))
         try await finishScan(filteredModel)
-        check(filteredModel.localReviewFilter == .relatedEditions, "A rescan must retain the active local review")
+        check(filteredModel.localReviewFilter == .differentVersions, "A rescan must retain the active local review")
 
         filteredModel.navigate(to: .allPlugins)
         filteredModel.searchText = "Beta"

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import ProducerUpToDateCore
 import SwiftUI
 
@@ -28,7 +28,7 @@ struct InventoryEmptyView: View {
 
     private var emptySymbol: String {
         switch section {
-        case .overview, .tips, .caches:
+        case .overview, .tips, .caches, .backups:
             return section.symbolName
         case .needsAttention:
             return "checkmark.circle"
@@ -48,7 +48,7 @@ struct InventoryEmptyView: View {
 
     private var title: String {
         switch section {
-        case .overview, .tips, .caches:
+        case .overview, .tips, .caches, .backups:
             return "No scan yet"
         case .needsAttention:
             return "No local problems found"
@@ -72,7 +72,7 @@ struct InventoryEmptyView: View {
 
     private var detail: String {
         switch section {
-        case .overview, .tips, .caches:
+        case .overview, .tips, .caches, .backups:
             return "Scan this Mac to fill the overview."
         case .needsAttention:
             return "Local findings only. Compatibility with your DAW isn’t checked here."

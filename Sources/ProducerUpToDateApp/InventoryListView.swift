@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import ProducerUpToDateCore
 import SwiftUI
 
@@ -331,9 +331,6 @@ struct ReviewEmptyMessage: Equatable {
         case .repeatedCopies:
             return .init(title: "No multiple copies of one format found",
                          detail: "No scanned product has repeated copies of the same format. Files outside the scan are not covered.")
-        case .relatedEditions:
-            return .init(title: "No related editions identified",
-                         detail: "Suggestions use installed names and major versions. Unidentified relationships remain unknown.")
         }
     }
 }

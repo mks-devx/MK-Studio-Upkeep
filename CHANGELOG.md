@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.0 — Unreleased
+
+- Create and verify a local backup of every selected software bundle before
+  in-app removal begins. A failed backup causes zero removals; a partial Trash
+  failure records exactly which items moved.
+- Add Backups under Maintenance and Settings, with a local restore timeline,
+  collision-safe restore, manual cleanup, and optional automatic retention of
+  7, 30 or 90 days. Backup creation and 30-day cleanup are enabled by default.
+- Replace experimental wording with the precise removal boundary: the app handles
+  eligible bundles and preserves external settings and creative content; vendor
+  uninstallers may still be required.
+- License source beginning with version 0.4.0 under AGPL-3.0. Version 0.3.0 and
+  earlier source snapshots and installers retain their supplied licences.
+
 ## 0.3.0 — 9 September 2026
 
 - License the source under MPL-2.0, replacing the delayed

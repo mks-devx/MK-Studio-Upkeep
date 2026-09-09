@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import AppKit
 import Combine
 import Foundation
@@ -39,7 +39,7 @@ extension AppModel {
         let products = normalizedProducts
 
         switch section {
-        case .overview, .tips, .caches:
+        case .overview, .tips, .caches, .backups:
             return []
         case .needsAttention:
             return AttentionOrdering.ordered(products.filter { !$0.issues.isEmpty })
@@ -81,7 +81,6 @@ extension AppModel {
             case .cannotRun: return LocalProductReview.cannotRun(product, processor: MacArchitecture.current.processor)
             case .differentVersions: return PluginGuidance.versionsDiffer(product)
             case .repeatedCopies: return LocalProductReview.hasRepeatedFormat(product)
-            case .relatedEditions: return relatedEditions[product.id] != nil
             }
     }
 

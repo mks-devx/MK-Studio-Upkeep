@@ -1,11 +1,11 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import Foundation
 
 /// Test coverage and feature availability are separate. Untested does not mean unsupported.
 public enum TestedPlatform {
     public static let requirements = "Requires macOS 13 or later. Tested on Apple Silicon with macOS 26.5.2. Other macOS versions and Intel Macs have not yet been tested."
     public static let removalUnavailable = "In-app removal requires macOS 13 or later."
-    public static let removalCaution = "Removal is experimental and has not been tested on this Mac configuration. Review the selected items carefully before confirming."
+    public static let removalCaution = "Removal has not been tested on this Mac configuration. Review the selected items and backup setting carefully before confirming."
 
     public static func isTested(isNativeAppleSilicon: Bool, version: OperatingSystemVersion) -> Bool {
         isNativeAppleSilicon && version.majorVersion == 26 && version.minorVersion == 5 && version.patchVersion == 2

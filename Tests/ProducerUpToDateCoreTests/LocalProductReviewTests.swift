@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import XCTest
 @testable import ProducerUpToDateCore
 
@@ -23,13 +23,6 @@ final class LocalProductReviewTests: XCTestCase {
         let repeated = product("Fixture", path: "/fixtures/other.component")
         let copies = NormalizedPluginProduct(id: "p", name: "Fixture", vendor: "Example", bundles: first.bundles + repeated.bundles, confidence: .high, matchEvidence: [], requiresVerification: false)
         XCTAssertTrue(LocalProductReview.hasRepeatedFormat(copies))
-    }
-    func testRelatedEditionsRequireVendorAndMatchingMajor() {
-        let old = product("FixtureBox 2"), new = product("FixtureBox", version: "3.0")
-        let index = LocalProductReview.relatedEditions([old, new])
-        XCTAssertEqual(index[old.id]?.map(\.id), [new.id])
-        XCTAssertNil(LocalProductReview.relatedEditions([old, product("FixtureBox", version: "3.0", vendor: "Other")])[old.id])
-        XCTAssertNil(LocalProductReview.relatedEditions([product("FixtureBox 2", version: "9.0"), new])[old.id])
     }
     func testFriendlyNamePreservesTechnicalNamesExceptSeparators() {
         XCTAssertEqual(LocalProductReview.displayName("AFX2DAW_MONO"), "AFX2DAW MONO")

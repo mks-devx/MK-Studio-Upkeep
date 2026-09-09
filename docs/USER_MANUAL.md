@@ -4,9 +4,9 @@ MK Studio Upkeep inventories installed audio software and helps you review local
 findings. It points you to developer websites and software managers; it does not
 check or install current plugin or DAW releases.
 
-Version 0.3.0 removes the earlier **Newer editions** category. Review now reports
-local findings only; official websites remain destinations where you can check
-release information yourself.
+Version 0.4.0 adds verified local backups and restore history for eligible software
+removed through the app. Review reports local findings only; official websites
+remain destinations where you can check release information yourself.
 
 ## Start a scan
 
@@ -35,6 +35,7 @@ application may be missed.
 | Hardware | Audio devices and MIDI entries reported by macOS, including virtual devices. |
 | Drivers | Installed audio and MIDI driver software. |
 | Review | Local findings described below. |
+| Backups | Verified recovery copies created before in-app software removal. |
 | Cache inspection | Read-only sizes for recognised cache locations. |
 | Tips | Practical audio guidance and source links. |
 
@@ -56,7 +57,6 @@ Review findings live in the navigation, not in a separate filter dropdown.
 | Cannot run on this Mac | A detected file is 32-bit-only, or Apple Silicon-only on an Intel Mac. |
 | Different versions | Installed copies report different version values. This is not an online update result. |
 | Multiple copies | The same format appears in more than one distinct installed location. Different formats are not duplicates. |
-| Related editions | Product names, developer identity and installed major versions suggest related editions. These remain separate products. |
 
 **Old does not mean broken.** File age alone does not establish compatibility,
 discontinued support or whether a plugin works in a session. No general list of
@@ -77,9 +77,6 @@ in different locations are kept separate. **Show file** reveals the file in Find
 **Technical details** contains raw metadata, identity and signature information.
 Missing or conflicting information is not treated as a confirmed match.
 
-Related-edition links open the other installed product. Keep editions needed by
-older sessions; a newer edition does not make the old one safe to remove.
-
 ## Where to check for updates
 
 Choose **Open developer website** or **Open [manager]**. The directory contains
@@ -93,8 +90,8 @@ suggestion does not prove it installed the product, owns its licence or supports
 uninstalling it. Browser and manager privacy policies apply.
 
 Download and install updates through the developer, then rescan. The app does not
-store vendor credentials or decide licence eligibility. A newer edition may require
-an additional purchase; check the official page and your account.
+store vendor credentials or decide licence eligibility. Check the official page
+and your account for available products and licence terms.
 
 ## Hardware and drivers
 
@@ -118,6 +115,7 @@ setup. Connected, system-owned and uncertain entries stay protected.
   inventory density, and app/menu-bar visibility.
 - **Scanning:** enabled plugin formats, recognised DAW scanning and additional folders.
 - **Evidence:** technical-detail preferences and the local-data/source policy.
+- **Backups:** removal protection, automatic retention, storage cleanup and restore history.
 - **About:** version/build, documentation, licence information and the app's own releases.
 
 Presentation choices do not alter installed software. Restoring presentation and
@@ -162,7 +160,7 @@ For security vulnerabilities, follow the [security policy](../SECURITY.md).
 
 ## Optional removal
 
-Software removal is experimental and separate from scanning. Read the file list,
+Software removal is deliberately limited and separate from scanning. Read the file list,
 select eligible bundles, close hosts and acknowledge the review before confirming.
 The final control requires a five-second hold and release with the mouse or Space key.
 Assistive activation opens a separate confirmation with the same delay. Cancel changes nothing.
@@ -172,10 +170,16 @@ projects, recordings, presets, samples and licence data are kept. Content inside
 selected bundle moves with it. A product may need its developer's uninstaller for
 complete removal; a matching filename never establishes ownership.
 
-The app rechecks the selected files before moving them. Changed or unsafe files
-are rejected. A partial failure reports what moved and stops remaining work. Keep
-Trash intact until you have checked your sessions. Restore from Trash or backup if
-needed; this app does not provide an automatic restore service.
+By default, the app copies and verifies every selected bundle before removal starts.
+If a complete backup cannot be committed, nothing moves. A partial Trash failure
+records exactly which items moved and keeps the backup. Use **Maintenance → Backups**
+or **Settings → Backups** to review the timeline and restore an item. Restore refuses
+to replace a file already at the original location.
+
+Backups stay on this Mac. Automatic deletion is enabled by default with a 30-day
+retention period; Settings offers 7, 30 or 90 days, indefinite retention by turning
+automatic deletion off, and manual deletion of expired or all backups. Disabling
+backup creation limits recovery to macOS Trash until it is emptied.
 
 Cache inspection never deletes files. Driver-file removal is disabled.
 See [Removal boundaries](UNINSTALL_REVIEW.md) for the detailed safeguards.
@@ -185,6 +189,8 @@ See [Removal boundaries](UNINSTALL_REVIEW.md) for the detailed safeguards.
 [Installation](INSTALLATION.md) · [Platform support](PLATFORM_SUPPORT.md) ·
 [Privacy](../PRIVACY.md) · [Support](../SUPPORT.md) · [Security](../SECURITY.md)
 
-## Version 0.3.0 interface improvements
+## Version history
 
-Rescans retain the current view, filters and selected visible product. The first-scan destination is configurable in Settings. Installed files show each copy’s version and processor type; expand **Location and size** for paths. **Options** contains export, scan details and category visibility. Settings can open the manual even when the inventory window is closed.
+Version 0.4.0 adds protected removal backups and restore history. Version 0.3.0
+retained the current view, filters and selected visible product after rescans and
+removed newer-edition suggestions.

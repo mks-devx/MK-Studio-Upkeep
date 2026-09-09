@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: MPL-2.0
+# SPDX-License-Identifier: AGPL-3.0-only
 """Check current release notice consistency; not legal or ownership clearance."""
 from pathlib import Path
 import hashlib
@@ -7,10 +7,10 @@ import plistlib
 import subprocess
 import sys
 
-# Official Mozilla MPL-2.0 text, with trailing line whitespace removed.
-LICENSE_SHA256 = '1f256ecad192880510e84ad60474eab7589218784b9a50bc7ceee34c2b91f1d5'
-IDENTIFIER = 'MPL-2.0'
-TITLE = 'Mozilla Public License 2.0'
+# Official GNU AGPL v3 text from the Free Software Foundation.
+LICENSE_SHA256 = '0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0'
+IDENTIFIER = 'AGPL-3.0-only'
+TITLE = 'GNU Affero General Public License v3.0'
 
 
 def audit(root, paths):
@@ -18,7 +18,7 @@ def audit(root, paths):
     notices = 0
     licence = root / 'LICENSE'
     if not licence.is_file() or hashlib.sha256(licence.read_bytes()).hexdigest() != LICENSE_SHA256:
-        failures.append('LICENSE: expected official MPL-2.0 text (trailing whitespace normalised)')
+        failures.append('LICENSE: expected official AGPL-3.0 text')
     for name in dict.fromkeys(paths):
         path = root / name
         if not name or not path.is_file():
@@ -42,8 +42,8 @@ def audit(root, paths):
     except (OSError, ValueError, plistlib.InvalidFileException):
         failures.append('Resources/Info.plist: missing or invalid metadata')
     required = {
-        'README.md': '[Mozilla Public License 2.0](LICENSE)',
-        'CONTRIBUTING.md': '[MPL-2.0](LICENSE)',
+        'README.md': '[GNU Affero General Public License v3.0](LICENSE)',
+        'CONTRIBUTING.md': '[AGPL-3.0](LICENSE)',
         'LICENSING.md': 'https://github.com/mks-devx/MK-Studio-Upkeep',
         'Sources/ProducerUpToDateApp/SettingsView.swift': TITLE,
         'scripts/build-app.sh': 'Resources/LICENSING.md',
@@ -66,6 +66,10 @@ def audit(root, paths):
                        'commercial_license.md', 'contributor_agreement.md'):
             if phrase in text:
                 failures.append(f'{name}: obsolete current licensing wording')
+        for phrase in ('current source uses mpl-2.0', 'current source is free and open source under mpl-2.0',
+                       'this source is licensed under the mozilla public license'):
+            if phrase in text:
+                failures.append(f'{name}: obsolete MPL wording for current source')
     return failures, notices
 
 

@@ -13,8 +13,8 @@ The scanner does not load plugins or certify that they will work in a DAW.
 A plugin may require a newer OS, a particular host mode or additional dependencies.
 Unknown requirements remain unknown.
 
-Software and saved MIDI-entry removal are experimental. Untested configurations
-show a caution; review and confirmation are still required. Driver-file removal
+Software removal is limited to eligible bundles and saved MIDI-entry removal has
+separate safeguards. Untested configurations show a caution; review and confirmation are still required. Driver-file removal
 is disabled on every platform, and cache inspection is read-only.
 
 Builds require Xcode 26 or newer and Swift 6. App users do not need Xcode.

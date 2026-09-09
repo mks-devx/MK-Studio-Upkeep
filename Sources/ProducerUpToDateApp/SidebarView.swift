@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import ProducerUpToDateCore
 import SwiftUI
 
@@ -74,6 +74,14 @@ struct SidebarView: View {
 
                 Section("Maintenance") {
                     Label("Cache inspection", systemImage: "internaldrive").tag(Destination.inventory(InventorySection.caches))
+                    HStack(spacing: 10) {
+                        Label("Backups", systemImage: InventorySection.backups.symbolName)
+                        Spacer(minLength: 4)
+                        Text(model.removalBackups.count.formatted())
+                            .font(.caption.monospacedDigit()).foregroundStyle(.secondary)
+                    }
+                    .tag(Destination.inventory(InventorySection.backups))
+                    .accessibilityLabel("Backups, \(model.removalBackups.count)")
                 }
 
                 Section("Help") {
@@ -121,31 +129,14 @@ struct SidebarView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(StudioUpkeepDesign.Space.regular)
 
-            Divider().padding(.horizontal, StudioUpkeepDesign.Space.regular)
-            VStack(alignment: .leading, spacing: StudioUpkeepDesign.Space.small) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Developed by").font(.caption).foregroundStyle(.secondary)
-                    Text("Mike Konstantinidis")
-                        .font(.subheadline.weight(.medium))
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                .accessibilityElement(children: .combine)
-                Link(destination: URL(string: "https://github.com/mks-devx/MK-Studio-Upkeep")!) {
-                    HStack(spacing: 6) {
-                        Text("Project on GitHub").font(.subheadline.weight(.semibold))
-                        Image(systemName: "arrow.up.right").font(.caption2)
-                            .accessibilityHidden(true)
-                    }
-                }
-                .tint(.primary)
-                .help("Open the project source and releases. Use Report a bug for bug reports.")
-                .accessibilityLabel("Project on GitHub")
-                if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
-                    Text("MK Studio Upkeep · \(version)").font(.caption2).foregroundStyle(.secondary)
-                }
+            if let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
+                Text("Version \(version)")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, StudioUpkeepDesign.Space.regular)
+                    .padding(.bottom, StudioUpkeepDesign.Space.medium)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(StudioUpkeepDesign.Space.regular)
         }
     }
 

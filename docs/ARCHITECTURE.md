@@ -9,7 +9,7 @@ MK Studio Upkeep is a native macOS SwiftUI application. Historical `ProducerUpTo
 - **Official destinations:** reviewed, version-free identity rules resolve developer websites and installed software managers locally. Unknown identities remain unknown. Newer-edition recommendations are not part of the current source.
 - **Hardware:** Core Audio and Core MIDI enumeration reads properties without opening audio streams. Driver inventory is separate from hardware availability.
 - **Presentation:** AppKit actions and SwiftUI views belong to the executable target. The split view owns navigation, title and shared search. Settings and optional last-scan records are local.
-- **Removal:** core planning and revalidation do not execute deletion. The app supplies macOS Trash only after an explicit file preview and confirmation. Driver files and protected content have no removal action.
+- **Removal and recovery:** core planning and revalidation do not execute deletion. Before the app moves eligible bundles to macOS Trash, a separate store copies and verifies every selected item by default. Restore refuses occupied or newly unsafe destinations. Driver files and protected content have no generic removal action.
 - **App releases:** MK Studio Upkeep's manual release action is separate from audio software. Private builds open GitHub Releases; configured public builds use a restricted GitHub metadata reader.
 
 ## Experiments retained in source
@@ -24,7 +24,7 @@ The standalone catalogue packaging command requires an explicit signed input and
 
 The scanner can be used independently from presentation and network experiments. There are no third-party Swift package dependencies. Apple frameworks retain their own terms.
 
-MPL-2.0 permits commercial use and combination with separately licensed code.
-Distributed MPL-covered files, including modifications, remain subject to MPL-2.0.
+The current source is covered by AGPL-3.0. Distribution and network use must
+follow its source-availability and notice requirements.
 See the [licence](../LICENSE), [licensing guide](../LICENSING.md) and
 [contributing guide](../CONTRIBUTING.md).

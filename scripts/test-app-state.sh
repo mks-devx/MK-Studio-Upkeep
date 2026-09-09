@@ -1,5 +1,5 @@
 #!/bin/bash
-# SPDX-License-Identifier: MPL-2.0
+# SPDX-License-Identifier: AGPL-3.0-only
 set -euo pipefail
 cd "$(dirname "$0")/.."
 scratch="${APP_STATE_SCRATCH:-/tmp/studio-upkeep-app-state-build}"

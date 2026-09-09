@@ -3,8 +3,8 @@
 The app's own release action is in **Settings → About** and its optional menu-bar icon's menu.
 It is separate from plugin/DAW information and never uploads inventory.
 
-In version 0.3.0, **Check GitHub Releases** opens the public release page in your
-browser without automatically comparing versions. No GitHub account is needed
+**Check GitHub Releases** opens the public release page in your browser without
+automatically comparing versions. No GitHub account is needed
 to download the installer, and no GitHub credentials are stored in MK Studio Upkeep.
 
 A public build may configure `StudioUpkeepReleaseRepository` for a manual GitHub

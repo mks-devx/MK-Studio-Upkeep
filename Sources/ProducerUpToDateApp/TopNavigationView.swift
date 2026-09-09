@@ -1,9 +1,10 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import ProducerUpToDateCore
 import SwiftUI
 
 /// Compact navigation keeps every inventory filter reachable without horizontal scrolling.
 struct TopNavigationView: View {
+    static let maintenanceSections: [InventorySection] = [.caches, .backups]
     @EnvironmentObject private var model: AppModel
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -11,8 +12,6 @@ struct TopNavigationView: View {
                 AppIconView(size: 26)
                 Text("MK Studio Upkeep").font(.headline)
                 Spacer()
-                Text("Developed by Mike Konstantinidis").font(.caption).foregroundStyle(.secondary)
-                Link("Project on GitHub", destination: URL(string: "https://github.com/mks-devx/MK-Studio-Upkeep")!).font(.caption)
                 navigationButton(.tips)
                 Button { model.showsHelp = true } label: { Label("User Manual", systemImage: "book.closed") }.help("Open the built-in guide to scanning, updates and removal.")
             }
@@ -20,7 +19,7 @@ struct TopNavigationView: View {
                 navigationButton(.overview)
                 navigationMenu("Your studio", sections: [.allPlugins, .allDAWs, .managers, .hardware, .drivers])
                 reviewMenu
-                navigationMenu("Maintenance", sections: [.caches])
+                navigationMenu("Maintenance", sections: Self.maintenanceSections)
                 Spacer(minLength: 0)
             }
             .controlSize(.small)

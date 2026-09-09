@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 // Native sheet interaction regression. Actions only increment a counter; no files are removed.
 import AppKit
 import SwiftUI

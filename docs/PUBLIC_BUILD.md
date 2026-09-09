@@ -19,8 +19,8 @@ default checks do not enable this launch step.
 
 The app bundle contains the executable, branding and licence/privacy files.
 It includes `LICENSING.md` with source-access instructions. Before distributing
-an MPL-licensed executable, publish its corresponding covered source under a
-matching release tag or archive and identify it on the download page. A local
+an AGPL-licensed executable, publish its corresponding source under a matching
+release tag or archive and identify it on the download page. A local
 build is not ready for distribution merely because an older source release is public.
 No historical release catalogue or catalogue signing key is included in the
 current source or packaged app. The isolated update-engine source directory

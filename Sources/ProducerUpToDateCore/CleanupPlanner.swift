@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import CryptoKit
 import Foundation
 
@@ -163,6 +163,51 @@ public struct CleanupSafety: Sendable {
         if let expected = item.contentsFingerprint,
            (try? BundleContentsPreview.scan(path).fingerprint) != expected {
             return "Bundle contents changed or cannot be rechecked. Review a new uninstall plan."
+        }
+        return nil
+    }
+
+    /// Rechecks a stored original location before a backup is restored. The bundle is
+    /// expected to be absent, so this validates its parent, extension and allowlist only.
+    public func validateRestoreDestination(_ destination: URL, kind: CleanupItemKind) -> String? {
+        guard kind == .pluginBundle || kind == .application || kind == .driverBundle else {
+            return "This item type cannot be restored by MK Studio Upkeep."
+        }
+        let path = destination.standardizedFileURL
+        guard path.isFileURL, !FileManager.default.fileExists(atPath: path.path) else {
+            return "Software already exists at the original location."
+        }
+        let resolvedParent = path.deletingLastPathComponent().resolvingSymlinksInPath().standardizedFileURL
+        let resolvedPath = resolvedParent.appendingPathComponent(path.lastPathComponent).standardizedFileURL
+        guard path.path == resolvedPath.path else { return "The original location contains a symbolic link." }
+        let extensions: [String]
+        switch kind {
+        case .application: extensions = ["app"]
+        case .driverBundle: extensions = ["driver", "plugin"]
+        default: extensions = ["component", "vst3", "vst", "clap"]
+        }
+        guard extensions.contains(path.pathExtension.lowercased()),
+              let root = allowedRoots.first(where: { path.path.hasPrefix($0.path + "/") }) else {
+            return "The original location is outside approved software folders."
+        }
+        if kind == .driverBundle {
+            let parent = path.deletingLastPathComponent().pathComponents
+            guard Array(parent.suffix(3)) == ["Audio", "Plug-Ins", "HAL"]
+                    || Array(parent.suffix(2)) == ["Audio", "MIDI Drivers"] else {
+                return "Drivers can only be restored to the Core Audio HAL or MIDI Drivers folders."
+            }
+        }
+        var parent = path.deletingLastPathComponent()
+        while parent.path != root.path {
+            if ["app", "component", "vst3", "vst", "clap", "kext", "systemextension", "driver", "plugin"]
+                .contains(parent.pathExtension.lowercased()) {
+                return "Nested software bundles cannot be restored independently."
+            }
+            parent.deleteLastPathComponent()
+        }
+        if path.path.hasPrefix("/System/") || path.path.hasPrefix("/Library/Extensions/")
+            || path.path.hasPrefix("/Library/SystemExtensions/") {
+            return "This protected system location cannot be restored by MK Studio Upkeep."
         }
         return nil
     }

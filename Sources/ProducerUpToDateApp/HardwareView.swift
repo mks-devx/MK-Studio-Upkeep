@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import AppKit
 import ProducerUpToDateCore
 import SwiftUI
@@ -395,6 +395,10 @@ struct HardwareDetailView: View {
 /// so setups with different app versions or install locations still get an Open button.
 enum VendorAppLocator {
     struct Located { let name: String; let url: URL }
+    private static let installedApplicationsByName = applicationsByName(in: [
+        URL(fileURLWithPath: "/Applications"),
+        FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Applications")
+    ])
 
     /// Opens a vendor app only if it carries a verified Developer ID, App Store or Apple signature,
     /// The user also reviews the actual signer; an expected-vendor mapping is not yet available.
@@ -437,20 +441,35 @@ enum VendorAppLocator {
             return Located(name: appName ?? url.deletingPathExtension().lastPathComponent, url: url)
         }
         guard let name = appName else { return nil }
-        // Launch Services also knows registered apps in vendor subfolders or other volumes.
-        // Name lookup is only discovery; opening still verifies the signature and asks the user.
-        if let path = NSWorkspace.shared.fullPath(forApplication: name),
-           FileManager.default.fileExists(atPath: URL(fileURLWithPath: path).appendingPathComponent("Contents/Info.plist").path) {
-            return Located(name: name, url: URL(fileURLWithPath: path))
-        }
-        let folders = [URL(fileURLWithPath: "/Applications"), FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Applications")]
-        for folder in folders {
-            let candidate = folder.appendingPathComponent(name + ".app")
-            guard FileManager.default.fileExists(atPath: candidate.appendingPathComponent("Contents/Info.plist").path) else { continue }
-            // A matching name is not identity; `open` verifies the signature before launching.
+        if let candidate = installedApplicationsByName[name.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current)] {
+            // A matching name is discovery, not identity; `open` verifies the signature and asks.
             return Located(name: name, url: candidate)
         }
         return nil
+    }
+
+    static func applicationsByName(in roots: [URL], maximumEntries: Int = 50_000) -> [String: URL] {
+        var result: [String: URL] = [:]
+        var inspected = 0
+        for root in roots where inspected < maximumEntries {
+            guard let enumerator = FileManager.default.enumerator(at: root,
+                includingPropertiesForKeys: [.isDirectoryKey, .isSymbolicLinkKey],
+                options: [.skipsHiddenFiles, .skipsPackageDescendants], errorHandler: { _, _ in true }) else { continue }
+            for case let candidate as URL in enumerator {
+                inspected += 1
+                if inspected > maximumEntries { break }
+                if enumerator.level > 5 { enumerator.skipDescendants(); continue }
+                guard candidate.pathExtension.lowercased() == "app",
+                      let values = try? candidate.resourceValues(forKeys: [.isDirectoryKey, .isSymbolicLinkKey]),
+                      values.isDirectory == true, values.isSymbolicLink != true,
+                      FileManager.default.fileExists(atPath: candidate.appendingPathComponent("Contents/Info.plist").path) else { continue }
+                enumerator.skipDescendants()
+                let key = candidate.deletingPathExtension().lastPathComponent
+                    .folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current)
+                if result[key] == nil { result[key] = candidate.standardizedFileURL }
+            }
+        }
+        return result
     }
 }
 

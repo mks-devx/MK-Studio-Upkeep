@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import Foundation
 import XCTest
 @testable import ProducerUpToDateCore
@@ -17,7 +17,6 @@ final class EmptyCatalogueDefaultsTests: XCTestCase {
         let update = PluginUpdateEvaluator.evaluate(product, catalogue: ReviewedPluginCatalogue.bundled)
         XCTAssertEqual(update.reason, .noReviewedRelease)
         XCTAssertNil(update.latestVersion)
-        XCTAssertNil(update.newerEdition)
         XCTAssertEqual(ProductArchitectureSupportEvaluator.evaluate(product: product,
             catalogue: ReviewedArchitectureSupportCatalogue.bundled), .nativeReleaseNotConfirmed)
     }

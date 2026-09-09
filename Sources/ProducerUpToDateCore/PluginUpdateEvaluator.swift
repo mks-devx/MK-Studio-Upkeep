@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import Foundation
 
 public enum PluginUpdateEvaluator {
@@ -61,27 +61,10 @@ public enum PluginUpdateEvaluator {
             sourceURL: release.sourceURL,
             checkedOn: release.checkedOn,
             reason: reason,
-            newerEdition: newerEdition(than: release, in: catalogue, now: now),
             identityConfirmedByUser: confirmed != nil
         )
         result.checkMethod = release.checkMethod
         return result
-    }
-
-    /// The highest fresh edition in the same family and vendor line above the matched record.
-    /// Ambiguous edition numbers yield nothing rather than a guess.
-    public static func newerEdition(than release: PluginReleaseRecord, in catalogue: [PluginReleaseRecord], now: Date = Date()) -> NewerEdition? {
-        guard let family = release.family, let edition = release.edition else { return nil }
-        let candidates = catalogue.filter {
-            $0.family == family && $0.vendorIdentifierPrefixes == release.vendorIdentifierPrefixes
-                && ($0.edition ?? 0) > edition && EvidenceFreshness.isFresh($0.checkedOn, now: now)
-        }
-        guard let top = candidates.map({ $0.edition ?? 0 }).max(),
-              candidates.filter({ $0.edition == top }).count == 1,
-              let newest = candidates.first(where: { $0.edition == top }),
-              let name = newest.productAliases.first else { return nil }
-        return NewerEdition(name: name, edition: top, latestVersion: newest.latestVersion,
-                            sourceURL: newest.sourceURL, checkedOn: newest.checkedOn)
     }
 
     public static func matches(

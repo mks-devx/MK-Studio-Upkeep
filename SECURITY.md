@@ -11,6 +11,6 @@ channel is provided.
 Include the version/build, impact, reproduction steps and relevant OS details.
 There is no guaranteed response time. Fixes target the latest maintained release and source.
 
-The scanner processes untrusted metadata without loading plugin code. The app does not load plugin code or run an automatic plugin update service. Removal
-uses confirmation and filesystem checks but remains experimental. Signing and
+The scanner processes untrusted metadata without loading plugin code. The app does not load plugin code or run an automatic plugin update service. Limited removal
+uses confirmation, filesystem checks and a verified local backup by default. Signing and
 notarisation do not establish that software is free of vulnerabilities.

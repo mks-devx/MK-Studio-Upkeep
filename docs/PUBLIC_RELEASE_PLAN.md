@@ -20,12 +20,12 @@ See [release verification](RELEASE_VERIFICATION.md) for the completed evidence a
 ## Publication checks
 
 Verify private vulnerability reporting, support access, source and asset scope,
-and public documentation before each release. The current source uses MPL-2.0;
+and public documentation before each release. The current source uses AGPL-3.0;
 open-source licensing does not establish legal clearance or replace applicable
 publisher and privacy notices.
 
 ## Distribution boundary
 
-The app targets macOS 13 and later with a universal executable. A build for Intel is not physical Intel runtime validation. Experimental removal remains separately labelled and protected; it is not a promise of complete vendor uninstallation.
+The app targets macOS 13 and later with a universal executable. A build for Intel is not physical Intel runtime validation. In-app removal remains limited, separately labelled and protected; it is not a promise of complete vendor uninstallation.
 
 Upload only the reviewed source, release description, signed disk image and checksum file. Signing credentials, notarisation records, test inventories and development backups remain local.

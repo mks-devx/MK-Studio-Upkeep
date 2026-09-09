@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import AppKit
 import ProducerUpToDateCore
 import SwiftUI
@@ -154,19 +154,6 @@ struct ProductDetailView: View {
         }
         if LocalProductReview.hasRepeatedFormat(product) {
             finding("Multiple copies of one format", detail: "The same plugin format appears in more than one location. Review the files before removing anything.")
-        }
-        if let related = model.relatedEditions[product.id], !related.isEmpty {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Related editions installed").font(.headline)
-                ForEach(related) { other in
-                    Button(LocalProductReview.displayName(other.name)) {
-                        model.showProduct(other.id)
-                    }
-                        .buttonStyle(.link)
-                }
-                Text("Suggested from names and major versions. Older projects may need both editions.")
-                    .font(.caption).foregroundStyle(.secondary)
-            }
         }
         if !PluginGuidance.intelOnlyBundles(product).isEmpty, mac.processor == .appleSilicon {
             Text("Intel-only files may need Rosetta or a compatible host. Check the developer for a native installer.")

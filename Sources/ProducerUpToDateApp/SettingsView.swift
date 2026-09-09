@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import ProducerUpToDateCore
 import SwiftUI
 
@@ -6,6 +6,7 @@ private enum SettingsSection: String, CaseIterable, Identifiable {
     case general
     case scanning
     case evidence
+    case backups
     case about
 
     var id: String { rawValue }
@@ -18,6 +19,8 @@ private enum SettingsSection: String, CaseIterable, Identifiable {
             return "Scanning"
         case .evidence:
             return "Evidence"
+        case .backups:
+            return "Backups"
         case .about:
             return "About"
         }
@@ -31,6 +34,8 @@ private enum SettingsSection: String, CaseIterable, Identifiable {
             return "Decide which studio software locations are included."
         case .evidence:
             return "Control detail levels and review the app's trust policy."
+        case .backups:
+            return "Manage local removal backups, retention and restoration."
         case .about:
             return "Product information, documentation, and version details."
         }
@@ -44,6 +49,8 @@ private enum SettingsSection: String, CaseIterable, Identifiable {
             return "magnifyingglass"
         case .evidence:
             return "checkmark.seal"
+        case .backups:
+            return "externaldrive.badge.timemachine"
         case .about:
             return "info.circle"
         }
@@ -205,6 +212,8 @@ struct SettingsView: View {
             scanning
         case .evidence:
             evidence
+        case .backups:
+            RemovalBackupSettingsView()
         case .about:
             about
         }
@@ -349,10 +358,10 @@ struct SettingsView: View {
             .buttonStyle(.plain)
             .font(.subheadline)
             .foregroundStyle(.secondary)
-            Text("Resets appearance, visibility, detail and scan choices. Additional plugin folders and app-update preferences are kept.")
+            Text("Resets appearance, visibility, detail and scan choices. Additional plugin folders, app-update preferences and removal-backup settings are kept.")
                 .font(.caption).foregroundStyle(.secondary)
             if restoredDefaults {
-                Text("Presentation and scan defaults restored. Additional plugin folders were kept.")
+                Text("Presentation and scan defaults restored. Additional plugin folders and backup settings were kept.")
                     .font(.caption).foregroundStyle(.secondary)
             }
         }
@@ -504,8 +513,8 @@ struct SettingsView: View {
                 Text(TestedPlatform.requirements).font(.callout).fixedSize(horizontal: false, vertical: true)
                 if !TestedPlatform.isTestedConfiguration { Text(TestedPlatform.removalCaution).font(.caption).foregroundStyle(.secondary) }
                 rowDivider
-                readOnlyRow("Licence", value: "Mozilla Public License 2.0")
-                Text("Free, open-source software for personal and professional use. Use, modification and redistribution, including commercial use, are permitted under MPL-2.0. See the licence and source information for distribution requirements.")
+                readOnlyRow("Licence", value: "GNU Affero General Public License v3.0")
+                Text("Open-source software provided without warranty. Use, modification and redistribution are governed by AGPL-3.0. See the licence and source information for the complete terms.")
                     .font(.caption).foregroundStyle(.secondary)
                 Text("Product and company names identify software found on your Mac and belong to their owners. MK Studio Upkeep is not affiliated with or endorsed by any of them.")
                     .font(.caption).foregroundStyle(.secondary)

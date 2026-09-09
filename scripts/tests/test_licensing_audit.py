@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: MPL-2.0
+# SPDX-License-Identifier: AGPL-3.0-only
 import importlib.util
 from pathlib import Path
 import shutil
@@ -27,17 +27,17 @@ class LicensingAuditTests(unittest.TestCase):
     def failures(self):
         return audit.audit(self.root, self.paths)[0]
 
-    def test_current_mpl_distribution_passes(self):
+    def test_current_agpl_distribution_passes(self):
         self.assertEqual(self.failures(), [])
 
     def test_modified_licence_is_rejected(self):
         with (self.root / 'LICENSE').open('a') as stream:
             stream.write('\nAdditional restriction.\n')
-        self.assertTrue(any('official MPL-2.0 text' in issue for issue in self.failures()))
+        self.assertTrue(any('official AGPL-3.0 text' in issue for issue in self.failures()))
 
     def test_legacy_source_notice_is_rejected(self):
         name = 'Sources/Example.swift'
-        (self.root / name).write_text('// SPDX-License-Identifier: ' + 'BUSL' + '-1.1\n')
+        (self.root / name).write_text('// SPDX-License-Identifier: MPL-2.0\n')
         self.paths.append(name)
         self.assertTrue(any('inconsistent source' in issue for issue in self.failures()))
 

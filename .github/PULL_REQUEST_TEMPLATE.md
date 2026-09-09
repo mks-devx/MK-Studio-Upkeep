@@ -6,5 +6,5 @@
 - [ ] Wording distinguishes local findings from vendor claims; product names do not imply endorsement (see docs/WRITING_STYLE.md)
 
 ## Contribution rights
-- [ ] I have the right to contribute this material under [MPL-2.0](../LICENSE), as described in [CONTRIBUTING.md](../CONTRIBUTING.md).
+- [ ] I have the right to contribute this material under [AGPL-3.0](../LICENSE), as described in [CONTRIBUTING.md](../CONTRIBUTING.md).
 - [ ] I have disclosed third-party material, its terms, and any required permissions.

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import ProducerUpToDateCore
 import SwiftUI
 
@@ -63,6 +63,7 @@ private struct InventoryShell: View {
     let showsScanProgress: Bool
     @AppStorage(StudioUpkeepPreference.sidebarPosition) private var sidebarPosition = "left"
     @State private var tipsSearch = ""
+    @State private var backupSearch = ""
     @StateObject private var caches = CacheBrowser()
     @StateObject private var hardware = HardwareBrowser()
     @StateObject private var drivers = HardwareBrowser(driversOnly: true)
@@ -144,6 +145,8 @@ private struct InventoryShell: View {
                 }
                 if model.selectedSection == .caches {
                     CacheInspectionView(browser: caches)
+                } else if model.selectedSection == .backups {
+                    RemovalBackupsListView(search: backupSearch)
                 } else if model.selectedSection == .tips {
                     StudioTipsView(search: tipsSearch)
                 } else if model.selectedSection == .overview {
@@ -174,6 +177,8 @@ private struct InventoryShell: View {
             Group {
                 if model.selectedSection == .caches {
                     CacheInspectionContextView()
+                } else if model.selectedSection == .backups {
+                    RemovalBackupDetailView()
                 } else if model.selectedSection == .tips {
                     StudioTipsContextView()
                 } else if model.selectedSection == .overview {
@@ -215,6 +220,7 @@ private struct InventoryShell: View {
     private var searchText: Binding<String> {
         switch model.selectedSection {
         case .caches: return $caches.search
+        case .backups: return $backupSearch
         case .tips: return $tipsSearch
         case .hardware: return $hardware.search
         case .drivers: return $drivers.search
@@ -233,6 +239,7 @@ private struct InventoryShell: View {
     private var searchPrompt: String {
         switch model.selectedSection {
         case .caches: return "Search cache locations"
+        case .backups: return "Search backups"
         case .tips: return "Search tips"
         case .hardware: return "Search hardware"
         case .drivers: return "Search drivers"

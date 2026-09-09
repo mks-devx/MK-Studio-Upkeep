@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import AppKit
 import Combine
 import Foundation
@@ -52,6 +52,7 @@ struct SoftwareUpdateItem: Identifiable {
 enum InventorySection: String, CaseIterable, Identifiable {
     /// One screen of counts from the last scan; each card opens its section.
     case caches = "Cache inspection"
+    case backups = "Backups"
     case tips = "Tips"
     case overview = "Overview"
     case needsAttention = "Needs Attention"
@@ -75,6 +76,7 @@ enum InventorySection: String, CaseIterable, Identifiable {
     var symbolName: String {
         switch self {
         case .caches: return "internaldrive"
+        case .backups: return "externaldrive.badge.timemachine"
         case .tips: return "lightbulb"
         case .overview:
             return "square.grid.2x2"
@@ -109,7 +111,6 @@ extension LocalReviewFilter {
         case .cannotRun: "Cannot run on this Mac"
         case .differentVersions: "Different versions"
         case .repeatedCopies: "Multiple copies"
-        case .relatedEditions: "Related editions"
         }
     }
     var navigationSymbol: String {
@@ -118,7 +119,6 @@ extension LocalReviewFilter {
         case .cannotRun: "nosign"
         case .differentVersions: "arrow.triangle.branch"
         case .repeatedCopies: "doc.on.doc"
-        case .relatedEditions: "square.stack"
         }
     }
 }

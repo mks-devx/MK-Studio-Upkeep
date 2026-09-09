@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import Foundation
 
 public enum ReleaseCheckMethod: String, Codable, Sendable {
@@ -14,9 +14,8 @@ public struct PluginReleaseRecord: Hashable, Codable, Sendable {
     public let checkedOn: String
     public var checkMethod: ReleaseCheckMethod? = nil
     public let downloadURL: URL?
-    /// Links editions of one product line (for example Pro-Q 3 and Pro-Q 4). Both fields are
-    /// present or both absent. A newer edition is reported separately from an update and
-    /// never implies pricing or upgrade eligibility.
+    /// Legacy catalogue metadata retained for decoding old maintainer fixtures. The app
+    /// does not use these fields to infer or recommend another product edition.
     public let family: String?
     public let edition: Int?
 
@@ -41,21 +40,6 @@ public struct PluginReleaseRecord: Hashable, Codable, Sendable {
     }
 }
 
-/// A newer edition of the installed product line, with reviewed evidence for that edition.
-public struct NewerEdition: Hashable, Codable, Sendable {
-    public let name: String
-    public let edition: Int
-    public let latestVersion: String
-    public let sourceURL: URL
-    public let checkedOn: String
-    public init(name: String, edition: Int, latestVersion: String, sourceURL: URL, checkedOn: String) {
-        self.name = name; self.edition = edition; self.latestVersion = latestVersion
-        self.sourceURL = sourceURL; self.checkedOn = checkedOn
-    }
-    /// Shown whenever no reviewed pricing record exists. A higher edition proves nothing about cost.
-    public static let pricingNotice = "Upgrades may cost money. Check the vendor for pricing and whether you qualify."
-}
-
 public struct PluginUpdateResult: Identifiable, Hashable, Codable, Sendable {
     public let product: NormalizedPluginProduct
     public let updateState: UpdateCheckState
@@ -64,8 +48,6 @@ public struct PluginUpdateResult: Identifiable, Hashable, Codable, Sendable {
     public let checkedOn: String?
     public var checkMethod: ReleaseCheckMethod? = nil
     public let reason: PluginUpdateReason?
-    /// Independent of `updateState`: the installed edition is compared on its own terms.
-    public let newerEdition: NewerEdition?
     /// The match rests on the user's local identity confirmation, not on the scanner's own evidence.
     public let identityConfirmedByUser: Bool
 
@@ -76,7 +58,6 @@ public struct PluginUpdateResult: Identifiable, Hashable, Codable, Sendable {
         sourceURL: URL? = nil,
         checkedOn: String? = nil,
         reason: PluginUpdateReason? = nil,
-        newerEdition: NewerEdition? = nil,
         identityConfirmedByUser: Bool = false
     ) {
         self.product = product
@@ -85,7 +66,6 @@ public struct PluginUpdateResult: Identifiable, Hashable, Codable, Sendable {
         self.sourceURL = sourceURL
         self.checkedOn = checkedOn
         self.reason = reason
-        self.newerEdition = newerEdition
         self.identityConfirmedByUser = identityConfirmedByUser
     }
 
@@ -140,8 +120,6 @@ public struct PluginUpdateCoverage: Equatable, Sendable {
     public let total: Int
     public let updates: Int
     public let current: Int
-    /// Products with a newer edition on record. Counted separately from updates.
-    public let upgrades: Int
     /// Not compared, but a vendor manager owns their updates: an actionable route, not a gap.
     public let managed: Int
     /// Not compared; a reviewed official page is the route.
@@ -157,7 +135,6 @@ public struct PluginUpdateCoverage: Equatable, Sendable {
         total = results.count
         updates = results.filter { $0.updateState == .updateAvailable }.count
         current = results.filter { $0.updateState == .current }.count
-        upgrades = results.filter { $0.newerEdition != nil }.count
         let routes = results.filter { $0.latestVersion == nil }.map(\.route)
         managed = routes.filter { if case .manager = $0 { return true }; return false }.count
         websiteOnly = routes.filter { if case .website = $0 { return true }; return false }.count

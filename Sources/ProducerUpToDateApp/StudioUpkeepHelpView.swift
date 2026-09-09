@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import SwiftUI
 
 struct StudioUpkeepHelpView: View {
@@ -255,9 +255,9 @@ private struct ManualArticle: View {
                 topic("Limits", "Associated-file discovery is bounded to 200,000 entries and limited depth. Warnings mean more files may exist, including in other accounts or locations. Each bundle preview inspects up to 250,000 entries and displays the first 200 names. A failed bundle preview prevents removal; related support files stay protected."),
                 topic("Confirm removal", "Close DAWs and plugin hosts, select only the bundles you intend to remove, and acknowledge the review. Hold the final button for five seconds, then release. Releasing early or pressing Escape cancels the hold. Assistive activation opens a separate dialog: wait five seconds, then choose Confirm. Cancel makes no changes. No items are selected by default."),
                 topic("Settings stay on your Mac", "Deep review lists identified settings and related files with their original locations and individual Show in Finder actions. Copy kept locations copies the paths and search warnings. These files are not selected for removal or backed up. No results does not prove no settings exist. Use the vendor’s procedure for a full reset."),
-                topic("Review every file", "Removal is experimental. Choose Review Uninstall Files, then tick the bundles yourself; nothing is preselected. The preview is frozen, and each item is checked again before it moves. Unselected preferences and support folders stay."),
+                topic("Review every file", "Removal is limited to eligible bundles. Choose Review Uninstall Files, then tick the bundles yourself; nothing is preselected. The preview is frozen, and each item is checked again before it moves. Unselected preferences and support folders stay."),
                 topic("Your work is kept", "Presets, samples, projects, licences and shared folders outside the bundle are never selected. Anything saved inside a selected bundle moves with it, so back it up first. Full removal may need the vendor’s uninstaller."),
-                topic("Undo", "Approved items go to the Trash. Close your DAWs first, and don’t empty the Trash until your sessions open correctly.")
+                topic("Recovery", "A verified local backup is created by default before anything moves to Trash. Use Backups to restore an item; an existing item at the original location is never replaced. Backup and retention controls are in Settings.")
             ]
         case .settings:
             return [
@@ -266,7 +266,8 @@ private struct ManualArticle: View {
                 topic("Evidence", "Privacy information and the technical-details preference. Changing this preference updates open plugin, DAW and driver views."),
                 topic("Dock and menu bar", "At least one icon stays visible. The menu offers scanning, settings and window controls."),
                 topic("MK Studio Upkeep updates", "Check for Updates in About checks MK Studio Upkeep itself. A configured build opens published releases in your browser; it does not install them. If no release destination is configured, the app says so."),
-                topic("Restore defaults", "Restore presentation and scan defaults is in General. It resets appearance, visibility, details and scan choices. Additional plugin folders and app-update preferences are kept.")
+                topic("Restore defaults", "Restore presentation and scan defaults is in General. It resets appearance, visibility, details and scan choices. Additional plugin folders, app-update preferences and removal-backup settings are kept."),
+                topic("Backups", "Backup creation is on by default. Automatic cleanup keeps new backups for 30 days by default. Settings → Backups lets you change retention, keep backups indefinitely, delete recovery data and restore removed bundles.")
             ]
         case .privacy:
             return [

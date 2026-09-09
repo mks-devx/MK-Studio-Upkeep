@@ -1,5 +1,5 @@
 #!/bin/zsh
-# SPDX-License-Identifier: MPL-2.0
+# SPDX-License-Identifier: AGPL-3.0-only
 # Build the public source snapshot: the committed tree as one fresh commit, without the
 # private development history, ignored folders, untracked files, or anything marked
 # export-ignore in .gitattributes. Runs the publication audits on the result and removes

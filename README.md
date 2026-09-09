@@ -15,14 +15,14 @@ installed versions, and find official websites where you can check for updates.
 Open supported software managers and review your audio devices and drivers from
 the same app.
 
-Released under the [Mozilla Public License 2.0](LICENSE).
+Released under the [GNU Affero General Public License v3.0](LICENSE).
 
 **Scanning stays on your Mac.** No account, telemetry or inventory upload is required.
 
 ## What it does
 
-Version 0.3.0 focuses Review on locally detected facts and removes the earlier
-newer-edition suggestions. See the [changelog](CHANGELOG.md#030--9-september-2026).
+Version 0.4.0 adds verified local recovery copies for in-app removal. Review
+continues to show locally detected facts without newer-edition suggestions.
 
 - **Inventory plugins:** scan Audio Unit, VST3, VST2 and CLAP plugins in standard
   and additional folders. Group matching formats and inspect each installed file and version.
@@ -91,8 +91,8 @@ button provides somewhere to check, not confirmation that an update exists.
 Newer-edition recommendations are not provided. Related-edition findings describe
 software already installed on this Mac; they do not recommend an upgrade.
 
-MK Studio Upkeep's own release action is separate. Version 0.3.0 opens GitHub
-Releases in your browser; it does not download or install updates. No GitHub
+MK Studio Upkeep's own release action is separate. It opens GitHub Releases in
+your browser; it does not download or install updates. No GitHub
 credentials are stored in the app. See [Update destinations](docs/OFFICIAL_ONLINE_CHECKS.md).
 
 ## Your files and privacy
@@ -102,11 +102,11 @@ record audio or inspect the contents of projects, presets, samples or licences.
 Hardware, activity readings and scan history remain local. Reports are exported
 only when requested; support reports have a preview before opening GitHub.
 
-**Software removal is optional and experimental.** The app requires review,
-selection and confirmation before moving eligible bundles to Trash. Related
-settings and external creative content are kept. Content stored inside a selected
-bundle moves with that bundle; removing a plugin can break an existing session.
-Keep backups and check sessions before emptying Trash.
+**Software removal is optional and deliberately limited.** Before moving an
+eligible bundle to Trash, the app creates and verifies a local backup by default.
+Related settings and external creative content are kept. Content stored inside a
+selected bundle moves with that bundle; removing a plugin can break an existing
+session. Restore history and retention controls are available under Backups.
 
 Driver-file removal is disabled; use the developer's instructions. Cache inspection
 does not delete files. Read the [Privacy policy](PRIVACY.md) and
@@ -128,11 +128,10 @@ licence keys or third-party plugin binaries. For security vulnerabilities, follo
 
 ## Licence and development
 
-This source is licensed under the [Mozilla Public License 2.0](LICENSE),
-including personal and commercial use, modification and redistribution.
-Distributed changes to MPL-covered files must remain available under MPL-2.0.
-See [licensing and source availability](LICENSING.md). Earlier installers retain
-the licence supplied with them.
+This source is licensed under the [GNU Affero General Public License v3.0](LICENSE).
+Use, modification and redistribution are governed by that licence. See
+[licensing and source availability](LICENSING.md). Version 0.3.0 and earlier
+installers retain the licence supplied with them.
 
 Build with Xcode 26 or newer:
 

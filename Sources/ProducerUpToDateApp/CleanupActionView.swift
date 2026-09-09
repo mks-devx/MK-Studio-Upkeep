@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: AGPL-3.0-only
 import AppKit
 import Foundation
 import ProducerUpToDateCore
@@ -33,6 +33,9 @@ struct CleanupActionView: View {
     @State private var copiedLocations = false
     @State private var showsKeptLocations = false
     @State private var copyFeedbackTask: Task<Void, Never>?
+    @AppStorage(RemovalBackupPreferences.enabledKey) private var backupsEnabled = true
+    @AppStorage(RemovalBackupPreferences.automaticDeletionKey) private var automaticallyDeletesBackups = true
+    @AppStorage(RemovalBackupPreferences.retentionDaysKey) private var backupRetentionDays = 30
     private var keptFindings: [UninstallFinding] {
         (discovery?.findings ?? []).filter { finding in
             !reviewedPlan.items.contains { $0.path.standardizedFileURL.path == finding.path.standardizedFileURL.path }
@@ -48,7 +51,7 @@ struct CleanupActionView: View {
 
     private var removalDisabledReason: String? {
         if !TestedPlatform.removalAllowed { return TestedPlatform.removalUnavailable }
-        if isWorking { return "Moving selected files to Trash…" }
+        if isWorking { return backupsEnabled ? "Creating a verified backup before removal…" : "Moving selected files to Trash…" }
         if isDiscovering { return "Wait for the file review to finish." }
         if discoveryFailure != nil { return "The file review failed. Close this review and try again." }
         if discovery == nil { return "Wait for the file review to finish." }
@@ -115,10 +118,10 @@ struct CleanupActionView: View {
             }
 
             if let criticalWarning { DoNotDeleteBanner(reason: criticalWarning) }
-            Label(
-                "Items are moved to Trash, so they remain recoverable until Trash is emptied.",
-                systemImage: "arrow.uturn.backward.circle"
-            )
+            Label(backupsEnabled
+                  ? "A verified local backup will be created before anything moves to Trash. Backups are kept for \(backupRetentionDays) days by default."
+                  : "Removal backups are disabled in Settings. Recovery is limited to Trash until it is emptied.",
+                systemImage: backupsEnabled ? "externaldrive.badge.timemachine" : "exclamationmark.triangle")
             .foregroundStyle(.secondary)
             ForEach(preface, id: \.self) { line in
                 Label(line, systemImage: "info.circle").foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
@@ -316,32 +319,59 @@ struct CleanupActionView: View {
         }
         isWorking = true
         let plan = CleanupPlan(displayName: reviewedPlan.displayName, items: reviewedPlan.items.filter { selectedIDs.contains($0.id) }, excludedUserContentDescription: reviewedPlan.excludedUserContentDescription)
+        let createsBackup = backupsEnabled
+        let retentionDays = backupRetentionDays
+        let store = model.removalBackupStore
         Task {
             let result = await Task.detached(priority: .userInitiated) {
-                let result = CleanupExecutor.execute(plan, safety: CleanupSafety(protectedPaths: running)) { path in
-                    try TrashMover.moveToTrash(path)
+                let safety = CleanupSafety(protectedPaths: running)
+                if createsBackup {
+                    let protected = await BackupProtectedCleanupExecutor.execute(plan: plan, safety: safety,
+                        store: store, retentionDays: retentionDays) { path in
+                            try TrashMover.moveToTrash(path)
+                        }
+                    return (protected.cleanup, protected.backup)
                 }
-                return (result.movedCount, result.failures)
+                let cleanup = CleanupExecutor.execute(plan, safety: safety) { path in try TrashMover.moveToTrash(path) }
+                return (cleanup, Optional<RemovalBackupManifest>.none)
             }.value
+
+            if result.1 != nil {
+                if automaticallyDeletesBackups { _ = try? await model.removalBackupStore.deleteExpired() }
+                await model.reloadRemovalBackups()
+            }
 
             isWorking = false
             showsPreview = false
-            if result.1.isEmpty {
+            if result.0.failures.isEmpty {
+                let recovery = result.1 == nil
+                    ? "No app-managed backup was created; keep Trash intact until you have checked your sessions."
+                    : "The verified backup is available under Maintenance › Backups."
                 resultMessage = plan.items.contains { $0.kind == .driverBundle }
-                    ? "The driver was moved to Trash. Any device it provided will disappear; log out and back in if audio apps misbehave. Keep Trash intact until you have checked your setup."
-                    : "The selected software bundles were moved to Trash. Settings and external creative/support files were kept in their original locations. No backup was created. Keep Trash intact until you have checked your sessions."
+                    ? "The driver was moved to Trash. Any device it provided will disappear; log out and back in if audio apps misbehave. \(recovery)"
+                    : "The selected software bundles were moved to Trash. Settings and external creative/support files were kept in their original locations. \(recovery)"
                 if !keptFindings.isEmpty {
                     resultMessage = (resultMessage ?? "") + "\n\n\(keptFindings.count) related locations identified and kept. Use Copy kept locations to save their paths."
                 }
                 if let onCompleted { onCompleted() } else { model.startScan() }
             } else {
-                let movedSummary = result.0 > 0
-                    ? "\(result.0) item\(result.0 == 1 ? "" : "s") moved to Trash. "
+                let movedSummary = result.0.movedCount > 0
+                    ? "\(result.0.movedCount) item\(result.0.movedCount == 1 ? "" : "s") moved to Trash. "
                     : ""
+                let recoverySummary: String
+                if createsBackup {
+                    recoverySummary = result.1 == nil
+                        ? "Nothing was removed because a complete backup could not be created.\n\n"
+                        : "The backup remains available. Rescan and review a new plan before trying again:\n\n"
+                } else {
+                    recoverySummary = result.0.movedCount == 0
+                        ? "Nothing was removed.\n\n"
+                        : "The moved item remains in Trash. Rescan and review a new plan before trying again:\n\n"
+                }
                 resultMessage = movedSummary
-                    + "Rescan and review a new plan before trying again:\n\n"
-                    + result.1.joined(separator: "\n")
-                if result.0 > 0 {
+                    + recoverySummary
+                    + result.0.failures.joined(separator: "\n")
+                if result.0.movedCount > 0 {
                     if let onCompleted { onCompleted() } else { model.startScan() }
                 }
             }
