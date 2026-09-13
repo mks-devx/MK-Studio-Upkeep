@@ -20,7 +20,7 @@ Choosing a website opens your browser. Choosing an installed software manager op
 
 ## MK Studio Upkeep updates
 
-The manual **Check for Updates** action in Settings → About concerns this app only. Version 0.2.0 opens the public GitHub Releases page in your browser. Builds with a configured release-metadata source can instead contact `api.github.com` to read release metadata. This action sends no plugin inventory, file paths, credentials or machine profile and does not run automatically. GitHub receives normal connection information, including the connection's public IP address.
+The manual **Check GitHub Releases** action in Settings → About concerns this app only. The distributed app opens the public GitHub Releases page in your browser. A separately configured build can instead contact `api.github.com` to read release metadata. Neither action sends plugin inventory, file paths, credentials or a machine profile, and neither runs automatically. GitHub receives normal connection information, including the connection's public IP address.
 
 ## Reports and screenshots
 
@@ -28,9 +28,31 @@ The manual **Check for Updates** action in Settings → About concerns this app 
 
 Opening the GitHub report form sends the preview to GitHub in the browser URL, before you submit an issue. That URL may remain in browser history. Submitting the form publishes the issue, your GitHub username and any attachments in the public repository, where others may copy them. An issue is not created automatically. GitHub's handling of account and connection data is described in its [privacy statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement).
 
+The project maintainer uses submitted issue information to reproduce, assess and
+resolve reports. Public issues remain in the repository unless GitHub or the
+maintainer removes them; copies may remain in forks, notifications or caches. No
+separate support database is maintained by the app. The purpose is project
+maintenance, and the basis for this limited processing is the maintainer's
+legitimate interest in receiving and resolving voluntarily submitted reports.
+Issues are retained while they remain useful for project maintenance, release
+history, abuse prevention or legal obligations; requests to remove personal data
+are assessed against those needs and GitHub's platform limits. There is no
+automated decision-making or profiling.
+
 Copying a report uses the system clipboard; clipboard managers and system clipboard sharing may retain it. Use the private vulnerability-reporting route in [SECURITY.md](https://github.com/mks-devx/MK-Studio-Upkeep/blob/main/SECURITY.md) for security reports, rather than a public issue.
 
 Inventory exports can contain installed product names, versions and paths. Device names may also contain personal text. Review all reports and screenshots before sharing. The app does not generate or upload a support archive. macOS may retain its own diagnostics under your system settings.
+
+## Privacy contact and rights
+
+The project is maintained personally by Mike Konstantinidis in Germany. For a
+privacy request about information submitted to this repository, use GitHub's
+[private report form](https://github.com/mks-devx/MK-Studio-Upkeep/security/advisories/new)
+and put **Privacy request** in the title. This route is private and is not a
+general support channel. You may request access, correction, deletion or
+restriction where applicable, object to processing, and complain to a competent
+data-protection supervisory authority. GitHub account and platform data remain
+subject to GitHub's own processes and legal obligations.
 
 ## Optional removal
 

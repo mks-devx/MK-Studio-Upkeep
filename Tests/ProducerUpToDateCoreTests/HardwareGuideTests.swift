@@ -52,6 +52,20 @@ final class HardwareGuideTests: XCTestCase {
         XCTAssertNil(HardwareVendorGuide.matching(bundleIdentifier: nil))
     }
 
+    func testReviewedHardwareDestinationsUseCurrentOfficialPages() {
+        let expected = [
+            "Universal Audio": "https://www.uaudio.com/pages/downloads",
+            "Audient": "https://support.audient.com/hc/en-us/sections/12662721948180-Downloads",
+            "Solid State Logic": "https://support.solidstatelogic.com/hc/en-gb/articles/4408123894417-SSL-360-Downloads-and-Release-Notes",
+            "Behringer": "https://www.behringer.com/en/products",
+            "Softube": "https://www.softube.com/us/support",
+        ]
+        for (vendor, url) in expected {
+            let destination = HardwareVendorGuide.entries.first { $0.guide.vendor == vendor }?.guide.url
+            XCTAssertEqual(destination?.absoluteString, url, vendor)
+        }
+    }
+
     func testProtectionIsRedForSystemComponentsExtensionsAndDependencies() {
         let interface = AudioHardwareRecord(id: 1, name: "Fixture Interface", manufacturer: "Antelope Audio", transport: "Thunderbolt")
         let speakers = AudioHardwareRecord(id: 2, name: "Built-in Speakers", manufacturer: "Apple Inc.", transport: "Built-in")

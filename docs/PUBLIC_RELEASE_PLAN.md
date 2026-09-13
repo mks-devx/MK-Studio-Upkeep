@@ -1,8 +1,9 @@
 # Release process
 
-Version 0.3.0 is the first open-source release. The public repository began from
-a reviewed source snapshot; private development history and beta releases remain
-excluded. A stable release label does not establish compatibility with every
+Version 0.3.0 was the first open-source release. Version 0.4.0 changes the current
+source licence to AGPL-3.0 and adds protected removal backups. The public repository
+began from a reviewed source snapshot; private development history and beta releases
+remain excluded. A stable release label does not establish compatibility with every
 studio setup.
 
 ## Release checks

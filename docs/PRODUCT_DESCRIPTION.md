@@ -8,4 +8,4 @@ The app does not fetch or compare current plugin releases. It cannot prove that 
 
 Scanning is read-only and requires no account. Optional removal is limited to eligible bundles, uses a separate review and confirmation flow, and creates a verified local backup by default. Inventory and backup data stay on-device unless the user chooses to export and share inventory information.
 
-The current source is open source under AGPL-3.0. Use, modification and redistribution are governed by that licence. Version 0.3.0 and earlier installers retain their supplied licence. Vendor names identify software and do not imply endorsement.
+The current source is open source under AGPL-3.0. Use, modification and redistribution are governed by its terms. Version 0.3.0 and earlier installers retain their supplied licence. Vendor names identify software and do not imply endorsement.

@@ -1,6 +1,6 @@
 # Software-manager reference sources
 
-Reviewed 8 September 2026. The directory uses factual app names and official
+Reviewed 13 September 2026. The directory uses factual app names and official
 navigation links, checked against the developer pages below. No page text,
 installer, logo, release list or third-party application identifier is copied.
 The retired package-index bundle-ID table has been replaced, including copies

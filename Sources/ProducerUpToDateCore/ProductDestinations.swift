@@ -17,12 +17,12 @@ public enum ProductDestinations {
         let reviewedOn: String
     }
     private static let developers: [Developer] = [
-        .init(prefixes: ["com.fabfilter."], url: "https://www.fabfilter.com/download", referenceURL: "https://www.fabfilter.com/download", reviewedOn: "2026-09-08"),
-        .init(prefixes: ["de.cableguys."], url: "https://www.cableguys.com/products", referenceURL: "https://www.cableguys.com/products", reviewedOn: "2026-09-08"),
-        .init(prefixes: ["com.valhalladsp."], url: "https://valhalladsp.com/demos-downloads/", referenceURL: "https://valhalladsp.com/demos-downloads/", reviewedOn: "2026-09-08"),
-        .init(prefixes: ["com.tokyodawnlabs."], url: "https://www.tokyodawn.net/tokyo-dawn-labs/", referenceURL: "https://www.tokyodawn.net/tokyo-dawn-labs/", reviewedOn: "2026-09-08"),
-        .init(prefixes: ["com.u-he."], url: "https://u-he.com/products/", referenceURL: "https://u-he.com/products/", reviewedOn: "2026-09-08"),
-        .init(prefixes: ["com.d16group."], url: "https://d16.pl/downloads", referenceURL: "https://d16.pl/downloads", reviewedOn: "2026-09-08")
+        .init(prefixes: ["com.fabfilter."], url: "https://www.fabfilter.com/download", referenceURL: "https://www.fabfilter.com/download", reviewedOn: "2026-09-13"),
+        .init(prefixes: ["de.cableguys."], url: "https://www.cableguys.com/products", referenceURL: "https://www.cableguys.com/products", reviewedOn: "2026-09-13"),
+        .init(prefixes: ["com.valhalladsp."], url: "https://valhalladsp.com/demos-downloads/", referenceURL: "https://valhalladsp.com/demos-downloads/", reviewedOn: "2026-09-13"),
+        .init(prefixes: ["com.tokyodawnlabs."], url: "https://www.tokyodawn.net/tokyo-dawn-labs/", referenceURL: "https://www.tokyodawn.net/tokyo-dawn-labs/", reviewedOn: "2026-09-13"),
+        .init(prefixes: ["com.u-he."], url: "https://u-he.com/products/", referenceURL: "https://u-he.com/products/", reviewedOn: "2026-09-13"),
+        .init(prefixes: ["com.d16group."], url: "https://d16.pl/downloads", referenceURL: "https://d16.pl/downloads", reviewedOn: "2026-09-13")
     ]
     static var reviewEvidenceIsComplete: Bool {
         developers.allSatisfy { developer in

@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.0 — Unreleased
+## 0.4.0 — 13 September 2026
 
 - Create and verify a local backup of every selected software bundle before
   in-app removal begins. A failed backup causes zero removals; a partial Trash
@@ -15,6 +15,8 @@
   earlier source snapshots and installers retain their supplied licences.
 - Require every bundled developer, DAW and software-manager link to retain its
   official reference and last-review date, enforced by validation tests.
+- Keep backup records containing original paths in owner-only storage and reject
+  symbolic-link backup roots before copying or removing software.
 
 ## 0.3.0 — 9 September 2026
 

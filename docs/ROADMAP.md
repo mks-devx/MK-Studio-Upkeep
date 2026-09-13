@@ -3,7 +3,7 @@
 The current focus is a reliable local inventory and clear routes to official developer support.
 
 - Broaden reviewed website and manager recognition using synthetic identity fixtures and official sources.
-- Improve local evidence and diagnostics for incomplete metadata, related editions and scan access limitations.
+- Improve local evidence and diagnostics for incomplete metadata and scan access limitations.
 - Extend accessibility, clean-account, physical Intel and macOS-version validation.
 - Keep limited removal conservative, recoverable and separate from read-only scanning.
 

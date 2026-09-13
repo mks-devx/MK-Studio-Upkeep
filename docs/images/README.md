@@ -1,13 +1,13 @@
 # Interface screenshots
 
-Captured from the v0.3.0 build 9 interface source on 9 September 2026 using an isolated
+Captured from the v0.4.0 build 10 interface source on 13 September 2026 using an isolated
 presentation host. Its application-view source matches the release snapshot.
 Only the entry point and scan input are replaced for presentation. The host
 does not scan installed software or fetch online release information.
 
 - `plugins-dark.png`: example inventory and selected plugin in dark appearance.
 - `plugins-light.png`: the same example in light appearance.
-- `different-versions.png`: the review filter and expanded example installed files.
+- `different-versions.png`: the Review navigation and expanded example installed files.
 - `audio-preparation.png`: the bundled Tips view.
 - `app-icon.png`: the existing application icon.
 

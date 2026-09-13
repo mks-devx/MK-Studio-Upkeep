@@ -6,7 +6,9 @@ personal data in an issue that could later become public.
 Use GitHub's **Security → Report a vulnerability** to submit a
 [private security report](https://github.com/mks-devx/MK-Studio-Upkeep/security/advisories/new).
 Do not use public Issues for vulnerabilities. No email or social-media reporting
-channel is provided.
+channel is provided. Privacy requests about repository submissions may use the
+same private form with **Privacy request** in the title; general support requests
+are not accepted there.
 
 Include the version/build, impact, reproduction steps and relevant OS details.
 There is no guaranteed response time. Fixes target the latest maintained release and source.

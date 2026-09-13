@@ -13,7 +13,7 @@ final class ProductDestinationsTests: XCTestCase {
         let antelope = product("Fixture", id: "com.antelopeaudio.fixture")
         XCTAssertEqual(ProductDestinations.plugin(antelope)?.url.host, "support.antelopeaudio.com")
         XCTAssertEqual(ProductDestinations.plugin(antelope)?.referenceURL.host, "support.antelopeaudio.com")
-        XCTAssertEqual(ProductDestinations.plugin(antelope)?.reviewedOn, "2026-09-08")
+        XCTAssertEqual(ProductDestinations.plugin(antelope)?.reviewedOn, "2026-09-13")
         XCTAssertEqual(ManagerDefinition.matching(identifiers: ["com.antelopeaudio.fixture"])?.name, "Antelope Launcher")
         XCTAssertEqual(ProductDestinations.plugin(product("Fixture", id: "com.fabfilter.fixture"))?.url.host, "www.fabfilter.com")
         XCTAssertNil(ProductDestinations.plugin(product("FabFilter Pro-Q 4", id: "com.other.fixture")))

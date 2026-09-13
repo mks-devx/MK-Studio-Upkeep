@@ -63,6 +63,7 @@ public struct RemovalBackupDeletionSummary: Equatable, Sendable {
 
 public enum RemovalBackupError: Error, Equatable, LocalizedError {
     case emptyPlan, planTooLarge, invalidRetention, unsafeSource, copyFailed, verificationFailed
+    case invalidBackupStorage
     case invalidManifest, operationMissing, itemMissing, destinationOccupied, destinationUnsafe
     case restoreFailed, restoreVerificationFailed
 
@@ -74,6 +75,7 @@ public enum RemovalBackupError: Error, Equatable, LocalizedError {
         case .unsafeSource: "A selected item no longer passes the removal safety review."
         case .copyFailed: "A complete local backup could not be created. Nothing was removed."
         case .verificationFailed: "The backup copy could not be verified. Nothing was removed."
+        case .invalidBackupStorage: "The local backup folder is not a private app-owned directory. Nothing was removed."
         case .invalidManifest: "This backup record is damaged or unsafe to use."
         case .operationMissing: "This backup no longer exists."
         case .itemMissing: "The selected item is not part of this backup."
@@ -114,13 +116,15 @@ public actor RemovalBackupStore {
             throw RemovalBackupError.unsafeSource
         }
         guard plan.items.allSatisfy({ safety.validate($0) == nil }) else { throw RemovalBackupError.unsafeSource }
-        try fileManager.createDirectory(at: root, withIntermediateDirectories: true)
+        try ensurePrivateRoot(createIfMissing: true)
         let operationID = UUID()
         let staging = root.appendingPathComponent(".staging-" + operationID.uuidString, isDirectory: true)
         let destination = root.appendingPathComponent(operationID.uuidString, isDirectory: true)
         var committed = false
         defer { if !committed { try? fileManager.removeItem(at: staging) } }
-        try fileManager.createDirectory(at: staging.appendingPathComponent("Payload", isDirectory: true), withIntermediateDirectories: true)
+        try fileManager.createDirectory(at: staging.appendingPathComponent("Payload", isDirectory: true),
+            withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700])
+        try fileManager.setAttributes([.posixPermissions: 0o700], ofItemAtPath: staging.path)
         var records: [RemovalBackupItem] = []
         do {
             for item in plan.items {
@@ -152,6 +156,7 @@ public actor RemovalBackupStore {
 
     public func list() throws -> [RemovalBackupManifest] {
         guard fileManager.fileExists(atPath: root.path) else { return [] }
+        try ensurePrivateRoot(createIfMissing: false)
         let urls = try fileManager.contentsOfDirectory(at: root, includingPropertiesForKeys: [.isDirectoryKey], options: [.skipsHiddenFiles])
         guard urls.count <= 2_000 else { throw RemovalBackupError.invalidManifest }
         return try urls.compactMap { directory in
@@ -250,6 +255,7 @@ public actor RemovalBackupStore {
     }
 
     private func operationDirectory(_ id: UUID) throws -> URL {
+        try ensurePrivateRoot(createIfMissing: false)
         let directory = root.appendingPathComponent(id.uuidString, isDirectory: true).standardizedFileURL
         guard isContained(directory, in: root), fileManager.fileExists(atPath: directory.path) else { throw RemovalBackupError.operationMissing }
         return directory
@@ -276,7 +282,27 @@ public actor RemovalBackupStore {
     private func write(_ manifest: RemovalBackupManifest, in directory: URL) throws {
         let data = try encoder.encode(manifest)
         guard data.count <= 2_097_152 else { throw RemovalBackupError.invalidManifest }
-        try data.write(to: directory.appendingPathComponent("manifest.json"), options: .atomic)
+        let manifestURL = directory.appendingPathComponent("manifest.json")
+        try data.write(to: manifestURL, options: .atomic)
+        try fileManager.setAttributes([.posixPermissions: 0o600], ofItemAtPath: manifestURL.path)
+    }
+
+    private func ensurePrivateRoot(createIfMissing: Bool) throws {
+        if !fileManager.fileExists(atPath: root.path) {
+            guard createIfMissing else { throw RemovalBackupError.operationMissing }
+            do {
+                try fileManager.createDirectory(at: root, withIntermediateDirectories: true,
+                    attributes: [.posixPermissions: 0o700])
+            } catch {
+                throw RemovalBackupError.invalidBackupStorage
+            }
+        }
+        guard isRealDirectory(root) else { throw RemovalBackupError.invalidBackupStorage }
+        do {
+            try fileManager.setAttributes([.posixPermissions: 0o700], ofItemAtPath: root.path)
+        } catch {
+            throw RemovalBackupError.invalidBackupStorage
+        }
     }
 
     private func isContained(_ url: URL, in base: URL) -> Bool {

@@ -22,6 +22,8 @@ response time is promised.
 
 Security vulnerabilities must not be posted in Issues: see [SECURITY.md](SECURITY.md).
 Issues are public. Do not include confidential information in a bug report.
+Privacy requests use the same private GitHub route described in [PRIVACY.md](PRIVACY.md);
+it is not a general support channel.
 
 Installation, activation and firmware issues with other software belong with
 that software's developer. Product names identify software; they do not imply

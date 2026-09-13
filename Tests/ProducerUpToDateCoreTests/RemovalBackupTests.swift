@@ -44,6 +44,41 @@ final class RemovalBackupTests: XCTestCase {
         XCTAssertTrue(fm.fileExists(atPath: second.path))
     }
 
+    func testBackupMetadataUsesPrivateFilesystemPermissions() async throws {
+        let fixture = try makeFixture()
+        defer { try? fm.removeItem(at: fixture.root) }
+        let bundle = try makeBundle(fixture.source.appendingPathComponent("Private.component"), payload: "private")
+        let store = RemovalBackupStore(root: fixture.backups)
+
+        let operation = try await store.prepare(plan: plan("Private", bundle),
+            safety: CleanupSafety(allowedRoots: [fixture.source]), retentionDays: 30)
+
+        let operationDirectory = fixture.backups.appendingPathComponent(operation.id.uuidString)
+        let manifest = operationDirectory.appendingPathComponent("manifest.json")
+        XCTAssertEqual(permissions(of: fixture.backups), 0o700)
+        XCTAssertEqual(permissions(of: operationDirectory), 0o700)
+        XCTAssertEqual(permissions(of: manifest), 0o600)
+    }
+
+    func testPrepareRejectsSymbolicLinkBackupRoot() async throws {
+        let fixture = try makeFixture()
+        defer { try? fm.removeItem(at: fixture.root) }
+        let realBackups = fixture.root.appendingPathComponent("Real Backups")
+        try fm.createDirectory(at: realBackups, withIntermediateDirectories: true)
+        try fm.createSymbolicLink(at: fixture.backups, withDestinationURL: realBackups)
+        let bundle = try makeBundle(fixture.source.appendingPathComponent("Linked.component"), payload: "linked")
+        let store = RemovalBackupStore(root: fixture.backups)
+
+        do {
+            _ = try await store.prepare(plan: plan("Linked", bundle),
+                safety: CleanupSafety(allowedRoots: [fixture.source]), retentionDays: 30)
+            XCTFail("A symbolic-link backup root must be rejected")
+        } catch let error as RemovalBackupError {
+            XCTAssertEqual(error, .invalidBackupStorage)
+        }
+        XCTAssertTrue((try fm.contentsOfDirectory(atPath: realBackups.path)).isEmpty)
+    }
+
     func testPrepareFailureLeavesNoCommittedOrStagingOperation() async throws {
         let fixture = try makeFixture()
         defer { try? fm.removeItem(at: fixture.root) }
@@ -253,5 +288,10 @@ final class RemovalBackupTests: XCTestCase {
         try Data(payload.utf8).write(to: contents.appendingPathComponent("Payload"))
         try fm.setAttributes([.posixPermissions: 0o755], ofItemAtPath: contents.appendingPathComponent("Payload").path)
         return url
+    }
+
+    private func permissions(of url: URL) -> UInt16? {
+        let attributes = try? fm.attributesOfItem(atPath: url.path)
+        return (attributes?[.posixPermissions] as? NSNumber)?.uint16Value
     }
 }

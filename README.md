@@ -27,13 +27,14 @@ continues to show locally detected facts without newer-edition suggestions.
 - **Inventory plugins:** scan Audio Unit, VST3, VST2 and CLAP plugins in standard
   and additional folders. Group matching formats and inspect each installed file and version.
 - **Review local findings:** find Intel-only copies, files whose architecture cannot
-  run on this Mac, different installed versions, repeated formats and related editions.
+  run on this Mac, different installed versions and repeated formats.
 - **Find update destinations:** open reviewed developer websites and installed
   software managers. Latest plugin and DAW releases are not fetched or compared.
 - **Inspect the studio:** browse recognised DAWs, software managers, audio/MIDI
   devices and installed audio drivers in separate views.
 - **Review maintenance:** inspect recognised caches, read audio preparation tips,
-  and review eligible software bundles before an optional move to Trash.
+  review eligible software bundles before an optional move to Trash, and restore
+  verified local backups when needed.
 
 The plugin scanner works without a developer-directory entry. Website coverage,
 DAW recognition and manager recognition are limited. Missing metadata stays
@@ -42,7 +43,7 @@ release, and an older edition may still be needed by existing sessions.
 
 ## Screenshots
 
-The v0.3.0 interface with fictional example plugins. Names, versions, counts and
+The v0.4.0 interface with fictional example plugins. Names, versions, counts and
 file locations are demonstration data; they do not represent a real studio or
 confirmed updates.
 
@@ -72,7 +73,7 @@ confirmed updates.
 3. Quit the previous app, open the image and drag **MK Studio Upkeep** to **Applications**.
 4. Open the app and choose **Scan This Mac**. Add any extra plugin folders in Settings.
 
-The installer is publicly available; downloading it does not require an account.
+The installer is available at no charge; downloading it does not require an account.
 GitHub's **Source code** archives are not installers. Each release records its
 signing, notarisation and verification results. See [Installation](docs/INSTALLATION.md)
 for checksum verification and troubleshooting.
@@ -129,7 +130,7 @@ licence keys or third-party plugin binaries. For security vulnerabilities, follo
 ## Licence and development
 
 This source is licensed under the [GNU Affero General Public License v3.0](LICENSE).
-Use, modification and redistribution are governed by that licence. See
+Use, modification and redistribution are governed by its terms. See
 [licensing and source availability](LICENSING.md). Version 0.3.0 and earlier
 installers retain the licence supplied with them.
 

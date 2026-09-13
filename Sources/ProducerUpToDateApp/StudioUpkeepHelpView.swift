@@ -198,7 +198,7 @@ private struct ManualArticle: View {
         case .overview:
             return [
                 topic("What is scanned", "Audio Unit, VST3, VST2 and CLAP plugins in the system and user Library folders, any folders you add, and recognised DAW applications."),
-                topic("What you learn", "Installed versions, formats, processor architecture and local compatibility findings. Reviewed directory links lead to developer websites. Latest releases, newer editions and native installers are not checked."),
+                topic("What you learn", "Installed versions, formats, processor architecture and local compatibility findings. Reviewed directory links lead to developer websites. The app does not fetch current release versions, suggest newer editions or identify native installers."),
                 topic("Hardware and drivers", "Hardware lists audio interfaces, outputs and MIDI devices. Drivers lists installed audio and MIDI driver software. Each driver entry says what it is, who makes it and where its updates come from. Each device names the vendor app or page that delivers firmware. MK Studio Upkeep never reads firmware versions itself."),
                 topic("What is never assumed", "Missing information is never treated as proof that a product is current or compatible. Unknown websites remain unidentified.")
             ]
@@ -232,7 +232,7 @@ private struct ManualArticle: View {
         case .results:
             return [
                 topic("Your studio", "Plugins, DAWs, Software Managers, Hardware and Drivers show what was detected on this Mac."),
-                topic("Review", "Choose a finding in the sidebar to review compatibility, different versions, multiple copies or related editions. Intel-only copies includes products with an Intel-only installed file. Choose Plugins to return to all products. Cache inspection is under Maintenance."),
+                topic("Review", "Choose a finding in the sidebar to review compatibility, different versions or multiple copies. Intel-only copies includes products with an Intel-only installed file. Choose Plugins to return to all products. Cache inspection and removal backups are under Maintenance."),
                 topic("Update options", "Select a product to open its developer app or website, where known. A suggested manager does not prove you installed the product with it or that an update exists.")
             ]
         case .updates:

@@ -40,17 +40,18 @@ File age alone never means obsolete or broken. Discontinued/vendor-unsupported s
 needs product-specific official evidence; no speculative discontinued list is shipped.
 Unknown architecture and host compatibility stay unknown.
 
-## Website review — 8 September 2026
+## Website review — 13 September 2026
 
-The Antelope downloads page, FabFilter download page, Cableguys products page,
-Tokyo Dawn Labs products page, u-he products page and D16 downloads page were reached
-successfully. Cableguys' old downloads address redirected to products; the directory
-uses the destination. Valhalla's official downloads page is documented by its own
-support pages, but the command-line request returned HTTP 403; browser availability
-was not established by that request. No access restriction was bypassed.
+All 83 unique HTTPS destinations in the plugin, manager, DAW, hardware and driver
+directories were requested without inventory data. Seventy-six returned a successful
+response. Seven official support pages rejected the automated request with HTTP 403;
+their locations were confirmed through official references or browser-indexed pages,
+but availability in a user's browser was not established by the command-line check.
+Five obsolete links found during review were replaced with current official pages.
+No access restriction was bypassed.
 
 Manager destinations retain their references in [Manager sources](MANAGER_SOURCES.md).
-DAW destinations retain the existing reviewed mapping. They are pointers, not ongoing
+DAW destinations retain the reviewed mapping. They are pointers, not ongoing
 availability monitoring. This is limited directory coverage, not universal discovery.
 
 The earlier official-release integration and declared-feed diagnostics remain in
