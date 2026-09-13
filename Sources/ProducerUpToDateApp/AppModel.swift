@@ -110,6 +110,7 @@ final class AppModel: ObservableObject {
     let removalBackupStore: RemovalBackupStore
     @Published var removalBackups: [RemovalBackupManifest] = []
     @Published var removalBackupFailure: String?
+    @Published var removalBackupWarning: String?
     @Published var selectedBackupID: UUID?
 
     var removalBackupPreferences: RemovalBackupPreferences {

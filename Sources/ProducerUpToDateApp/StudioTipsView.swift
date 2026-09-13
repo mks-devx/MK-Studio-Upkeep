@@ -15,7 +15,7 @@ struct StudioTip: Identifiable {
               source: "Focusrite · audio preparation", url: "https://support.focusrite.com/hc/en-gb/articles/207546515-Optimising-macOS-for-Audio"),
         .init(id: "buffer", title: "When audio crackles or monitoring feels delayed", scope: "Buffer size · any DAW",
               text: "Try one buffer-size change at a time and replay the same passage. A larger buffer gives audio processing more time but increases monitoring delay. A smaller buffer reduces that delay but leaves less processing time. Use your DAW’s audio settings; there is no universal best value.",
-              source: "Focusrite · latency explained", url: "https://support.focusrite.com/hc/de/articles/207546885-What-is-latency-in-audio"),
+              source: "Focusrite · latency explained", url: "https://support.focusrite.com/hc/en-gb/articles/207546885-What-is-latency-in-audio"),
         .init(id: "live", title: "Before a live set", scope: "Rehearsal · our recommendation",
               text: "Test the complete set with the interface, controllers, cables and power arrangement you will use. Close unrelated apps, keep required audio-control software running, and silence unwanted notifications. Avoid untested software or routing changes immediately before performing. These preparations reduce surprises; they cannot guarantee uninterrupted audio.",
               source: "Focusrite · preparing a Mac for audio", url: "https://support.focusrite.com/hc/en-gb/articles/207546515-Optimising-macOS-for-Audio"),
@@ -26,7 +26,7 @@ struct StudioTip: Identifiable {
               text: "Check free space on the drive receiving the recording, not only the Mac’s internal disk. Leave room for the planned session and temporary files. Review known files before removing anything; preserve recordings, recovery data, presets, sample libraries and licences.",
               source: "Focusrite · storage for audio", url: "https://support.focusrite.com/hc/en-gb/articles/207546515-Optimising-macOS-for-Audio"),
         .init(id: "backup", title: "Before updating the studio", scope: "Backup and compatibility · our recommendation",
-              text: "Check support for your DAW, essential plugins and interface before changing macOS or audio software. Confirm a recent backup and that external project drives are included. Keep a way to return to your working setup. An inventory export is a list, not a backup of projects or software.",
+              text: "Check support for your DAW, essential plugins and interface before changing macOS or audio software. Confirm a recent backup and that external project drives are included. Keep a way to return to your working setup. An inventory export is a list. MK Studio Upkeep’s removal backups protect only selected software bundles; keep separate backups of projects, settings and libraries.",
               source: "Apple · Time Machine backup", url: "https://support.apple.com/en-us/104984"),
         .init(id: "maintenance", title: "Keep maintenance deliberate", scope: "Routine care · our recommendation",
               text: "Investigate a specific problem before clearing caches or changing system settings. Preserve unknown files and use the developer’s instructions for removal. A large cache alone is not a fault. Keep security protections enabled; generic optimisation checklists may include steps intended for different hardware.",
@@ -43,7 +43,7 @@ struct StudioTipsView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 Text("Prepare your Mac for audio work").font(.title2.weight(.semibold))
-                Text("Practical preparation and troubleshooting for any DAW. Recommendations are labelled; sources reviewed on 8 September 2026.")
+                Text("Practical preparation and troubleshooting for any DAW. Recommendations are labelled; sources reviewed on 13 September 2026.")
                     .font(.subheadline).foregroundStyle(.secondary)
                 Text("Source links open independent websites. Their terms and privacy policies apply; linking does not imply endorsement of MK Studio Upkeep.")
                     .font(.caption).foregroundStyle(.secondary)
@@ -68,7 +68,7 @@ struct StudioTipsContextView: View {
             Text("About these tips").font(.headline)
             Text("General guidance, not a diagnosis of this Mac. MK Studio Upkeep does not change settings or clean files from this page.")
             Text("The text is bundled and works offline. Source links open your browser; the destination site receives a normal web request.")
-            Text("Guidance can change. Check the linked source for your current DAW and macOS version before acting.")
+            Text("Guidance can change. Some linked articles include older macOS steps or advice for specific hardware. Check applicability to your setup before acting.")
             Spacer()
         }.font(.subheadline).foregroundStyle(.secondary).padding(24)
     }

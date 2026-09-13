@@ -6,6 +6,59 @@ import XCTest
 final class RemovalBackupTests: XCTestCase {
     private let fm = FileManager.default
 
+    func testDamagedRecordDoesNotHideHealthyBackupOrBlockRetention() async throws {
+        let fixture = try makeFixture()
+        defer { try? fm.removeItem(at: fixture.root) }
+        let store = RemovalBackupStore(root: fixture.backups, now: { Date(timeIntervalSince1970: 1_000) })
+        let bundle = try makeBundle(fixture.source.appendingPathComponent("Fixture.component"), payload: "recover")
+        let safety = CleanupSafety(allowedRoots: [fixture.source])
+        let good = try await store.prepare(plan: plan("Good", bundle), safety: safety, retentionDays: 1)
+        let bad = try await store.prepare(plan: plan("Bad", bundle), safety: safety, retentionDays: 1)
+        let damaged = fixture.backups.appendingPathComponent(bad.id.uuidString)
+        try Data("{".utf8).write(to: damaged.appendingPathComponent("manifest.json"))
+        let records = try await store.list()
+        XCTAssertEqual(records.map(\.id), [good.id])
+        try fm.removeItem(at: bundle)
+        _ = try await store.restore(operationID: good.id, itemID: good.items[0].id, safety: safety)
+        XCTAssertTrue(fm.fileExists(atPath: bundle.path))
+        let expired = RemovalBackupStore(root: fixture.backups, now: { Date(timeIntervalSince1970: 100_000) })
+        let deleted = try await expired.deleteExpired()
+        XCTAssertEqual(deleted.operationCount, 1)
+        XCTAssertTrue(fm.fileExists(atPath: damaged.path), "Unreadable recovery data must stay intact")
+    }
+
+    func testOverflowingStoredSizeIsReportedAndPreserved() async throws {
+        let fixture = try makeFixture()
+        defer { try? fm.removeItem(at: fixture.root) }
+        let store = RemovalBackupStore(root: fixture.backups)
+        let first = try makeBundle(fixture.source.appendingPathComponent("One.component"), payload: "one")
+        let second = try makeBundle(fixture.source.appendingPathComponent("Two.component"), payload: "two")
+        let operation = try await store.prepare(plan: CleanupPlan(displayName: "Fixture", items: [
+            CleanupItem(path: first, kind: .pluginBundle), CleanupItem(path: second, kind: .pluginBundle)
+        ], excludedUserContentDescription: "Preserved"), safety: CleanupSafety(allowedRoots: [fixture.source]), retentionDays: 30)
+        let record = fixture.backups.appendingPathComponent(operation.id.uuidString).appendingPathComponent("manifest.json")
+        var object = try XCTUnwrap(try JSONSerialization.jsonObject(with: Data(contentsOf: record)) as? [String: Any])
+        var items = try XCTUnwrap(object["items"] as? [[String: Any]])
+        items[0]["byteCount"] = Int64.max
+        items[1]["byteCount"] = 1
+        object["items"] = items
+        try JSONSerialization.data(withJSONObject: object).write(to: record)
+        let listing = try await store.inspect()
+        XCTAssertEqual(listing.unreadableCount, 1)
+        XCTAssertTrue(listing.records.isEmpty)
+        let deletion = try await store.deleteAll()
+        XCTAssertEqual(deletion.operationCount, 0)
+        XCTAssertTrue(fm.fileExists(atPath: record.path))
+    }
+
+    func testOversizedManifestTotalDoesNotTrap() {
+        let item = RemovalBackupItem(id: UUID(), originalPath: "/Applications/Fixture.app", kind: .application,
+            payloadRelativePath: "Payload/fixture", byteCount: Int64.max, contentFingerprint: "fixture")
+        let manifest = RemovalBackupManifest(schemaVersion: 1, id: UUID(), displayName: "Fixture",
+            createdAt: Date(), expiresAt: Date(), items: [item, item])
+        XCTAssertEqual(manifest.byteCount, Int64.max)
+    }
+
     func testPreferencesDefaultToBackupAndThirtyDayAutomaticRetention() {
         let suite = "RemovalBackupTests-" + UUID().uuidString
         let defaults = UserDefaults(suiteName: suite)!
@@ -184,12 +237,10 @@ final class RemovalBackupTests: XCTestCase {
         object["items"] = items
         try JSONSerialization.data(withJSONObject: object).write(to: manifestURL)
 
-        do {
-            _ = try await store.list()
-            XCTFail("Unsafe backup metadata must be rejected")
-        } catch let error as RemovalBackupError {
-            XCTAssertEqual(error, .invalidManifest)
-        }
+        let listing = try await store.inspect()
+        XCTAssertTrue(listing.records.isEmpty)
+        XCTAssertEqual(listing.unreadableCount, 1)
+        XCTAssertTrue(fm.fileExists(atPath: fixture.backups.appendingPathComponent(operation.id.uuidString).path))
     }
 
     func testListRejectsPayloadReplacedBySymbolicLink() async throws {
@@ -203,12 +254,10 @@ final class RemovalBackupTests: XCTestCase {
         try fm.removeItem(at: payload)
         try fm.createSymbolicLink(at: payload, withDestinationURL: bundle)
 
-        do {
-            _ = try await store.list()
-            XCTFail("A linked payload must not be trusted")
-        } catch let error as RemovalBackupError {
-            XCTAssertEqual(error, .invalidManifest)
-        }
+        let listing = try await store.inspect()
+        XCTAssertTrue(listing.records.isEmpty)
+        XCTAssertEqual(listing.unreadableCount, 1)
+        XCTAssertTrue(fm.fileExists(atPath: fixture.backups.appendingPathComponent(operation.id.uuidString).path))
     }
 
     func testRestoreRefusesCollisionThenRestoresVerifiedPayload() async throws {

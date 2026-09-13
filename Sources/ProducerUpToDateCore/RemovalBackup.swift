@@ -47,9 +47,28 @@ public struct RemovalBackupManifest: Codable, Identifiable, Sendable {
     public let expiresAt: Date
     public var items: [RemovalBackupItem]
 
-    public var byteCount: Int64 { items.reduce(0) { $0 + $1.byteCount } }
+    public var byteCount: Int64 { RemovalBackupSize.total(items.map(\.byteCount)) }
     public var removedItemCount: Int { items.filter { $0.movedAt != nil }.count }
     public var restoredItemCount: Int { items.filter { $0.restoredAt != nil }.count }
+}
+
+/// Saturates untrusted totals; Int64.max means the displayed size is unavailable.
+public enum RemovalBackupSize {
+    public static func total(_ sizes: [Int64]) -> Int64 {
+        var result: Int64 = 0
+        for size in sizes {
+            guard size >= 0 else { return .max }
+            let sum = result.addingReportingOverflow(size)
+            guard !sum.overflow else { return .max }
+            result = sum.partialValue
+        }
+        return result
+    }
+}
+
+public struct RemovalBackupListing: Sendable {
+    public let records: [RemovalBackupManifest]
+    public let unreadableCount: Int
 }
 
 public struct RemovalBackupDeletionSummary: Equatable, Sendable {
@@ -154,15 +173,20 @@ public actor RemovalBackupStore {
         return manifest
     }
 
-    public func list() throws -> [RemovalBackupManifest] {
-        guard fileManager.fileExists(atPath: root.path) else { return [] }
+    public func list() throws -> [RemovalBackupManifest] { try inspect().records }
+
+    public func inspect() throws -> RemovalBackupListing {
+        guard fileManager.fileExists(atPath: root.path) else { return .init(records: [], unreadableCount: 0) }
         try ensurePrivateRoot(createIfMissing: false)
         let urls = try fileManager.contentsOfDirectory(at: root, includingPropertiesForKeys: [.isDirectoryKey], options: [.skipsHiddenFiles])
         guard urls.count <= 2_000 else { throw RemovalBackupError.invalidManifest }
-        return try urls.compactMap { directory in
-            guard (try? directory.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == true else { return nil }
-            return try load(from: directory)
-        }.sorted { $0.createdAt > $1.createdAt }
+        var records: [RemovalBackupManifest] = []
+        var unreadable = 0
+        for directory in urls {
+            do { records.append(try load(from: directory)) }
+            catch { unreadable += 1 } // Preserve damaged/unknown entries; never delete them implicitly.
+        }
+        return .init(records: records.sorted { $0.createdAt > $1.createdAt }, unreadableCount: unreadable)
     }
 
     public func recordRemoval(operationID: UUID, movedPaths: Set<String>) throws -> RemovalBackupManifest {
@@ -233,7 +257,7 @@ public actor RemovalBackupStore {
         for manifest in manifests {
             try fileManager.removeItem(at: try operationDirectory(manifest.id))
             count += 1
-            bytes += manifest.byteCount
+            bytes = RemovalBackupSize.total([bytes, manifest.byteCount])
         }
         return .init(operationCount: count, byteCount: bytes)
     }
@@ -276,6 +300,7 @@ public actor RemovalBackupStore {
             }
             return item
         }
+        guard manifest.byteCount < Int64.max else { throw RemovalBackupError.invalidManifest }
         return manifest
     }
 
@@ -346,7 +371,10 @@ private enum BackupContentFingerprint {
                 enumerator.skipDescendants()
                 entries.append((relative, "link:\(permissions):" + (try FileManager.default.destinationOfSymbolicLink(atPath: path))))
             } else if type == .typeRegular {
-                total += (attributes[.size] as? NSNumber)?.int64Value ?? 0
+                let size = (attributes[.size] as? NSNumber)?.int64Value ?? 0
+                let sum = total.addingReportingOverflow(size)
+                guard size >= 0, !sum.overflow else { throw RemovalBackupError.verificationFailed }
+                total = sum.partialValue
                 entries.append((relative, "file:\(permissions):" + (try hashFile(url))))
             } else if type == .typeDirectory { entries.append((relative, "directory:\(permissions)")) }
             else { throw RemovalBackupError.verificationFailed }

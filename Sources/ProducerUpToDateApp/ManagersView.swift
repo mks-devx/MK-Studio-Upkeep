@@ -9,6 +9,8 @@ import SwiftUI
         let url: URL
         var id: String { definition.id }
     }
+    private let applicationRoots: [URL]?
+    init(applicationRoots: [URL]? = nil) { self.applicationRoots = applicationRoots }
     @Published var installed: [InstalledManager] = []
     @Published var selection: String?
     @Published var search = ""
@@ -18,6 +20,7 @@ import SwiftUI
     }
     var selected: InstalledManager? { filtered.first { $0.id == selection } }
     func refresh() {
+        VendorAppLocator.refreshApplications(in: applicationRoots)
         failure = nil
         installed = ManagerDefinition.known.compactMap { definition in
             guard let url = VendorAppLocator.locate(definition)?.url else { return nil }
@@ -80,7 +83,7 @@ struct ManagerDetailView: View {
                     Button("Open \(item.definition.name)") { browser.open(item) }.help("Open the installed vendor app to manage its products.")
                     if let failure = browser.failure { Text(failure).foregroundStyle(.secondary) }
                     Divider()
-                    Text("Found through macOS app registration. That says nothing about which products you own or installed with it; no accounts or libraries are read.")
+                    Text("Found in Applications folders or through macOS app registration. That says nothing about which products you own or installed with it; no accounts or libraries are read.")
                         .font(.subheadline).foregroundStyle(.secondary)
                     DisclosureGroup("Application details") {
                         Text(item.url.path).font(.caption).textSelection(.enabled)

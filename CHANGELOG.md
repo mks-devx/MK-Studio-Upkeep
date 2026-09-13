@@ -1,6 +1,15 @@
 # Changelog
 
-## Unreleased — repository maintenance
+## 0.4.1 — 13 September 2026
+
+- Keep available backups usable when another record is unreadable. Show a warning
+  and preserve unreadable recovery data during cleanup.
+- Reject overflowing stored backup sizes and protect totals across operations.
+- Refresh software-manager discovery after installation or removal.
+- Correct Tips and both manuals: app release checks, driver-removal boundaries,
+  retention timing and the distinction between removal backups and studio backups.
+
+### Repository maintenance
 
 - Remove inactive release-feed prototypes, vendor collectors and catalogue tools,
   together with their dedicated tests. Preserve the active scanner, official
@@ -9,7 +18,7 @@
 - Retire superseded installer downloads while preserving access to earlier source
   snapshots and their original licence notices.
 
-These source-maintenance changes do not replace the published 0.4.0 installer.
+Version 0.4.0 remains an earlier release; its original installer is unchanged.
 
 ## 0.4.0 — 13 September 2026
 

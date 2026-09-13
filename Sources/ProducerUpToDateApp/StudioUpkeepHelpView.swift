@@ -167,7 +167,7 @@ private struct ManualArticle: View {
     private var introduction: String {
         switch section {
         case .overview:
-            return "A clear picture of the music software on your Mac, with every claim tied to a source and a date."
+            return "A local inventory of your music software, with installed versions, review findings and official website links."
         case .macStatus:
             return "Read local system and storage information without changing your audio setup."
         case .hardware:
@@ -181,11 +181,11 @@ private struct ManualArticle: View {
         case .appleSilicon:
             return "Intel-only findings describe installed files. Ask the developer about native installers for the exact product and format."
         case .uninstall:
-            return "Removal is preview first, exact identity only, and goes to the Trash so you can undo it."
+            return "Review eligible bundles before moving them to Trash. Verified local backups are enabled by default; recovery depends on keeping the backup or the trashed files."
         case .settings:
             return "Choose what is scanned and how results look. The evidence rules cannot be loosened."
         case .privacy:
-            return "Your inventory stays on your Mac. Anything that comes from outside carries its source and date."
+            return "Scanning and matching happen on your Mac. You choose when to open websites, check app releases or share a report."
         case .shortcuts:
             return "Move around and rescan without leaving the keyboard."
         case .troubleshooting:
@@ -199,7 +199,7 @@ private struct ManualArticle: View {
             return [
                 topic("What is scanned", "Audio Unit, VST3, VST2 and CLAP plugins in the system and user Library folders, any folders you add, and recognised DAW applications."),
                 topic("What you learn", "Installed versions, formats, processor architecture and local compatibility findings. Reviewed directory links lead to developer websites. The app does not fetch current release versions, suggest newer editions or identify native installers."),
-                topic("Hardware and drivers", "Hardware lists audio interfaces, outputs and MIDI devices. Drivers lists installed audio and MIDI driver software. Each driver entry says what it is, who makes it and where its updates come from. Each device names the vendor app or page that delivers firmware. MK Studio Upkeep never reads firmware versions itself."),
+                topic("Hardware and drivers", "Hardware lists audio interfaces, outputs and MIDI devices. Drivers lists installed audio and MIDI driver software. Where recognised, entries identify the developer and link to official support or an installed manager. Unknown details remain unknown. MK Studio Upkeep never reads firmware versions itself."),
                 topic("What is never assumed", "Missing information is never treated as proof that a product is current or compatible. Unknown websites remain unidentified.")
             ]
         case .macStatus:
@@ -218,16 +218,16 @@ private struct ManualArticle: View {
             return [
                 topic("Browse groups", "Open Hardware for audio and MIDI devices, or Drivers for installed driver software. Hardware’s Show control filters audio or MIDI entries. Search narrows the chosen group. Built-in and virtual audio devices may appear alongside external equipment."),
                 topic("Device settings", "Select an audio device for its reported sample rate and buffer frames, when available. These are Core Audio readings at scan time. Your DAW may request a different buffer. Firmware versions and MIDI clock quality are not measured."),
-                topic("Drivers", "Read the maker’s update or removal route before acting. A red Don’t delete this mark removes the removal control. Kernel and system extensions and Apple components require their designated procedure. Device associations are guidance, not proof that equipment is unused."),
+                topic("Drivers", "Driver files cannot be removed through MK Studio Upkeep. Read the developer’s instructions. A red Don’t delete this mark identifies protected components. Device associations are guidance, not proof that equipment is unused."),
                 topic("Saved MIDI entries", "Offline entries can remain after unplugging equipment. Review removal carefully: forgetting an entry loses its custom name and port setup. Connected and system entries are protected. A saved entry does not establish whether you use that device."),
-                topic("Plugin Managers", "The sidebar lists recognised software managers, licence tools and hardware managers. Refresh after installation. A suggested manager does not prove it installed a product or supports its uninstall. Before launch, review the publisher shown in the confirmation; cancel if unexpected. Accounts, passwords and entitlements are not scanned.")
+                topic("Software Managers", "The sidebar lists recognised software managers, licence tools and hardware managers. Choose Refresh after installing or removing a manager to update the list. A suggested manager does not prove it installed a product or supports its uninstall. Before launch, review the publisher shown in the confirmation; cancel if unexpected. Accounts, passwords and entitlements are not scanned.")
             ]
         case .scanning:
             return [
                 topic("Start a scan", "Choose Scan This Mac on the welcome screen, or press Shift-Command-R. During a rescan the previous inventory stays visible."),
                 topic("Changes between scans", "Open Scan details to review products that appeared, disappeared or changed version since a comparable completed scan. Names and versions stay on this Mac. Changed scan scope or incomplete coverage prevents comparison."),
                 topic("Change what is scanned", "Settings › Scanning lets you switch plugin formats and DAW scanning on or off and add plugin folders. Changes apply on the next scan."),
-                topic("Cancel safely", "Cancel Scan stops the current pass. Nothing on disk changes, and the earlier inventory remains.")
+                topic("Cancel safely", "Cancel Scan stops the current pass without changing installed audio software. The earlier completed inventory remains available.")
             ]
         case .results:
             return [
@@ -250,14 +250,15 @@ private struct ManualArticle: View {
             ]
         case .uninstall:
             return [
-                topic("Right-click actions", "Right-click a plugin, DAW or update row for Show in Finder or Review uninstall…. Revealing a location does not launch the software. Driver rows have a separate removal review or instructions."),
+                topic("Right-click actions", "Right-click a plugin or DAW row for Show in Finder or Review uninstall…. Revealing a location does not launch the software. Driver files cannot be removed through MK Studio Upkeep; follow the developer’s instructions."),
                 topic("Deep discovery", "The review searches common system and current-user Applications and Library locations, configured plugin folders and hidden entries. It uses identifiers rather than a fixed list of products. Exact-ID software copies may join the unchecked preview after safety checks; name matches never authorise removal."),
                 topic("Limits", "Associated-file discovery is bounded to 200,000 entries and limited depth. Warnings mean more files may exist, including in other accounts or locations. Each bundle preview inspects up to 250,000 entries and displays the first 200 names. A failed bundle preview prevents removal; related support files stay protected."),
                 topic("Confirm removal", "Close DAWs and plugin hosts, select only the bundles you intend to remove, and acknowledge the review. Hold the final button for five seconds, then release. Releasing early or pressing Escape cancels the hold. Assistive activation opens a separate dialog: wait five seconds, then choose Confirm. Cancel makes no changes. No items are selected by default."),
                 topic("Settings stay on your Mac", "Deep review lists identified settings and related files with their original locations and individual Show in Finder actions. Copy kept locations copies the paths and search warnings. These files are not selected for removal or backed up. No results does not prove no settings exist. Use the vendor’s procedure for a full reset."),
                 topic("Review every file", "Removal is limited to eligible bundles. Choose Review Uninstall Files, then tick the bundles yourself; nothing is preselected. The preview is frozen, and each item is checked again before it moves. Unselected preferences and support folders stay."),
                 topic("Your work is kept", "Presets, samples, projects, licences and shared folders outside the bundle are never selected. Anything saved inside a selected bundle moves with it, so back it up first. Full removal may need the vendor’s uninstaller."),
-                topic("Recovery", "A verified local backup is created by default before anything moves to Trash. Use Backups to restore an item; an existing item at the original location is never replaced. Backup and retention controls are in Settings.")
+                topic("Recovery", "A verified local backup is created by default before anything moves to Trash. Use Backups to restore an item; an existing item at the original location is never replaced. Backup and retention controls are in Settings. These copies cover selected bundles, not projects, external settings or the whole studio."),
+                topic("Unreadable backup records", "A warning identifies unreadable records while available backups remain usable. Cleanup preserves unreadable recovery data. Keep the backup folder intact and report the problem; do not delete recovery data to clear the warning.")
             ]
         case .settings:
             return [
@@ -265,9 +266,9 @@ private struct ManualArticle: View {
                 topic("Scanning", "Plugin formats, DAW scanning and extra plugin folders."),
                 topic("Evidence", "Privacy information and the technical-details preference. Changing this preference updates open plugin, DAW and driver views."),
                 topic("Dock and menu bar", "At least one icon stays visible. The menu offers scanning, settings and window controls."),
-                topic("MK Studio Upkeep updates", "Check for Updates in About checks MK Studio Upkeep itself. A configured build opens published releases in your browser; it does not install them. If no release destination is configured, the app says so."),
+                topic("MK Studio Upkeep updates", "Check for Updates in About requests MK Studio Upkeep release information from GitHub and shows the result in the app. Builds without the metadata-check configuration offer Check GitHub Releases, which opens your browser. Beta releases are optional. Neither action installs anything."),
                 topic("Restore defaults", "Restore presentation and scan defaults is in General. It resets appearance, visibility, details and scan choices. Additional plugin folders, app-update preferences and removal-backup settings are kept."),
-                topic("Backups", "Backup creation is on by default. Automatic cleanup keeps new backups for 30 days by default. Settings → Backups lets you change retention, keep backups indefinitely, delete recovery data and restore removed bundles.")
+                topic("Backups", "Backup creation is on by default. Automatic cleanup keeps new backups for 30 days by default. Settings → Backups offers 7, 30 or 90 days for new backups; existing expiry dates do not change. Turn off automatic deletion to keep backups. Cleanup runs at app startup, when opening Backup settings or when re-enabling automatic deletion, not while the app is closed. Deleting backup data is permanent.")
             ]
         case .privacy:
             return [
@@ -275,7 +276,7 @@ private struct ManualArticle: View {
                 topic("Report a bug", "Use Help → Report a bug. Diagnostics are optional and the preview shows what will be shared. Opening the form sends the preview to GitHub; you submit the issue there. A GitHub account is required."),
                 topic("Developer links", "Developer links open only when chosen. The destination receives a normal browser request. Plugin paths and the rest of your inventory are not added."),
                 topic("App update check", "The optional MK Studio Upkeep update check contacts GitHub only when requested. Like any website visit, the site sees your IP address; your inventory stays on this Mac."),
-                topic("No commercial influence", "Partnerships or offers never affect update status, ordering or confidence.")
+                topic("Independent findings", "Review findings describe locally detected evidence. A website link or manager suggestion is not an endorsement or a confirmed update.")
             ]
         case .shortcuts:
             return [
@@ -289,7 +290,7 @@ private struct ManualArticle: View {
             ]
         case .troubleshooting:
             return [
-                topic("A product is missing", "Check that its format is enabled in Settings and that it lives in a scanned folder. Add the folder if needed, then rescan."),
+                topic("A product is missing", "For a missing plugin, check that its format is enabled and its folder is included in Settings → Scanning, then rescan. Additional plugin folders do not expand DAW discovery. Unrecognised DAWs and software managers may not appear."),
                 topic("Checking a release", "Check current releases with the developer. Scanning does not compare release versions or establish that your software is current."),
                 topic("A driver you don’t recognise", "Open it in Drivers. The “What this is” section names the maker and its purpose. Apple’s own components are marked as part of macOS. Check with the maker before removing anything."),
                 topic("Intel-only after reinstall", "Confirm the vendor installer includes a native build for that exact format. Some vendors keep VST2 Intel-only while AU and VST3 are native."),

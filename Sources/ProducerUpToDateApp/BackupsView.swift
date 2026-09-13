@@ -30,6 +30,9 @@ struct RemovalBackupsListView: View {
             }
             .padding(StudioUpkeepDesign.Space.regular)
             Divider()
+            if let warning = model.removalBackupWarning {
+                Label(warning, systemImage: "exclamationmark.triangle").font(.caption).padding(12)
+            }
             if let failure = model.removalBackupFailure {
                 BackupEmptyState(title: "Backup history is unavailable", detail: failure, symbol: "exclamationmark.triangle")
             } else if operations.isEmpty {
@@ -135,8 +138,8 @@ struct RemovalBackupSettingsView: View {
     @State private var workingItem: UUID?
 
     private var expired: [RemovalBackupManifest] { model.removalBackups.filter { $0.expiresAt <= Date() } }
-    private var expiredBytes: Int64 { expired.reduce(0) { $0 + $1.byteCount } }
-    private var totalBytes: Int64 { model.removalBackups.reduce(0) { $0 + $1.byteCount } }
+    private var expiredBytes: Int64 { RemovalBackupSize.total(expired.map(\.byteCount)) }
+    private var totalBytes: Int64 { RemovalBackupSize.total(model.removalBackups.map(\.byteCount)) }
 
     var body: some View {
         VStack(alignment: .leading, spacing: StudioUpkeepDesign.Space.xLarge) {
@@ -171,16 +174,19 @@ struct RemovalBackupSettingsView: View {
                     HStack {
                         Text("\(model.removalBackups.count) backup operation\(model.removalBackups.count == 1 ? "" : "s")")
                         Spacer()
-                        Text(ByteCountFormatter.string(fromByteCount: totalBytes, countStyle: .file)).foregroundStyle(.secondary)
+                        Text(backupSizeDescription(totalBytes)).foregroundStyle(.secondary)
                     }
                     HStack {
                         Button("Delete expired backups…") { presentedAlert = .deleteExpired }
                             .disabled(expired.isEmpty)
-                        Button("Delete all backups…", role: .destructive) { presentedAlert = .deleteAll }
+                        Button("Delete available backups…", role: .destructive) { presentedAlert = .deleteAll }
                             .disabled(model.removalBackups.isEmpty)
                         Spacer()
                         Button("Show in Finder") { NSWorkspace.shared.open(model.removalBackupStore.root) }
                             .disabled(model.removalBackups.isEmpty)
+                    }
+                    if let warning = model.removalBackupWarning {
+                        Label(warning, systemImage: "exclamationmark.triangle").font(.caption).foregroundStyle(.secondary)
                     }
                     if let failure = model.removalBackupFailure {
                         Label(failure, systemImage: "exclamationmark.triangle").font(.caption).foregroundStyle(.secondary)
@@ -221,13 +227,13 @@ struct RemovalBackupSettingsView: View {
             switch alert {
             case .deleteExpired:
                 Alert(title: Text("Delete expired backups?"),
-                    message: Text("This permanently deletes \(ByteCountFormatter.string(fromByteCount: expiredBytes, countStyle: .file)) of recovery data. Installed software is not affected."),
+                    message: Text("This permanently deletes \(backupSizeDescription(expiredBytes)) of recovery data. Installed software is not affected."),
                     primaryButton: .destructive(Text("Delete \(expired.count) backup\(expired.count == 1 ? "" : "s")"), action: deleteExpired),
                     secondaryButton: .cancel())
             case .deleteAll:
-                Alert(title: Text("Delete all backups?"),
-                    message: Text("This permanently deletes \(model.removalBackups.count) backup operation\(model.removalBackups.count == 1 ? "" : "s") using \(ByteCountFormatter.string(fromByteCount: totalBytes, countStyle: .file)). This cannot be undone."),
-                    primaryButton: .destructive(Text("Delete all"), action: deleteAll),
+                Alert(title: Text("Delete available backups?"),
+                    message: Text("This permanently deletes \(model.removalBackups.count) backup operation\(model.removalBackups.count == 1 ? "" : "s") using \(backupSizeDescription(totalBytes)). This cannot be undone."),
+                    primaryButton: .destructive(Text("Delete available"), action: deleteAll),
                     secondaryButton: .cancel())
             case let .result(message):
                 Alert(title: Text("Backup result"), message: Text(message), dismissButton: .default(Text("OK")))
@@ -334,4 +340,8 @@ private func backupStatusSymbol(_ operation: RemovalBackupManifest) -> String {
     if operation.restoredItemCount == operation.items.count { return "checkmark.circle" }
     if operation.removedItemCount < operation.items.count { return "exclamationmark.triangle" }
     return "clock.arrow.circlepath"
+}
+
+private func backupSizeDescription(_ bytes: Int64) -> String {
+    bytes == .max ? "Size unavailable" : ByteCountFormatter.string(fromByteCount: bytes, countStyle: .file)
 }

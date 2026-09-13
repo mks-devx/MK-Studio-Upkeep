@@ -22,7 +22,8 @@ Adding a plugin folder does not expand DAW discovery.
 An unfamiliar plugin can still appear without an entry in the website directory.
 Developer names, versions or architectures that cannot be determined stay unknown.
 DAWs and software managers require recognised application identities; an unlisted
-application may be missed.
+application may be missed. Choose **Refresh** in Software Managers after installing
+or removing a manager to update the list.
 
 ## Navigate the inventory
 
@@ -181,6 +182,18 @@ retention period; Settings offers 7, 30 or 90 days, indefinite retention by turn
 automatic deletion off, and manual deletion of expired or all backups. Disabling
 backup creation limits recovery to macOS Trash until it is emptied.
 
+Retention changes apply to **new** backups; existing backups keep their recorded
+expiry date. Automatic cleanup runs at app startup, when opening Backup settings,
+and when re-enabling automatic deletion. It does not run while the app is closed.
+Deleting a backup permanently removes that recovery copy, without removing installed
+software. Removal backups cover selected bundles, not projects or external settings;
+keep a separate backup of your studio data.
+
+If a backup record cannot be read, a warning appears and available backups remain
+usable. Unreadable recovery data is preserved, including during automatic cleanup
+and deletion of available backups. Keep the backup folder intact and report the
+problem; do not delete recovery data to clear the warning.
+
 Cache inspection never deletes files. Driver-file removal is disabled.
 See [Removal boundaries](UNINSTALL_REVIEW.md) for the detailed safeguards.
 
@@ -191,6 +204,7 @@ See [Removal boundaries](UNINSTALL_REVIEW.md) for the detailed safeguards.
 
 ## Version history
 
-Version 0.4.0 adds protected removal backups and restore history. Version 0.3.0
+Version 0.4.1 isolates damaged backup records, protects storage totals and refreshes
+manager discovery. Version 0.4.0 adds protected removal backups and restore history. Version 0.3.0
 retained the current view, filters and selected visible product after rescans and
 removed newer-edition suggestions.

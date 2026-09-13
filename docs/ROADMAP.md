@@ -5,12 +5,6 @@ The current focus is a reliable local inventory and clear routes to official dev
 Release-specific evidence and remaining platform checks are recorded in
 [Release verification](RELEASE_VERIFICATION.md).
 
-Before the next maintenance release:
-
-- Keep intact backups visible and restorable when another backup record is damaged.
-- Handle damaged backup sizes without overflowing storage totals.
-- Refresh software-manager discovery when the user requests a refresh.
-
 Further work:
 
 - Broaden reviewed website and manager recognition using synthetic identity fixtures and official sources.

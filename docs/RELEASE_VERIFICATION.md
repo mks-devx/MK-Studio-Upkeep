@@ -1,94 +1,61 @@
-# Release verification — 0.4.0, build 10
+# Release verification — 0.4.1, build 11
 
-Reviewed 13 September 2026. Version 0.4.0 adds protected local removal backups,
-restore history and explicit retention controls. It changes the current source
-licence to AGPL-3.0. The app remains a local inventory and official-destination
-tool; it does not claim to check current plugin or DAW releases.
+Reviewed 13 September 2026. This maintenance version isolates unreadable backup
+records, guards storage totals, refreshes manager discovery and corrects Tips and
+manual wording. The licence remains AGPL-3.0.
 
-## Source and local checks
+## Local verification
 
-- The publication-pattern and licence-consistency audits reported zero findings.
-  The licence audit checked 205 source and script files.
-- All 341 Swift tests completed in the release gate, and the suite also completed
-  under AddressSanitizer and ThreadSanitizer without failures or sanitizer reports.
-  Fourteen Python collector tests, native application-state checks and universal
-  packaging also passed.
-- Removal-backup regressions verify complete-copy-before-remove behaviour,
-  fingerprint checks, collision-safe restore, retention, owner-only metadata
-  permissions and rejection of symbolic-link storage roots.
-- The release build compiles with warnings treated as errors and packages arm64
-  and x86_64 code targeting macOS 13 and later.
-- The opt-in Trash/restore rehearsal uses disposable synthetic bundles only; it
-  does not touch installed audio software.
+- The complete release check passed: 283 Swift tests, with one opt-in Trash
+  rehearsal skipped, five Python tests, native application-state checks and
+  universal arm64/x86_64 packaging.
+- Regressions reproduce and cover a damaged record beside a restorable backup,
+  safe retention with unreadable records, overflowing stored sizes, and manager
+  discovery after synthetic installation and removal.
+- Publication-pattern, licence-consistency and reachable-history checks reported
+  zero findings. These checks do not guarantee that every possible private value
+  or ownership issue has been identified.
+- The packaged application starts with a temporary home/preferences directory and
+  no previous scan. Onboarding, General settings and the revised manual were
+  inspected on Apple Silicon. No IP socket was observed during that first-run
+  inspection; this is a point-in-time observation, not a network capture.
+- The app has no third-party Swift package dependency. Synthetic inventories and
+  temporary storage exercise behaviour independently of a particular studio's
+  installed products, paths or saved settings.
 
-## Interface review
+## Distribution checks
 
-Dark and light appearances were checked with an isolated presentation host and
-a fictional eight-product inventory. The review covered the layouts previously
-reported as crowded: section titles, result counts, filter controls, Review
-navigation, installed-copy details and empty states. Hardware and Drivers remain
-separate. Settings exposes backup creation, 7/30/90-day retention, indefinite
-retention, cleanup and restore history.
+Signing, notarisation, mounted-installer verification and hosted checks for this
+version must finish before the installer is published. Earlier release checks are
+recorded in their corresponding source snapshots; they are not evidence that this
+installer has passed.
 
-The current screenshots come from the 0.4.0 application-view source. The capture
-host does not scan this Mac or contact the internet. Product names, paths, versions,
-counts and dates are synthetic; capture metadata was removed and the images were
-converted to sRGB.
+## Data and network boundaries
 
-## Network and privacy boundary
+Scanning is local and does not execute plugin code. Reviewed website destinations
+are matched on-device. Unknown plugins can still be inventoried; unrecognised DAWs
+and managers may be missed. No current vendor-version catalogue is bundled.
 
-Normal scans make no network request. Developer destinations are matched locally
-from a small reviewed directory that contains identifiers, official links and
-review dates, but no current-version list. Unknown software is still inventoried.
-The separate **Check GitHub Releases** action concerns MK Studio Upkeep only and
-opens the release page in the distributed build.
+The distributed app's own release action opens GitHub Releases in the browser.
+The optional metadata reader in configured builds is separate from inventory and
+runs only when requested. Neither action installs software. Bug-report previews
+reach GitHub only after the user chooses to open the form.
 
-The release review requested all 83 unique HTTPS destinations in the plugin,
-manager, DAW, hardware and driver directories without inventory data. Seventy-six
-returned successfully. Seven official support pages rejected automated access with
-HTTP 403 and were cross-checked against official references or browser-indexed
-official pages; those responses are not presented as proof of browser availability.
-Five obsolete links were replaced with current official pages.
+The source, release descriptions and installer are publication material. Signing
+credentials, notarisation logs, recovery archives, test homes and raw runtime
+captures remain outside the repository. Publisher names and required notices are
+intentional public attribution, not anonymous distribution.
 
-The public file set and reachable Git history are checked for credentials,
-personal paths, private inventories, real studio screenshots and third-party
-plugin binaries. The app contains no telemetry or automatic crash uploader.
-Backup manifests containing original paths stay local and use owner-only file
-permissions. The report preview is local until the user chooses to open GitHub;
-the privacy notice explains the resulting public or private GitHub processing.
+## Limits
 
-## Signing and installer
+A temporary home/preferences test is not a clean macOS user account or a separate
+computer. Physical Intel UI, the full macOS 13+ range, complete VoiceOver use and
+broad DAW/plugin session compatibility remain unverified. Compiler support and
+hosted tests cannot establish that every studio configuration works.
 
-The distribution app and disk image were signed with Developer ID, accepted by
-Apple notarisation and stapled. Strict signature validation, Gatekeeper assessment,
-ticket validation and image integrity passed. A read-only mounted inspection
-confirmed version 0.4.0 build 10, arm64 and x86_64 code, matching bundled notices
-and zero packaged-file audit findings.
+Removal handles eligible bundles only; it does not back up projects or external
+settings and is not a complete vendor uninstaller. Unreadable backup records are
+preserved for recovery rather than silently removed.
 
-The release app was built from source commit `995dbf3`. The disk image SHA-256 is
-`19929859292e8d08d1a5dde4629bda2b8a42ba4d92abc5d890055e80bf395da7`.
-Only the disk image and `SHA256SUMS.txt` are public assets; notarisation records,
-test data, capture tools, installed-app backups and signing material remain private.
-
-## Hosted checks
-
-GitHub Actions ran the release gate for commit `995dbf3` on Apple Silicon and Intel
-macOS runners. Both jobs passed, including the separate reachable-history audit.
-The workflow uses read-only repository permissions; the official checkout action
-is pinned to a specific commit and does not persist credentials.
-
-## Remaining boundaries
-
-Physical Intel operation, the complete macOS 13+ range, broad DAW/plugin host
-compatibility, full VoiceOver use and a clean-account installation are not
-established by these checks. Website, DAW and software-manager recognition remains
-intentionally limited; unknown products are still inventoried. Architecture does
-not prove DAW or operating-system compatibility. In-app removal handles only the
-reviewed bundles shown in its confirmation flow and does not promise a complete
-vendor-specific uninstall.
-
-This is an engineering and publication review, not professional legal advice or
-a guarantee that every jurisdictional obligation has been identified. The current
-project is distributed as non-monetised open-source software; commercial activity,
-paid support, accounts or broader personal-data processing would require another
-legal and privacy review.
+Technical checks are not legal clearance. Applicable publisher/contact notice
+requirements remain a separate unresolved publication matter.

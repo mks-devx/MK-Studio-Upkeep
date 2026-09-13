@@ -99,6 +99,35 @@ import Darwin
         check(locatedManagers["fixture manager"]?.lastPathComponent == "Fixture Manager.app",
               "Manager discovery must find named apps in vendor subfolders without deprecated APIs")
 
+        let backupStorage = folder.appendingPathComponent("Backup Warning")
+        let warningModel = AppModel(preferences: preferences, storageDirectory: backupStorage,
+            scanner: { _, _ in throw CancellationError() })
+        let damagedRecord = backupStorage.appendingPathComponent(RemovalBackupStore.folderName)
+            .appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: damagedRecord, withIntermediateDirectories: true)
+        try Data("{".utf8).write(to: damagedRecord.appendingPathComponent("manifest.json"))
+        await warningModel.reloadRemovalBackups(applyRetention: true)
+        check(warningModel.removalBackupFailure == nil && warningModel.removalBackupWarning != nil,
+              "Unreadable records must produce a non-blocking warning, not hide all history")
+        check(FileManager.default.fileExists(atPath: damagedRecord.path), "Retention must preserve unreadable recovery data")
+
+        let managerName = ManagerDefinition.known[0].appNames[0]
+        let managerRoot = folder.appendingPathComponent("Manager Refresh")
+        try FileManager.default.createDirectory(at: managerRoot, withIntermediateDirectories: true)
+        let managerBrowser = ManagerBrowser(applicationRoots: [managerRoot])
+        managerBrowser.refresh()
+        check(managerBrowser.installed.isEmpty, "A clean manager folder must give an empty result")
+        let newManager = managerRoot.appendingPathComponent(managerName + ".app")
+        try FileManager.default.createDirectory(at: newManager.appendingPathComponent("Contents"), withIntermediateDirectories: true)
+        try Data("fixture".utf8).write(to: newManager.appendingPathComponent("Contents/Info.plist"))
+        managerBrowser.refresh()
+        check(managerBrowser.installed.contains { $0.url == newManager.standardizedFileURL }, "Refresh must discover newly installed managers")
+        managerBrowser.selection = managerBrowser.installed.first?.id
+        try FileManager.default.removeItem(at: newManager)
+        managerBrowser.refresh()
+        check(managerBrowser.installed.isEmpty && managerBrowser.selection == nil, "Refresh must forget removed managers and clear their selection")
+        check(RemovalBackupSize.total([Int64.max - 1, 2]) == Int64.max, "Cross-backup totals must not overflow")
+
         check(LocalReviewFilter.navigationCases.allSatisfy {
             [.cannotRun, .differentVersions, .repeatedCopies].contains($0)
         }, "Review navigation must offer only installed-file findings, never external edition suggestions")

@@ -9,7 +9,10 @@ extension AppModel {
             if applyRetention && removalBackupPreferences.automaticallyDeletesExpired {
                 _ = try await removalBackupStore.deleteExpired()
             }
-            removalBackups = try await removalBackupStore.list()
+            let listing = try await removalBackupStore.inspect()
+            removalBackups = listing.records
+            removalBackupWarning = listing.unreadableCount == 0 ? nil
+                : "\(listing.unreadableCount) backup record(s) could not be read. Available backups are shown. Unreadable recovery data is kept; do not delete it to clear this warning."
             if !removalBackups.contains(where: { $0.id == selectedBackupID }) {
                 selectedBackupID = removalBackups.first?.id
             }
