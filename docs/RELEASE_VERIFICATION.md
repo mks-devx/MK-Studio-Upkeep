@@ -59,19 +59,23 @@ the privacy notice explains the resulting public or private GitHub processing.
 
 ## Signing and installer
 
-The distribution app and disk image must be signed with Developer ID, accepted by
+The distribution app and disk image were signed with Developer ID, accepted by
 Apple notarisation and stapled. Strict signature validation, Gatekeeper assessment,
-ticket validation, image integrity, mounted-app inspection and the published
-checksum must pass for the exact release commit. Only the disk image and
-`SHA256SUMS.txt` are public assets; notarisation records, test data, capture tools,
-installed-app backups and signing material remain private.
+ticket validation and image integrity passed. A read-only mounted inspection
+confirmed version 0.4.0 build 10, arm64 and x86_64 code, matching bundled notices
+and zero packaged-file audit findings.
+
+The release app was built from source commit `995dbf3`. The disk image SHA-256 is
+`19929859292e8d08d1a5dde4629bda2b8a42ba4d92abc5d890055e80bf395da7`.
+Only the disk image and `SHA256SUMS.txt` are public assets; notarisation records,
+test data, capture tools, installed-app backups and signing material remain private.
 
 ## Hosted checks
 
-GitHub Actions runs the release gate on Apple Silicon and Intel macOS runners with
-read-only repository permissions. The official checkout action is pinned to a
-specific commit and does not persist credentials. The exact release commit must
-pass both jobs before the release is final.
+GitHub Actions ran the release gate for commit `995dbf3` on Apple Silicon and Intel
+macOS runners. Both jobs passed, including the separate reachable-history audit.
+The workflow uses read-only repository permissions; the official checkout action
+is pinned to a specific commit and does not persist credentials.
 
 ## Remaining boundaries
 
