@@ -8,7 +8,9 @@ manual wording. The licence remains AGPL-3.0.
 
 - The complete release check passed: 283 Swift tests, with one opt-in Trash
   rehearsal skipped, five Python tests, native application-state checks and
-  universal arm64/x86_64 packaging.
+  universal arm64/x86_64 packaging. The skipped Trash-and-restore rehearsal then
+  passed separately using disposable synthetic bundles; neighbouring test files
+  remained unchanged.
 - Regressions reproduce and cover a damaged record beside a restorable backup,
   safe retention with unreadable records, overflowing stored sizes, and manager
   discovery after synthetic installation and removal.
@@ -25,10 +27,14 @@ manual wording. The licence remains AGPL-3.0.
 
 ## Distribution checks
 
-Signing, notarisation, mounted-installer verification and hosted checks for this
-version must finish before the installer is published. Earlier release checks are
-recorded in their corresponding source snapshots; they are not evidence that this
-installer has passed.
+[GitHub Actions](https://github.com/mks-devx/MK-Studio-Upkeep/actions/runs/34766798742)
+passed on macOS 15 Apple Silicon and Intel runners for source commit `4a6a487`,
+including build, test, app-state, packaging and history checks. This record is a
+documentation-only update to that verified source.
+
+Signing, notarisation and mounted-installer verification remain pending before
+this installer is published. Earlier release checks are recorded in their source
+snapshots; they are not evidence that this installer has passed.
 
 ## Data and network boundaries
 
