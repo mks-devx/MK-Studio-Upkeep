@@ -2,7 +2,6 @@
 import Foundation
 import XCTest
 @testable import ProducerUpToDateCore
-@testable import MaintainerCatalogueSupport
 
 final class DAWScannerTests: XCTestCase {
     func testApplicationFilenameIsSanitisedWithoutChangingItsPathOrIdentity() throws {
@@ -148,13 +147,10 @@ final class DAWScannerTests: XCTestCase {
         let reaper = try XCTUnwrap(records.first { $0.definitionID == "reaper" })
         XCTAssertTrue(logic.installedFromAppStore)
         XCTAssertFalse(reaper.installedFromAppStore)
-        XCTAssertNil(DAWUpdateSource.checker(for: logic), "Apple's pages are not requested by the app")
-        XCTAssertEqual(DAWUpdateSource.checker(for: logic, includeInactive: true), .logic)
         let store = try XCTUnwrap(DAWUpdateSource.appStoreDestination(for: logic))
         XCTAssertEqual(store.updates.absoluteString, "macappstore://showUpdatesPage")
         XCTAssertEqual(store.product?.absoluteString, "macappstore://apps.apple.com/app/id634148309")
         XCTAssertNil(DAWUpdateSource.appStoreDestination(for: reaper))
-        XCTAssertNil(DAWUpdateSource.checker(for: reaper), "No live update reader is enabled")
         XCTAssertTrue(DAWUpdateEvaluator.evaluate(logic, catalogue: []).installedFromAppStore)
         XCTAssertTrue(logic.withoutUpdateEvidence().installedFromAppStore)
         let inferred = InstalledDAWRecord(id: "x", definitionID: "logic-pro", name: "Logic Pro", vendor: "Apple", bundleIdentifier: nil, displayVersion: "12.3", buildVersion: nil, path: logic.path, executablePath: nil, architectures: [], identityIsInferred: true, installedFromAppStore: true)

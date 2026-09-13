@@ -12,17 +12,17 @@ MK Studio Upkeep is a native macOS SwiftUI application. Historical `ProducerUpTo
 - **Removal and recovery:** core planning and revalidation do not execute deletion. Before the app moves eligible bundles to macOS Trash, a separate store copies and verifies every selected item by default. Restore refuses occupied or newly unsafe destinations. Driver files and protected content have no generic removal action.
 - **App releases:** MK Studio Upkeep's manual release action is separate from audio software. Private builds open GitHub Releases; configured public builds use a restricted GitHub metadata reader.
 
-## Experiments retained in source
+## Evidence boundaries
 
-Generic catalogue validation, release comparison and the isolated update-engine prototype remain separately testable development code. They are not active plugin/DAW update services in the app. The old release catalogue, signed duplicate and pinned catalogue key have been removed from the current source. Tests create minimal synthetic records and signing keys; compatibility catalogue defaults are empty. The maintainer collector has no live network sources and requires an explicit input file.
+Generic catalogue validation and release comparison types remain in the core with synthetic test records and empty catalogue defaults. They are not active plugin or DAW update services. The obsolete release-feed prototypes, collectors and catalogue packaging tools have been removed from the current source.
 
-The standalone catalogue packaging command requires an explicit signed input and trusted public key: `CatalogueTool SIGNED_CATALOGUE PUBLIC_KEY.txt NEW_OUTPUT_DIRECTORY`. It does not provide release data or establish whether a supplied key belongs to a trustworthy publisher. The app's version-free developer-link directory remains separate. Related-edition findings compare installed software only.
+The app's version-free developer-link directory remains part of local matching. Related-edition findings compare installed software only.
 
 `MacArchitecture` distinguishes the Mac's processor from a process running through Rosetta. `InstalledArchitecture` reports executable declarations. Neither proves that a plugin loads successfully or is supported by a particular DAW.
 
 ## Reuse and licensing
 
-The scanner can be used independently from presentation and network experiments. There are no third-party Swift package dependencies. Apple frameworks retain their own terms.
+The scanner can be used independently from presentation. There are no third-party Swift package dependencies. Apple frameworks retain their own terms.
 
 The current source is covered by AGPL-3.0. Distribution and network use must
 follow its source-availability and notice requirements.

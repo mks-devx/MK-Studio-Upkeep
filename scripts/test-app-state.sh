@@ -14,7 +14,7 @@ sed -n '/^enum BrandColor/,$p' "$app_source_dir/ProducerUpToDateApp.swift" > "$t
 { echo 'import SwiftUI'; cat "$temp/BrandColor-body.swift"; } > "$temp/BrandColor.swift"
 app_sources=()
 for source in "$app_source_dir"/*.swift; do
-    case "$source" in */ProducerUpToDateApp.swift|*/OfficialUpdatesView.swift) continue ;; esac
+    case "$source" in */ProducerUpToDateApp.swift) continue ;; esac
     app_sources+=("$source")
 done
 swiftc -swift-version 6 -target "$(uname -m)-apple-macosx13.0" -parse-as-library -I "$bin/Modules" \

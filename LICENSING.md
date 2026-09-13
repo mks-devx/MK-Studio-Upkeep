@@ -36,3 +36,12 @@ The AGPL-3.0 transition begins with version 0.4.0. Version 0.3.0 and earlier
 installers and source snapshots retain the licence supplied with them, including
 MPL-2.0 where stated. The transition does not revoke rights already granted for
 those copies.
+
+Superseded installer downloads and their release tags are retired. Their published
+source snapshots and original notices remain accessible:
+
+- [Version 0.3.0 source](https://github.com/mks-devx/MK-Studio-Upkeep/tree/ac905e161238ce63fb12e6a42b6d2cffb2817678) — MPL-2.0.
+- [Version 0.2.0 source](https://github.com/mks-devx/MK-Studio-Upkeep/tree/e5645556ffffc33ae686405e3ab8e1fac49a3e7b) — the licence and scope notes supplied with that snapshot.
+
+These historical snapshots are retained for source access, not recommended as
+current downloads. Their licence terms are unchanged.

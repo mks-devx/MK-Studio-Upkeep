@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 import XCTest
 @testable import ProducerUpToDateCore
-@testable import MaintainerCatalogueSupport
 
 final class AuditRegressionTests: XCTestCase {
     private func root() throws -> URL {
@@ -17,16 +16,6 @@ final class AuditRegressionTests: XCTestCase {
         let preview = try BundleContentsPreview.scan(url)
         XCTAssertEqual(preview.paths.count, 20_010)
         XCTAssertThrowsError(try BundleContentsPreview.scan(url, limit: 100))
-    }
-    func testRetiredOnlineRoutesStayDisabled() {
-        func daw(_ version: String, inferred: Bool = false) -> InstalledDAWRecord {
-            InstalledDAWRecord(id: "fixture", definitionID: "ableton-live", name: "Example DAW", vendor: "Example",
-                bundleIdentifier: "com.example.host", displayVersion: version, buildVersion: nil,
-                path: URL(fileURLWithPath: "/Applications/Example.app"), executablePath: nil, architectures: [.arm64], identityIsInferred: inferred)
-        }
-        XCTAssertNil(DAWUpdateSource.checker(for: daw("12.0")))
-        XCTAssertNil(DAWUpdateSource.checker(for: daw("13.0")))
-        XCTAssertNil(DAWUpdateSource.checker(for: daw("12.0", inferred: true)))
     }
     func testMetadataReadsRefuseFIFOsAndLinks() throws {
         let url = try root(); defer { try? FileManager.default.removeItem(at: url) }

@@ -3,7 +3,6 @@ import CryptoKit
 import Foundation
 import XCTest
 @testable import ProducerUpToDateCore
-@testable import MaintainerCatalogueSupport
 
 /// Regression coverage for the September 2026 security review: each test pins one hardening
 /// decision so it cannot quietly regress.
@@ -37,30 +36,6 @@ final class SecurityHardeningTests: XCTestCase {
                     "https://user@www.fabfilter.com/", "https://www.fabfilter.com.evil.example/", "customscheme://www.fabfilter.com/"] {
             XCTAssertFalse(CatalogueValidator.isOfficialLink(URL(string: bad)!), bad)
         }
-    }
-
-    func testFactsCacheRejectsLinksThatAreNotHTTPS() {
-        let prefix = "com.d16group."
-        let good = PluginReleaseRecord(vendorIdentifierPrefixes: [prefix], productAliases: ["Fixture"], latestVersion: "4.13", sourceURL: DirectVendor.d16.url, checkedOn: "2026-09-07")
-        let bad = PluginReleaseRecord(vendorIdentifierPrefixes: [prefix], productAliases: ["Fixture"], latestVersion: "4.13",
-                                      sourceURL: URL(string: "ftp://www.fabfilter.com/download")!, checkedOn: "2026-09-07")
-        XCTAssertTrue(DirectVendorChecks.validCacheEntries([DirectVendorFacts(vendor: .d16, checkedAt: now, plugins: [good], daws: [])]))
-        XCTAssertFalse(DirectVendorChecks.validCacheEntries([DirectVendorFacts(vendor: .d16, checkedAt: now, plugins: [bad], daws: [])]))
-    }
-
-    func testOverlayKeepsCatalogueIdentityAndMovesOnlyVersionFields() {
-        let prefix = "com.d16group."
-        let base = PluginReleaseRecord(vendorIdentifierPrefixes: [prefix], productAliases: ["Fixture 4"], latestVersion: "4.12",
-                                       sourceURL: official, checkedOn: "2026-09-01", family: "Fixture", edition: 4)
-        let facts = PluginReleaseRecord(vendorIdentifierPrefixes: [prefix], productAliases: ["Fixture 4", "Injected alias"], latestVersion: "4.13",
-                                        sourceURL: URL(string: "https://www.fabfilter.com/other")!, checkedOn: "2026-09-07")
-        let merged = DirectVendorChecks.overlay([DirectVendorFacts(vendor: .d16, checkedAt: now, plugins: [facts], daws: [])], baseline: [base], now: now)
-        XCTAssertEqual(merged.first?.latestVersion, "4.13")
-        XCTAssertEqual(merged.first?.checkedOn, "2026-09-07")
-        XCTAssertEqual(merged.first?.productAliases, ["Fixture 4"], "Aliases come from the signed catalogue only")
-        XCTAssertEqual(merged.first?.sourceURL, official, "The official page comes from the signed catalogue only")
-        XCTAssertEqual(merged.first?.family, "Fixture")
-        XCTAssertEqual(merged.first?.edition, 4)
     }
 
     func testHostileVersionStringsAreRejectedQuickly() {

@@ -23,8 +23,8 @@ an AGPL-licensed executable, publish its corresponding source under a matching
 release tag or archive and identify it on the download page. A local
 build is not ready for distribution merely because an older source release is public.
 No historical release catalogue or catalogue signing key is included in the
-current source or packaged app. The isolated update-engine source directory
-is not packaged into the scanner app.
+current source or packaged app. Retired release-feed prototypes and maintainer
+collectors have also been removed from the current source.
 
 ## Source publication
 

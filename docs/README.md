@@ -19,6 +19,5 @@
 - [Roadmap](ROADMAP.md) lists planned work without promising delivery dates.
 - [Manager references](MANAGER_SOURCES.md) documents reviewed official destinations.
 
-The application uses local inventory findings and reviewed website links. Historical
-catalogue and release-engine experiments are isolated development tools, not active
-plugin or DAW update services.
+The application uses local inventory findings and reviewed website links. It does
+not run automatic plugin or DAW release checks.

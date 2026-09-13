@@ -142,9 +142,8 @@ Build with Xcode 26 or newer:
 ```
 
 Local builds are ad-hoc signed. Distribution signing and notarisation are separate.
-The repository retains isolated release-engine experiments and maintainer tools,
-tested with synthetic inputs. No release catalogue is bundled; these tools are
-not active plugin-update services in the app.
+The app uses local inventory findings and reviewed official website links. It does
+not include a release catalogue or an automatic plugin-update service.
 
 [Documentation](docs/README.md) · [Architecture](docs/ARCHITECTURE.md) ·
 [Contributing](CONTRIBUTING.md) · [Release verification](docs/RELEASE_VERIFICATION.md)

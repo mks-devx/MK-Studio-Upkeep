@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased — repository maintenance
+
+- Remove inactive release-feed prototypes, vendor collectors and catalogue tools,
+  together with their dedicated tests. Preserve the active scanner, official
+  website directory and app release check.
+- Consolidate remaining work in the roadmap.
+- Retire superseded installer downloads while preserving access to earlier source
+  snapshots and their original licence notices.
+
+These source-maintenance changes do not replace the published 0.4.0 installer.
+
 ## 0.4.0 — 13 September 2026
 
 - Create and verify a local backup of every selected software bundle before
