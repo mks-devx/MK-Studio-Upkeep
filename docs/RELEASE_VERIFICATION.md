@@ -1,4 +1,4 @@
-# Release verification — 0.4.1, build 12
+# Release verification — 0.4.1, build 13
 
 Reviewed 15 September 2026. This maintenance version isolates unreadable backup
 records, guards storage totals, protects recovery copies during active removal,
@@ -8,9 +8,9 @@ refreshes manager discovery and corrects Tips and manual wording. The licence re
 
 - The complete release check passed: 286 Swift tests, with one opt-in Trash
   rehearsal skipped, five Python tests, native application-state checks and
-  universal arm64/x86_64 packaging. The skipped Trash-and-restore rehearsal then
-  passed separately using disposable synthetic bundles; neighbouring test files
-  remained unchanged.
+  universal arm64/x86_64 packaging. A separate Trash-and-restore rehearsal passed
+  against the unchanged build 12 core using disposable synthetic bundles;
+  neighbouring test files remained unchanged.
 - Three additional regressions reproduce and cover cleanup/restore attempts during
   an active removal, release of protection after success/failure, and honest
   reporting when removal status cannot be saved. The original race was reproduced
@@ -21,11 +21,18 @@ refreshes manager discovery and corrects Tips and manual wording. The licence re
 - Publication-pattern, licence-consistency and reachable-history checks reported
   zero findings. These checks do not guarantee that every possible private value
   or ownership issue has been identified.
-- Build 12 launches and opens General settings on Apple Silicon. Backups visual
-  inspection remains incomplete: the native UI-inspection service crashes when
-  reading that screen. Its crash report identifies the inspection service; the
-  application process remains running. Earlier build 11 first-run/manual checks
-  do not establish full visual verification of the revised backup controls.
+- Application-state regressions verify shared restore/cleanup activity, rejection
+  of conflicting actions and progress cleanup after success or failure.
+- Build 13 was launched with isolated preferences and no inventory scan. Restoring
+  a disposable synthetic backup through Settings succeeded; recovered contents
+  matched the fixture, the record gained a restore time, and the button changed
+  to disabled “Already installed”. The recovery payload and neighbouring damaged
+  record remained intact. “Show in Finder” revealed the isolated recovery folder.
+- Backups settings were visually checked using macOS window capture, including
+  readable-only counts and known storage size beside a damaged record. Shortened
+  storage-button labels fit the settings window after the final rebuild. The native
+  accessibility-inspection service crashed while inspecting this screen; the app
+  remained running. Full accessibility verification remains incomplete.
 - The app has no third-party Swift package dependency. Synthetic inventories and
   temporary storage exercise behaviour independently of a particular studio's
   installed products, paths or saved settings.
@@ -35,8 +42,8 @@ refreshes manager discovery and corrects Tips and manual wording. The licence re
 [GitHub Actions](https://github.com/mks-devx/MK-Studio-Upkeep/actions/runs/34766798742)
 passed on macOS 15 Apple Silicon and Intel runners for source commit `4a6a487`,
 including build, test, app-state, packaging and history checks for build 11.
-Build 12 includes further source changes verified locally as described above;
-those hosted results must not be presented as build 12 verification.
+Build 13 includes further source changes verified locally as described above;
+those hosted results must not be presented as build 13 verification.
 
 Signing, notarisation and mounted-installer verification remain pending before
 this installer is published. Earlier release checks are recorded in their source

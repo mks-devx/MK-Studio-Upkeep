@@ -4,6 +4,8 @@
 
 - Prevent backup cleanup and restoration of an active removal operation until its
   result is recorded. Failed status writes no longer claim the backup is intact.
+- Share restore/cleanup progress across backup views and reject conflicting
+  actions. Label storage totals as known size when records are unreadable.
 - Keep Finder access available for unreadable recovery data and distinguish it
   from an empty backup history.
 - Keep available backups usable when another record is unreadable. Show a warning

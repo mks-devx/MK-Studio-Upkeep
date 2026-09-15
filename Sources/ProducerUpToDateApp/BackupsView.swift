@@ -59,7 +59,6 @@ struct RemovalBackupsListView: View {
 
 struct RemovalBackupDetailView: View {
     @EnvironmentObject private var model: AppModel
-    @State private var workingItem: UUID?
     @State private var resultMessage: String?
     @AppStorage(RemovalBackupPreferences.automaticDeletionKey) private var automaticDeletion = true
 
@@ -87,9 +86,12 @@ struct RemovalBackupDetailView: View {
                                  : "Automatic deletion is paused")
                         }
                         .font(.caption).foregroundStyle(.secondary)
+                        if let activity = model.backupActivity {
+                            Label(activity.message, systemImage: "hourglass").font(.subheadline)
+                        }
                         Divider()
                         ForEach(operation.items) { item in
-                            BackupItemDetail(item: item, working: workingItem == item.id) {
+                            BackupItemDetail(item: item, working: model.backupActivity == .restoring(item.id), blocked: model.backupActivity != nil) {
                                 restore(operation.id, item.id)
                             }
                             if item.id != operation.items.last?.id { Divider() }
@@ -113,11 +115,8 @@ struct RemovalBackupDetailView: View {
     }
 
     private func restore(_ operationID: UUID, _ itemID: UUID) {
-        guard workingItem == nil else { return }
-        workingItem = itemID
         Task {
             resultMessage = await model.restoreBackup(operationID: operationID, itemID: itemID)
-            workingItem = nil
         }
     }
 }
@@ -139,7 +138,6 @@ struct RemovalBackupSettingsView: View {
     @AppStorage(RemovalBackupPreferences.automaticDeletionKey) private var automaticDeletion = true
     @AppStorage(RemovalBackupPreferences.retentionDaysKey) private var retentionDays = 30
     @State private var presentedAlert: PresentedAlert?
-    @State private var workingItem: UUID?
 
     private var expired: [RemovalBackupManifest] { model.removalBackups.filter { $0.expiresAt <= Date() } }
     private var expiredBytes: Int64 { RemovalBackupSize.total(expired.map(\.byteCount)) }
@@ -147,6 +145,9 @@ struct RemovalBackupSettingsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: StudioUpkeepDesign.Space.xLarge) {
+            if let activity = model.backupActivity {
+                Label(activity.message, systemImage: "hourglass").font(.subheadline)
+            }
             GroupBox("Protection") {
                 VStack(alignment: .leading, spacing: 12) {
                     Toggle("Create a backup before removal", isOn: $enabled)
@@ -173,18 +174,20 @@ struct RemovalBackupSettingsView: View {
                 .padding(8)
             }
 
+            .disabled(model.backupActivity != nil)
+
             GroupBox("Storage") {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack {
-                        Text("\(model.removalBackups.count) backup operation\(model.removalBackups.count == 1 ? "" : "s")")
+                        Text("\(model.removalBackups.count) \(model.removalBackupWarning == nil ? "" : "readable ")backup operation\(model.removalBackups.count == 1 ? "" : "s")")
                         Spacer()
-                        Text(backupSizeDescription(totalBytes)).foregroundStyle(.secondary)
+                        Text("\(model.removalBackupWarning == nil ? "" : "Known size: ")\(backupSizeDescription(totalBytes))").foregroundStyle(.secondary)
                     }
                     HStack {
-                        Button("Delete expired backups…") { presentedAlert = .deleteExpired }
-                            .disabled(expired.isEmpty)
-                        Button("Delete available backups…", role: .destructive) { presentedAlert = .deleteAll }
-                            .disabled(model.removalBackups.isEmpty)
+                        Button("Delete expired…") { presentedAlert = .deleteExpired }
+                            .disabled(expired.isEmpty || model.backupActivity != nil)
+                        Button(model.removalBackupWarning == nil ? "Delete backups…" : "Delete readable…", role: .destructive) { presentedAlert = .deleteAll }
+                            .disabled(model.removalBackups.isEmpty || model.backupActivity != nil)
                         Spacer()
                         Button("Show in Finder") { NSWorkspace.shared.activateFileViewerSelecting([model.removalBackupStore.root]) }
                             .disabled(model.removalBackups.isEmpty && model.removalBackupWarning == nil)
@@ -211,7 +214,7 @@ struct RemovalBackupSettingsView: View {
                             DisclosureGroup {
                                 VStack(alignment: .leading, spacing: 10) {
                                     ForEach(operation.items) { item in
-                                        BackupItemDetail(item: item, working: workingItem == item.id) {
+                                        BackupItemDetail(item: item, working: model.backupActivity == .restoring(item.id), blocked: model.backupActivity != nil) {
                                             restore(operation.id, item.id)
                                         }
                                         if item.id != operation.items.last?.id { Divider() }
@@ -248,10 +251,8 @@ struct RemovalBackupSettingsView: View {
     }
 
     private func restore(_ operationID: UUID, _ itemID: UUID) {
-        workingItem = itemID
         Task {
             presentedAlert = .result(await model.restoreBackup(operationID: operationID, itemID: itemID))
-            workingItem = nil
         }
     }
 
@@ -296,6 +297,7 @@ private struct BackupTimelineRow: View {
 private struct BackupItemDetail: View {
     let item: RemovalBackupItem
     let working: Bool
+    let blocked: Bool
     let restore: () -> Void
     private var destinationExists: Bool { FileManager.default.fileExists(atPath: item.originalPath) }
 
@@ -314,7 +316,7 @@ private struct BackupItemDetail: View {
                 Text(ByteCountFormatter.string(fromByteCount: item.byteCount, countStyle: .file)).font(.caption).foregroundStyle(.secondary)
                 Spacer()
                 Button(working ? "Restoring…" : destinationExists ? "Already installed" : "Restore") { restore() }
-                    .disabled(working || destinationExists)
+                    .disabled(blocked || destinationExists)
             }
         }
     }

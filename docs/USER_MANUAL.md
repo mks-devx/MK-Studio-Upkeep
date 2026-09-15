@@ -127,7 +127,10 @@ release-page configuration it opens GitHub Releases in your browser. A configure
 public release check contacts GitHub only when requested. Optional beta releases
 are separate from normal releases. Nothing is installed automatically.
 
-Backup cleanup waits until protected software removal has finished. If a backup
+Backup cleanup waits until protected software removal has finished. Restore and
+cleanup progress is shared between Settings and the main Backups view; conflicting
+actions stay disabled until the current operation finishes. When records cannot
+be read, the displayed count and known size cover readable records only. If a backup
 record cannot be read, its recovery data is kept. Settings → Backups → Show in
 Finder remains available for inspecting that folder; avoid editing or deleting
 recovery files.

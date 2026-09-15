@@ -111,6 +111,24 @@ import Darwin
               "Unreadable records must produce a non-blocking warning, not hide all history")
         check(FileManager.default.fileExists(atPath: damagedRecord.path), "Retention must preserve unreadable recovery data")
 
+        let restoreGate = ReadGate()
+        let restoringID = UUID()
+        let activeRestore = Task {
+            await warningModel.performBackupActivity(.restoring(restoringID)) { await restoreGate.read() }
+        }
+        await restoreGate.waitForStart()
+        check(warningModel.backupActivity == .restoring(restoringID), "Restore activity must be visible across backup views")
+        let blockedDeletion = await warningModel.deleteAllRemovalBackups()
+        check(blockedDeletion == nil, "Cleanup must not queue while restoration is running")
+        let blockedRestore = await warningModel.restoreBackup(operationID: UUID(), itemID: UUID())
+        check(blockedRestore.contains("in progress"), "A second restore must give a clear busy result")
+        check(warningModel.backupActivity == .restoring(restoringID), "Rejected actions must not clear the active progress state")
+        await restoreGate.finish("restored")
+        let restoreResult = await activeRestore.value
+        check(restoreResult == "restored" && warningModel.backupActivity == nil, "Finished restoration must clear shared progress")
+        _ = await warningModel.restoreBackup(operationID: UUID(), itemID: UUID())
+        check(warningModel.backupActivity == nil, "Failed restoration must also clear shared progress")
+
         let managerName = ManagerDefinition.known[0].appNames[0]
         let managerRoot = folder.appendingPathComponent("Manager Refresh")
         try FileManager.default.createDirectory(at: managerRoot, withIntermediateDirectories: true)

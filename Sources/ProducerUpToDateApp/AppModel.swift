@@ -112,6 +112,26 @@ final class AppModel: ObservableObject {
     @Published var removalBackupFailure: String?
     @Published var removalBackupWarning: String?
     @Published var selectedBackupID: UUID?
+    enum BackupActivity: Equatable {
+        case restoring(UUID), deleting
+        static let busyMessage = "A backup operation is in progress. Wait for it to finish before starting another."
+        var message: String {
+            switch self {
+            case .restoring: "Restoring a backup… Keep MK Studio Upkeep open."
+            case .deleting: "Deleting backup data… Keep MK Studio Upkeep open."
+            }
+        }
+    }
+    @Published private(set) var backupActivity: BackupActivity?
+
+    func performBackupActivity<Value: Sendable>(_ activity: BackupActivity,
+        operation: @MainActor () async -> Value) async -> Value? {
+        guard backupActivity == nil else { return nil }
+        backupActivity = activity
+        defer { backupActivity = nil }
+        return await operation()
+    }
+
 
     var removalBackupPreferences: RemovalBackupPreferences {
         RemovalBackupPreferences(defaults: preferences)
