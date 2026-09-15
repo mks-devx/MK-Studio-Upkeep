@@ -258,7 +258,7 @@ private struct ManualArticle: View {
                 topic("Review every file", "Removal is limited to eligible bundles. Choose Review Uninstall Files, then tick the bundles yourself; nothing is preselected. The preview is frozen, and each item is checked again before it moves. Unselected preferences and support folders stay."),
                 topic("Your work is kept", "Presets, samples, projects, licences and shared folders outside the bundle are never selected. Anything saved inside a selected bundle moves with it, so back it up first. Full removal may need the vendor’s uninstaller."),
                 topic("Recovery", "A verified local backup is created by default before anything moves to Trash. Use Backups to restore an item; an existing item at the original location is never replaced. Backup and retention controls are in Settings. These copies cover selected bundles, not projects, external settings or the whole studio."),
-                topic("Unreadable backup records", "A warning identifies unreadable records while available backups remain usable. Cleanup preserves unreadable recovery data. Keep the backup folder intact and report the problem; do not delete recovery data to clear the warning.")
+                topic("Unreadable backup records", "A warning identifies unreadable records while available backups remain usable. Cleanup preserves unreadable recovery data. Settings → Backups → Show in Finder remains available even if no records can be read. Keep the backup folder intact and report the problem; do not delete recovery data to clear the warning.")
             ]
         case .settings:
             return [
@@ -268,7 +268,7 @@ private struct ManualArticle: View {
                 topic("Dock and menu bar", "At least one icon stays visible. The menu offers scanning, settings and window controls."),
                 topic("MK Studio Upkeep updates", "Check for Updates in About requests MK Studio Upkeep release information from GitHub and shows the result in the app. Builds without the metadata-check configuration offer Check GitHub Releases, which opens your browser. Beta releases are optional. Neither action installs anything."),
                 topic("Restore defaults", "Restore presentation and scan defaults is in General. It resets appearance, visibility, details and scan choices. Additional plugin folders, app-update preferences and removal-backup settings are kept."),
-                topic("Backups", "Backup creation is on by default. Automatic cleanup keeps new backups for 30 days by default. Settings → Backups offers 7, 30 or 90 days for new backups; existing expiry dates do not change. Turn off automatic deletion to keep backups. Cleanup runs at app startup, when opening Backup settings or when re-enabling automatic deletion, not while the app is closed. Deleting backup data is permanent.")
+                topic("Backups", "Backup creation is on by default. Automatic cleanup keeps new backups for 30 days by default. Settings → Backups offers 7, 30 or 90 days for new backups; existing expiry dates do not change. Turn off automatic deletion to keep backups. Cleanup runs at app startup, when opening Backup settings or when re-enabling automatic deletion, not while the app is closed. Cleanup is blocked while protected removal is in progress; try again after it finishes. Deleting backup data is permanent.")
             ]
         case .privacy:
             return [

@@ -1,7 +1,11 @@
 # Changelog
 
-## 0.4.1 — 13 September 2026
+## 0.4.1 — Unreleased
 
+- Prevent backup cleanup and restoration of an active removal operation until its
+  result is recorded. Failed status writes no longer claim the backup is intact.
+- Keep Finder access available for unreadable recovery data and distinguish it
+  from an empty backup history.
 - Keep available backups usable when another record is unreadable. Show a warning
   and preserve unreadable recovery data during cleanup.
 - Reject overflowing stored backup sizes and protect totals across operations.

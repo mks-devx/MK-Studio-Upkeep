@@ -36,9 +36,13 @@ struct RemovalBackupsListView: View {
             if let failure = model.removalBackupFailure {
                 BackupEmptyState(title: "Backup history is unavailable", detail: failure, symbol: "exclamationmark.triangle")
             } else if operations.isEmpty {
-                BackupEmptyState(title: search.isEmpty ? "No removal backups" : "No matching backups",
+                BackupEmptyState(title: search.isEmpty
+                    ? (model.removalBackupWarning == nil ? "No removal backups" : "No readable backups")
+                    : "No matching backups",
                     detail: search.isEmpty
-                        ? "A backup appears here after MK Studio Upkeep creates one before confirmed removal."
+                        ? (model.removalBackupWarning == nil
+                           ? "A backup appears here after MK Studio Upkeep creates one before confirmed removal."
+                           : "Recovery data is still present. Open Settings → Backups to reveal the folder in Finder. Keep these files for recovery.")
                         : "Try a product name or clear the search field.",
                     symbol: "externaldrive.badge.timemachine")
             } else {
@@ -182,8 +186,9 @@ struct RemovalBackupSettingsView: View {
                         Button("Delete available backups…", role: .destructive) { presentedAlert = .deleteAll }
                             .disabled(model.removalBackups.isEmpty)
                         Spacer()
-                        Button("Show in Finder") { NSWorkspace.shared.open(model.removalBackupStore.root) }
-                            .disabled(model.removalBackups.isEmpty)
+                        Button("Show in Finder") { NSWorkspace.shared.activateFileViewerSelecting([model.removalBackupStore.root]) }
+                            .disabled(model.removalBackups.isEmpty && model.removalBackupWarning == nil)
+                            .help("Reveal the recovery folder, including unreadable backup records. Nothing is deleted.")
                     }
                     if let warning = model.removalBackupWarning {
                         Label(warning, systemImage: "exclamationmark.triangle").font(.caption).foregroundStyle(.secondary)
@@ -198,7 +203,8 @@ struct RemovalBackupSettingsView: View {
             VStack(alignment: .leading, spacing: 10) {
                 Text("Restore history").font(.headline)
                 if model.removalBackups.isEmpty {
-                    Text("No removal backups yet.").foregroundStyle(.secondary)
+                    Text(model.removalBackupWarning == nil ? "No removal backups yet." : "No readable backup records. Recovery data has been kept.")
+                        .foregroundStyle(.secondary)
                 } else {
                     LazyVStack(alignment: .leading, spacing: 10) {
                         ForEach(model.removalBackups) { operation in

@@ -362,7 +362,7 @@ struct CleanupActionView: View {
                 if createsBackup {
                     recoverySummary = result.1 == nil
                         ? "Nothing was removed because a complete backup could not be created.\n\n"
-                        : "The backup remains available. Rescan and review a new plan before trying again:\n\n"
+                        : "Review the recovery copy under Maintenance › Backups and keep Trash intact. Rescan and review a new plan before trying again:\n\n"
                 } else {
                     recoverySummary = result.0.movedCount == 0
                         ? "Nothing was removed.\n\n"

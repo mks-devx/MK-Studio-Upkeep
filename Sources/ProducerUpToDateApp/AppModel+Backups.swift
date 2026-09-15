@@ -7,7 +7,11 @@ extension AppModel {
     func reloadRemovalBackups(applyRetention: Bool = false) async {
         do {
             if applyRetention && removalBackupPreferences.automaticallyDeletesExpired {
-                _ = try await removalBackupStore.deleteExpired()
+                do {
+                    _ = try await removalBackupStore.deleteExpired()
+                } catch RemovalBackupError.removalInProgress {
+                    // Retention can wait; a protected removal must not hide readable history.
+                }
             }
             let listing = try await removalBackupStore.inspect()
             removalBackups = listing.records

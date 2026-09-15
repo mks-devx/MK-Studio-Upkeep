@@ -82,7 +82,7 @@ public struct RemovalBackupDeletionSummary: Equatable, Sendable {
 
 public enum RemovalBackupError: Error, Equatable, LocalizedError {
     case emptyPlan, planTooLarge, invalidRetention, unsafeSource, copyFailed, verificationFailed
-    case invalidBackupStorage
+    case invalidBackupStorage, removalInProgress
     case invalidManifest, operationMissing, itemMissing, destinationOccupied, destinationUnsafe
     case restoreFailed, restoreVerificationFailed
 
@@ -95,6 +95,7 @@ public enum RemovalBackupError: Error, Equatable, LocalizedError {
         case .copyFailed: "A complete local backup could not be created. Nothing was removed."
         case .verificationFailed: "The backup copy could not be verified. Nothing was removed."
         case .invalidBackupStorage: "The local backup folder is not a private app-owned directory. Nothing was removed."
+        case .removalInProgress: "A protected removal is in progress. Try again after it finishes."
         case .invalidManifest: "This backup record is damaged or unsafe to use."
         case .operationMissing: "This backup no longer exists."
         case .itemMissing: "The selected item is not part of this backup."
@@ -113,6 +114,7 @@ public actor RemovalBackupStore {
     private let fileManager: FileManager
     private let encoder: JSONEncoder
     private let decoder: JSONDecoder
+    private var activeRemovalIDs = Set<UUID>()
 
     public init(root: URL, fileManager: FileManager = .default, now: @escaping () -> Date = Date.init) {
         self.root = root.standardizedFileURL
@@ -173,6 +175,18 @@ public actor RemovalBackupStore {
         return manifest
     }
 
+    // Preparation and protection share one actor turn so deletion cannot enter between them.
+    fileprivate func prepareForRemoval(plan: CleanupPlan, safety: CleanupSafety, retentionDays: Int) throws -> RemovalBackupManifest {
+        let manifest = try prepare(plan: plan, safety: safety, retentionDays: retentionDays)
+        activeRemovalIDs.insert(manifest.id)
+        return manifest
+    }
+
+    fileprivate func finishRemoval(operationID: UUID, movedPaths: Set<String>) throws -> RemovalBackupManifest {
+        defer { activeRemovalIDs.remove(operationID) }
+        return try recordRemoval(operationID: operationID, movedPaths: movedPaths)
+    }
+
     public func list() throws -> [RemovalBackupManifest] { try inspect().records }
 
     public func inspect() throws -> RemovalBackupListing {
@@ -206,6 +220,7 @@ public actor RemovalBackupStore {
 
     public func restore(operationID: UUID, itemID: UUID, safety: CleanupSafety,
                         install: @Sendable (URL, URL) throws -> Void) throws -> URL {
+        guard !activeRemovalIDs.contains(operationID) else { throw RemovalBackupError.removalInProgress }
         let directory = try operationDirectory(operationID)
         var manifest = try load(from: directory)
         guard let index = manifest.items.firstIndex(where: { $0.id == itemID }) else { throw RemovalBackupError.itemMissing }
@@ -241,11 +256,13 @@ public actor RemovalBackupStore {
     }
 
     public func deleteExpired() throws -> RemovalBackupDeletionSummary {
+        guard activeRemovalIDs.isEmpty else { throw RemovalBackupError.removalInProgress }
         let summary = try delete(list().filter { $0.expiresAt <= now() })
         try removeAbandonedStaging(olderThan: now().addingTimeInterval(-86_400))
         return summary
     }
     public func deleteAll() throws -> RemovalBackupDeletionSummary {
+        guard activeRemovalIDs.isEmpty else { throw RemovalBackupError.removalInProgress }
         let summary = try delete(list())
         try removeAbandonedStaging(olderThan: nil)
         return summary
@@ -408,7 +425,7 @@ public enum BackupProtectedCleanupExecutor {
                                moveToTrash: (URL) throws -> Void) async -> BackupProtectedCleanupResult {
         let prepared: RemovalBackupManifest
         do {
-            prepared = try await store.prepare(plan: plan, safety: safety, retentionDays: retentionDays)
+            prepared = try await store.prepareForRemoval(plan: plan, safety: safety, retentionDays: retentionDays)
         } catch {
             return BackupProtectedCleanupResult(
                 cleanup: CleanupExecutionResult(movedCount: 0,
@@ -421,10 +438,10 @@ public enum BackupProtectedCleanupExecutor {
             movedPaths.insert(url.standardizedFileURL.path)
         }
         do {
-            let updated = try await store.recordRemoval(operationID: prepared.id, movedPaths: movedPaths)
+            let updated = try await store.finishRemoval(operationID: prepared.id, movedPaths: movedPaths)
             return BackupProtectedCleanupResult(cleanup: cleanup, backup: updated)
         } catch {
-            let failures = cleanup.failures + ["The backup is intact, but its removal status could not be updated: \(error.localizedDescription)"]
+            let failures = cleanup.failures + ["The removal status could not be saved. Review the backup history and keep Trash intact: \(error.localizedDescription)"]
             return BackupProtectedCleanupResult(
                 cleanup: CleanupExecutionResult(movedCount: cleanup.movedCount, failures: failures),
                 backup: prepared)

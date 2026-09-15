@@ -21,8 +21,10 @@ Released under the [GNU Affero General Public License v3.0](LICENSE).
 
 ## What it does
 
-Version 0.4.1 improves recovery from damaged backup records and refreshes software-manager discovery. Verified local recovery copies protect eligible in-app removals. Review
-continues to show locally detected facts without newer-edition suggestions.
+The 0.4.1 source includes recovery and software-manager discovery fixes. Its
+installer is pending release verification; use GitHub Releases for published
+downloads. Verified local recovery copies protect eligible in-app removals, and
+backup cleanup is blocked while a protected removal is running.
 
 - **Inventory plugins:** scan Audio Unit, VST3, VST2 and CLAP plugins in standard
   and additional folders. Group matching formats and inspect each installed file and version.

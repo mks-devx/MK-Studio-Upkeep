@@ -127,6 +127,11 @@ release-page configuration it opens GitHub Releases in your browser. A configure
 public release check contacts GitHub only when requested. Optional beta releases
 are separate from normal releases. Nothing is installed automatically.
 
+Backup cleanup waits until protected software removal has finished. If a backup
+record cannot be read, its recovery data is kept. Settings → Backups → Show in
+Finder remains available for inspecting that folder; avoid editing or deleting
+recovery files.
+
 ## Scan details and limitations
 
 The timestamp records the last completed scan. If a rescan fails, previous results

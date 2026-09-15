@@ -316,6 +316,91 @@ final class RemovalBackupTests: XCTestCase {
         XCTAssertEqual(partial.backup?.items.first(where: { $0.originalPath == second.path })?.state, .backedUp)
     }
 
+    func testProtectedCleanupRefusesDeletionAndRestoreUntilRemovalCompletes() async throws {
+        let fixture = try makeFixture()
+        defer { try? fm.removeItem(at: fixture.root) }
+        let bundle = try makeBundle(fixture.source.appendingPathComponent("Active.component"), payload: "recover")
+        let store = RemovalBackupStore(root: fixture.backups)
+        let safety = CleanupSafety(allowedRoots: [fixture.source])
+        let trash = fixture.root.appendingPathComponent("SyntheticTrash.component")
+
+        let result = await BackupProtectedCleanupExecutor.execute(plan: try plan("Active", bundle),
+            safety: safety, store: store, retentionDays: 30) { url in
+                try FileManager.default.moveItem(at: url, to: trash)
+                let finished = DispatchSemaphore(value: 0)
+                Task.detached {
+                    defer { finished.signal() }
+                    do {
+                        let records = try await store.list()
+                        let operation = try XCTUnwrap(records.first)
+                        do {
+                            _ = try await store.restore(operationID: operation.id, itemID: operation.items[0].id, safety: safety)
+                            XCTFail("An operation still being removed must not be restored")
+                        } catch { XCTAssertTrue(error.localizedDescription.contains("in progress")) }
+                        do {
+                            _ = try await store.deleteExpired()
+                            XCTFail("Retention must wait until removal finishes")
+                        } catch { XCTAssertTrue(error.localizedDescription.contains("in progress")) }
+                        do {
+                            _ = try await store.deleteAll()
+                            XCTFail("Manual deletion must wait until removal finishes")
+                        } catch { XCTAssertTrue(error.localizedDescription.contains("in progress")) }
+                    } catch { XCTFail("Could not inspect active recovery copy: \(error)") }
+                }
+                XCTAssertEqual(finished.wait(timeout: .now() + 10), .success)
+            }
+
+        XCTAssertEqual(result.cleanup.movedCount, 1)
+        XCTAssertTrue(result.cleanup.failures.isEmpty)
+        let remaining = try await store.list()
+        XCTAssertEqual(remaining.count, 1)
+        XCTAssertEqual(remaining.first?.removedItemCount, 1)
+        XCTAssertFalse(fm.fileExists(atPath: bundle.path))
+        let deleted = try await store.deleteAll()
+        XCTAssertEqual(deleted.operationCount, 1, "Completed removal must release deletion protection")
+    }
+
+    func testProtectedCleanupReleasesProtectionAfterMoveFailureAndRejectedPreparation() async throws {
+        let fixture = try makeFixture()
+        defer { try? fm.removeItem(at: fixture.root) }
+        let bundle = try makeBundle(fixture.source.appendingPathComponent("Failure.component"), payload: "recover")
+        let store = RemovalBackupStore(root: fixture.backups)
+        let safety = CleanupSafety(allowedRoots: [fixture.source])
+        let result = await BackupProtectedCleanupExecutor.execute(plan: try plan("Failure", bundle),
+            safety: safety, store: store, retentionDays: 30) { _ in throw CocoaError(.fileWriteNoPermission) }
+        XCTAssertEqual(result.cleanup.movedCount, 0)
+        XCTAssertEqual(result.cleanup.failures.count, 1)
+        let deleted = try await store.deleteAll()
+        XCTAssertEqual(deleted.operationCount, 1)
+
+        let rejected = await BackupProtectedCleanupExecutor.execute(plan: try plan("Rejected", bundle),
+            safety: safety, store: store, retentionDays: 0) { _ in XCTFail("Rejected preparation must not remove anything") }
+        XCTAssertNil(rejected.backup)
+        let afterRejection = try await store.deleteAll()
+        XCTAssertEqual(afterRejection.operationCount, 0, "Rejected preparation must not leave deletion protection active")
+    }
+
+    func testStatusRecordingFailureReleasesProtectionWithoutClaimingBackupIsIntact() async throws {
+        let fixture = try makeFixture()
+        defer { try? fm.removeItem(at: fixture.root) }
+        let bundle = try makeBundle(fixture.source.appendingPathComponent("Status.component"), payload: "recover")
+        let store = RemovalBackupStore(root: fixture.backups)
+        let result = await BackupProtectedCleanupExecutor.execute(plan: try plan("Status", bundle),
+            safety: CleanupSafety(allowedRoots: [fixture.source]), store: store, retentionDays: 30) { url in
+                try FileManager.default.moveItem(at: url, to: fixture.root.appendingPathComponent("SyntheticTrash.component"))
+                let directory = try XCTUnwrap(FileManager.default.contentsOfDirectory(at: fixture.backups,
+                    includingPropertiesForKeys: nil, options: [.skipsHiddenFiles]).first)
+                try Data("{".utf8).write(to: directory.appendingPathComponent("manifest.json"))
+            }
+        XCTAssertEqual(result.cleanup.movedCount, 1)
+        XCTAssertEqual(result.cleanup.failures.count, 1)
+        XCTAssertFalse(result.cleanup.failures.joined().contains("backup is intact"))
+        let deleted = try await store.deleteAll()
+        XCTAssertEqual(deleted.operationCount, 0, "The damaged record must be preserved, with operation protection released")
+        let listing = try await store.inspect()
+        XCTAssertEqual(listing.unreadableCount, 1)
+    }
+
     private func plan(_ name: String, _ bundle: URL) throws -> CleanupPlan {
         CleanupPlan(displayName: name, items: [CleanupItem(path: bundle, kind: .pluginBundle,
             contentsFingerprint: try BundleContentsPreview.scan(bundle).fingerprint)], excludedUserContentDescription: "")
