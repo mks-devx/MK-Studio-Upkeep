@@ -1,10 +1,15 @@
 # Release verification — 0.4.1, build 13
 
-Reviewed 15 September 2026. This maintenance version isolates unreadable backup
+Reviewed 15 September 2026; release audit repeated 20 September 2026. This maintenance version isolates unreadable backup
 records, guards storage totals, protects recovery copies during active removal,
 refreshes manager discovery and corrects Tips and manual wording. The licence remains AGPL-3.0.
 
 ## Local verification
+
+The 20 September audit rechecked the backup changes, publication files and Git
+history. System-signature tests failed inside the restricted execution environment
+and passed with normal macOS certificate access, without source changes. The only
+Git author/committer email in reachable history is the public GitHub noreply identity.
 
 - The complete release check passed: 286 Swift tests, with one opt-in Trash
   rehearsal skipped, five Python tests, native application-state checks and
