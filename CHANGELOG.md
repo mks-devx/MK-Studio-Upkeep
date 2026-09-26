@@ -17,6 +17,9 @@
 
 ### Repository maintenance
 
+- Prevent the publication audit from stalling on large Git file lists; retain
+  secret detection and export-exclusion coverage.
+
 - Remove inactive release-feed prototypes, vendor collectors and catalogue tools,
   together with their dedicated tests. Preserve the active scanner, official
   website directory and app release check.

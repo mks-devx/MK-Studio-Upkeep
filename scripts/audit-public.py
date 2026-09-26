@@ -14,6 +14,7 @@ import os
 import re
 import subprocess
 import sys
+import tempfile
 
 PATTERNS = {
     "assistant-reference": re.compile(rb"\b(?:clau" + rb"de|co" + rb"dex)\b", re.I),
@@ -35,7 +36,14 @@ PRIVATE_PATTERN_FILE = ".local-private/audit-patterns.txt"
 
 
 def git(*args, stdin=None):
-    return subprocess.run(["git", *args], input=stdin, capture_output=True, check=True).stdout
+    if stdin is None:
+        return subprocess.run(["git", *args], capture_output=True, check=True).stdout
+    # Avoid simultaneous input/output pipe backpressure on large attribute queries.
+    # TemporaryFile is private and closes automatically, including on Git errors.
+    with tempfile.TemporaryFile() as source:
+        source.write(stdin)
+        source.seek(0)
+        return subprocess.run(["git", *args], stdin=source, capture_output=True, check=True).stdout
 
 
 def shipped_paths():
